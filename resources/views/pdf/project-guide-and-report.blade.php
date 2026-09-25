@@ -231,7 +231,7 @@
         <div class="cover-title">PANDUAN OPERASIONAL &<br>LAPORAN AUDIT MENYELURUH</div>
         <div class="cover-subtitle">
             Platform Reservasi Wisata Danau Toba & Sumatra Utara<br>
-            <strong>sujailaketoba.com</strong>
+            <strong>sujaitobasumatera.com</strong>
         </div>
 
         <div style="margin: 30px auto; width: 60%; background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px;">
@@ -269,7 +269,7 @@
     <!-- ==================== RINGKASAN EKSEKUTIF ==================== -->
     <h1 class="section-title">Ringkasan Eksekutif</h1>
     <p>
-        Dokumen ini menyajikan panduan operasional komprehensif sekaligus laporan audit teknikal menyeluruh untuk platform website <strong>sujailaketoba.com</strong>. Platform ini didesain khusus sebagai mesin konversi wisata premium (*high-conversion travel platform*) yang melayani wisatawan keluarga, rombongan, dan korporat dari Malaysia, Singapura, serta kota-kota besar di Indonesia menuju kawasan Danau Toba dan Sumatera Utara.
+        Dokumen ini menyajikan panduan operasional komprehensif sekaligus laporan audit teknikal menyeluruh untuk platform website <strong>sujaitobasumatera.com</strong>. Platform ini didesain khusus sebagai mesin konversi wisata premium (*high-conversion travel platform*) yang melayani wisatawan keluarga, rombongan, dan korporat dari Malaysia, Singapura, serta kota-kota besar di Indonesia menuju kawasan Danau Toba dan Sumatera Utara.
     </p>
 
     <div class="callout">
@@ -724,7 +724,7 @@
     <br><br>
     <div style="text-align: center; color: #64748b; font-size: 9pt; border-top: 1px solid #e2e8f0; padding-top: 15px;">
         Dokumen ini diterbitkan secara otomatis oleh sistem Sujai Lake Toba Engine.<br>
-        &copy; {{ date('Y') }} Sujai Lake Toba (sujailaketoba.com). Seluruh hak cipta dilindungi.
+        &copy; {{ date('Y') }} Sujai Lake Toba (sujaitobasumatera.com). Seluruh hak cipta dilindungi.
     </div>
 
 </body>

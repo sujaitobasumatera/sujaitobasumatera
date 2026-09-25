@@ -46,9 +46,9 @@ class AppConfigTest extends TestCase
                 'boolean' => false,
                 'number' => $this->validNumberFor($field),
                 'select' => $field['options'][0],
-                'email' => 'info@sujailaketoba.com',
-                'url' => 'https://sujailaketoba.com',
-                default => (string) (config(AppConfigService::paths($field)[0]) ?: 'Sujai Laketoba'),
+                'email' => 'info@sujaitobasumatera.com',
+                'url' => 'https://sujaitobasumatera.com',
+                default => (string) (config(AppConfigService::paths($field)[0]) ?: 'Sujai Toba Sumatera'),
             };
         }
 

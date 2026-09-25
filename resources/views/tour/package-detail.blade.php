@@ -254,7 +254,7 @@
         city: @js($city),
         contact: {
             whatsapp: @js(\App\Helpers\ContactHelper::whatsappDigits()),
-            email: '{{ $siteSettings['cms_tour']['contact_email'] ?? $siteSettings['general']['contact_email'] ?? 'hello@sujailaketoba.com' }}'
+            email: '{{ $siteSettings['cms_tour']['contact_email'] ?? $siteSettings['general']['contact_email'] ?? 'hello@sujaitobasumatera.com' }}'
         },
         get waNumber() {
             return (this.contact.whatsapp || @js(\App\Helpers\ContactHelper::whatsappDigits())).replace(/[^0-9]/g, '');
