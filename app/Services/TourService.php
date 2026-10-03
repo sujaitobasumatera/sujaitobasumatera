@@ -324,6 +324,10 @@ class TourService
 
     /**
      * Get all active tour packages with eager loaded images and city. Cached.
+     *
+     * locationTag ikut disertakan agar filter Alpine di /tour/packages bisa
+     * mencocokkan nama destinasi (mis. "Samosir", "Berastagi") yang tidak selalu
+     * muncul di nama paket — sebelumnya ketik "Samosir" bisa menghasilkan 0 hasil.
      */
     public function getAllPackages()
     {

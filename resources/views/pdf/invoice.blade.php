@@ -70,8 +70,18 @@
         $address         = $siteSettings['general']['office_address'] ?? 'Sumatera Utara';
         $email           = $siteSettings['general']['contact_email'] ?? '';
 
-        $pax       = max((int) ($booking->metadata['pax'] ?? 1), 1);
-        $unitPrice = $booking->totalPrice / $pax;
+        $pax           = max((int) ($booking->metadata['pax'] ?? 1), 1);
+        $pb            = $booking->metadata['price_breakdown'] ?? null;
+        $subtotalBase  = $pb['subtotal_base'] ?? null;
+        $surchargeRows = $pb['surcharges'] ?? [];
+        $taxAmount     = $pb['tax'] ?? 0;
+
+        $unitPrice     = ($subtotalBase !== null && $subtotalBase > 0)
+            ? ($subtotalBase / $pax)
+            : ($booking->totalPrice / $pax);
+        $itemLineTotal = ($subtotalBase !== null && $subtotalBase > 0)
+            ? $subtotalBase
+            : $booking->totalPrice;
 
         $statusMap = [
             'pending'   => ['label' => 'MENUNGGU PEMBAYARAN',     'bg' => '#fef3c7', 'fg' => '#b45309'],
@@ -170,7 +180,7 @@
                     </td>
                     <td style="text-align: center;">{{ $pax }} Pax</td>
                     <td style="text-align: right;">{{ \App\Helpers\CurrencyHelper::formatRecord($unitPrice, $booking->currency) }}</td>
-                    <td style="text-align: right; font-weight: bold; color: #1a202c;">{{ \App\Helpers\CurrencyHelper::formatRecord($booking->totalPrice, $booking->currency) }}</td>
+                    <td style="text-align: right; font-weight: bold; color: #1a202c;">{{ \App\Helpers\CurrencyHelper::formatRecord($itemLineTotal, $booking->currency) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -194,8 +204,15 @@
                 <td width="44%" style="vertical-align: top;">
                     <div class="calc">
                         <table width="100%" cellpadding="0" cellspacing="0">
-                            <tr><td class="k">Subtotal</td><td class="v">{{ \App\Helpers\CurrencyHelper::formatRecord($booking->totalPrice, $booking->currency) }}</td></tr>
-                            <tr><td class="k">Pajak</td><td class="v">{{ \App\Helpers\CurrencyHelper::formatRecord(data_get($booking->metadata, 'price_breakdown.tax', 0), $booking->currency) }}</td></tr>
+                            <tr><td class="k">Subtotal</td><td class="v">{{ \App\Helpers\CurrencyHelper::formatRecord($itemLineTotal, $booking->currency) }}</td></tr>
+                            @if(!empty($surchargeRows))
+                                @foreach($surchargeRows as $surcharge)
+                                <tr><td class="k">{{ $surcharge['name'] ?? 'Biaya Tambahan' }}</td><td class="v">{{ \App\Helpers\CurrencyHelper::formatRecord($surcharge['amount'] ?? 0, $booking->currency) }}</td></tr>
+                                @endforeach
+                            @endif
+                            @if($taxAmount > 0)
+                            <tr><td class="k">Pajak</td><td class="v">{{ \App\Helpers\CurrencyHelper::formatRecord($taxAmount, $booking->currency) }}</td></tr>
+                            @endif
                             <tr><td class="k">Diskon</td><td class="v">- {{ \App\Helpers\CurrencyHelper::formatRecord(0, $booking->currency) }}</td></tr>
                             <tr class="sep"><td class="total-k">Total Tagihan ({{ $booking->currency }})</td><td class="total-v">{{ \App\Helpers\CurrencyHelper::formatRecord($booking->totalPrice, $booking->currency) }}</td></tr>
                         </table>

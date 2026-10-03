@@ -245,13 +245,13 @@
         </div>
     </section>
 
-    <!-- Trusted Partners Section (Sophisticated Dark Mode Showcase) -->
+    <!-- Partners Section -->
     <section class="py-8 md:py-12 bg-primary relative overflow-hidden">
         <div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:24px_24px]"></div>
         <div class="max-w-7xl mx-auto px-5 md:px-8 relative z-10">
             <div class="text-center mb-8">
-                <span class="text-secondary-fixed font-black text-[9px] uppercase tracking-[0.3em] mb-2 block">OFFICIAL PARTNERS</span>
-                <h3 class="text-2xl md:text-4xl font-bold text-white tracking-tight">Dipercaya Oleh Institusi Terkemuka</h3>
+                <span class="text-secondary-fixed font-black text-[9px] uppercase tracking-[0.3em] mb-2 block">MITRA &amp; KLIEN</span>
+                <h3 class="text-2xl md:text-4xl font-bold text-white tracking-tight">Mitra &amp; Klien Kami</h3>
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 items-center">
@@ -277,9 +277,14 @@
 
             <!-- Wonderful Indonesia Badge -->
             <div class="mt-10 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-center gap-6 text-center md:text-left">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Wonderful_Indonesia_logo.svg" alt="Wonderful Indonesia" class="h-10 opacity-70 hover:opacity-100 transition-opacity duration-300">
+                {{-- Logo lokal diutamakan; Wikipedia hotlink bisa hilang kapan saja. --}}
+                @if($siteSettings['cms_landing']['brand_partner_logo_url'] ?? false)
+                    <img src="{{ $siteSettings['cms_landing']['brand_partner_logo_url'] }}" alt="Wonderful Indonesia" class="h-10 opacity-70 hover:opacity-100 transition-opacity duration-300">
+                @else
+                    <span class="text-white/60 font-bold text-sm tracking-widest uppercase">🇮🇩</span>
+                @endif
                 <div>
-                    <p class="text-white font-bold text-sm tracking-tight">Agen Wisata Resmi Program Wonderful Indonesia</p>
+                    <p class="text-white font-bold text-sm tracking-tight">Program Wonderful Indonesia</p>
                     <p class="text-on-primary-container text-xs font-light">Kementerian Pariwisata dan Ekonomi Kreatif Republik Indonesia</p>
                 </div>
             </div>

@@ -72,10 +72,11 @@ class PdfController extends Controller
         try {
             $view = $this->renderInvoice($identifier);
             return response((string) $view->render());
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            abort(404, 'Invoice tidak ditemukan.');
         } catch (\Throwable $e) {
-            Log::error('Invoice Render Error: '.$e->getMessage());
-
-            return 'Gagal membuka invoice: '.$e->getMessage();
+            Log::error('Invoice Render Error: '.$e->getMessage(), ['identifier' => $identifier]);
+            abort(500, 'Gagal membuka invoice. Silakan coba lagi atau hubungi admin.');
         }
     }
 
@@ -87,10 +88,11 @@ class PdfController extends Controller
             $booking = Booking::where('bookingCode', $identifier)->firstOrFail();
 
             return app(InvoiceService::class)->downloadInvoice($booking);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            abort(404, 'Invoice tidak ditemukan.');
         } catch (\Throwable $e) {
-            Log::error('Invoice Download Error: '.$e->getMessage());
-
-            return 'Gagal mengunduh invoice: '.$e->getMessage();
+            Log::error('Invoice Download Error: '.$e->getMessage(), ['identifier' => $identifier]);
+            abort(500, 'Gagal mengunduh invoice. Silakan coba lagi atau hubungi admin.');
         }
     }
 

@@ -23,6 +23,9 @@ class ContactHelper
     /** Nomor resmi, dipakai bila belum ada apa pun di pengaturan. */
     public const DEFAULT_WHATSAPP = '6282277848855';
 
+    /** Nomor WhatsApp kedua / cadangan. */
+    public const DEFAULT_WHATSAPP_2 = '6281397606622';
+
     /**
      * Nomor WhatsApp dalam bentuk digit saja, siap dipakai di URL wa.me.
      *
@@ -88,17 +91,64 @@ class ContactHelper
         return $message ? $url.'?text='.urlencode($message) : $url;
     }
 
+    /**
+     * Nomor WhatsApp kedua dalam bentuk digit.
+     *
+     * @return string
+     */
+    public static function whatsappDigits2()
+    {
+        return Cache::rememberForever('contact_whatsapp_digits_2', function () {
+            $settings = self::settings();
+
+            $raw = $settings['general']['contact_whatsapp_2']
+                ?? $settings['general']['contact_wa_2']
+                ?? self::DEFAULT_WHATSAPP_2;
+
+            $digits = preg_replace('/[^0-9]/', '', (string) $raw);
+
+            if (str_starts_with($digits, '0')) {
+                $digits = '62'.substr($digits, 1);
+            }
+
+            return strlen($digits) >= 10 ? $digits : self::DEFAULT_WHATSAPP_2;
+        });
+    }
+
+    /**
+     * Nomor WhatsApp kedua untuk tampilan.
+     *
+     * @return string
+     */
+    public static function whatsappDisplay2()
+    {
+        $digits = self::whatsappDigits2();
+
+        if (preg_match('/^62(\d{3})(\d{4})(\d{4,})$/', $digits, $m)) {
+            return "+62 {$m[1]}-{$m[2]}-{$m[3]}";
+        }
+
+        return '+'.$digits;
+    }
+
+    /**
+     * Tautan wa.me untuk nomor kedua.
+     *
+     * @param  string|null  $message
+     * @return string
+     */
+    public static function whatsappLink2($message = null)
+    {
+        $url = 'https://wa.me/'.self::whatsappDigits2();
+
+        return $message ? $url.'?text='.urlencode($message) : $url;
+    }
+
     /** Alamat email resmi bila belum ada apa pun di pengaturan. */
-    public const DEFAULT_EMAIL = 'info@sujailaketoba.com';
+    public const DEFAULT_EMAIL = 'info@sujaitobasumatera.com';
 
     /**
      * Alamat email perusahaan.
-     *
-     * Sama seperti nomor telepon, alamat ini sebelumnya punya DUA nilai bawaan
-     * yang bertentangan: 'hello@' dipakai schema.org, PDF paket, dan form admin,
-     * sementara 'info@' dipakai footer, navbar, halaman S&K, dan halaman
-     * pembayaran. Mesin pencari membaca satu alamat, pengunjung membaca alamat
-     * lain, dan salah satunya hampir pasti tidak ada yang membacanya.
      *
      * @return string
      */
@@ -116,7 +166,20 @@ class ContactHelper
     }
 
     /**
-     * Nomor spesialis bila diatur; kalau tidak, jatuh ke nomor utama.
+     * Alamat kantor resmi perusahaan.
+     *
+     * @return string
+     */
+    public static function officeAddress(): string
+    {
+        $settings = self::settings();
+
+        return $settings['general']['office_address']
+            ?? 'Jl. Trimurti 109, Berastagi, Kabupaten Karo';
+    }
+
+    /**
+     * Nomor spesialis bila diatur; kalau tidak, jatuh ke nomor kedua / nomor utama.
      *
      * @return string
      */
@@ -126,7 +189,7 @@ class ContactHelper
 
         $raw = $settings['cms_tour']['specialist_wa']
             ?? $settings['general']['specialist_wa']
-            ?? null;
+            ?? self::whatsappDigits2();
 
         if (! $raw) {
             return self::whatsappDigits();

@@ -14,7 +14,7 @@
             <div class="mb-8 p-6 bg-slate-50 border border-slate-100 rounded-2xl text-xs text-slate-500 font-normal leading-relaxed">
                 <p class="font-bold text-slate-700 mb-1">Sujai Laketoba</p>
                 <p>Nama Domain: <strong class="text-slate-800 font-medium">sujailaketoba.com</strong> — Brand resmi: <strong class="text-slate-800 font-medium">Sujai Laketoba</strong></p>
-                <p>Dioperasikan oleh CV/UD Sujai Laketoba, berdomisili di Parapat, Sumatera Utara.</p>
+                <p>Dioperasikan oleh Sujai Laketoba, berdomisili di {{ $siteSettings['general']['office_address'] ?? $siteSettings['general']['address'] ?? 'Jl. Trimurti 109, Berastagi, Kabupaten Karo, Sumatera Utara' }}.</p>
                 <p class="mt-2 text-[10px] text-slate-400">Terakhir diperbarui: Juni 2025</p>
             </div>
             
@@ -59,7 +59,8 @@
                     <p class="mb-6">Untuk pertanyaan, keluhan, atau penyelesaian sengketa, tamu dapat menghubungi kami melalui:</p>
                     <ul class="list-none pl-0 mb-6 space-y-2">
                         <li>📧 Email: <a href="mailto:{{ \App\Helpers\ContactHelper::email() }}" class="text-toba-green font-semibold hover:underline">{{ \App\Helpers\ContactHelper::email() }}</a></li>
-                        <li>📱 WhatsApp: <a href="{{ \App\Helpers\ContactHelper::whatsappLink() }}" class="text-toba-green font-semibold hover:underline">{{ \App\Helpers\ContactHelper::whatsappDisplay() }}</a></li>
+                        <li>📱 WhatsApp 1: <a href="{{ \App\Helpers\ContactHelper::whatsappLink() }}" class="text-toba-green font-semibold hover:underline">{{ \App\Helpers\ContactHelper::whatsappDisplay() }}</a></li>
+                        <li>📱 WhatsApp 2: <a href="{{ \App\Helpers\ContactHelper::whatsappLink2() }}" class="text-toba-green font-semibold hover:underline">{{ \App\Helpers\ContactHelper::whatsappDisplay2() }}</a></li>
                     </ul>
                 @endif
             </div>

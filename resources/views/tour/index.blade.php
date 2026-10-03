@@ -42,7 +42,8 @@
                 'email'       => $schemaEmail,
                 'address'     => [
                     '@type'           => 'PostalAddress',
-                    'addressLocality' => 'Balige',
+                    'streetAddress'   => $siteSettings['general']['office_address'] ?? 'Jl. Trimurti 109',
+                    'addressLocality' => 'Berastagi',
                     'addressRegion'   => 'Sumatera Utara',
                     'addressCountry'  => 'ID',
                 ],

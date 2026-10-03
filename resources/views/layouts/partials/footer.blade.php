@@ -115,7 +115,7 @@
                 <h4 class="text-white font-label-caps text-[10px] uppercase tracking-[0.2em] mb-6">{{ __('Alamat & Kontak') }}</h4>
                 @php
                     $g = $siteSettings['general'] ?? [];
-                    $addressLine = $g['office_address'] ?? 'Jl. Sisingamangaraja No. 1, Parapat, Sumatera Utara 21174';
+                    $addressLine = $g['office_address'] ?? $g['address'] ?? 'Jl. Trimurti 109, Berastagi, Kabupaten Karo';
                     $cityPostal = trim(($g['office_city'] ?? '').' '.($g['office_postal'] ?? ''));
                 @endphp
                 <div class="space-y-4 text-slate-400 font-body-md text-xs">
@@ -130,15 +130,13 @@
                             {{ \App\Helpers\ContactHelper::whatsappDisplay() }}
                         </a>
                     </div>
-                    @if($g['contact_whatsapp_2'] ?? false)
                     <div class="flex items-center space-x-3">
                         <x-icon name="whatsapp" class="w-4 h-4 text-secondary shrink-0" />
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $g['contact_whatsapp_2']) }}" target="_blank"
+                        <a href="{{ \App\Helpers\ContactHelper::whatsappLink2() }}" target="_blank"
                            class="hover:text-secondary transition-colors">
-                            {{ $g['contact_whatsapp_2'] }} <span class="text-slate-500">(CS 2)</span>
+                            {{ \App\Helpers\ContactHelper::whatsappDisplay2() }} <span class="text-slate-500 text-[11px]">(CS 2)</span>
                         </a>
                     </div>
-                    @endif
                     @if($g['contact_phone'] ?? false)
                     <div class="flex items-center space-x-3">
                         <span class="material-symbols-outlined text-secondary text-[18px] shrink-0">call</span>
