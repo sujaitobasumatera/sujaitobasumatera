@@ -1501,6 +1501,7 @@
                             <div>
                                 <label for="bk-customerPhone" class="font-label-caps text-label-caps text-slate-700 mb-2 block uppercase tracking-wider">{{ __('Nomor WhatsApp') }} <span class="text-red-500">*</span></label>
                                 <input type="tel" id="bk-customerPhone" name="customerPhone" x-model="customerPhone" required placeholder="{{ __('0812-xxxx-xxxx') }}" autocomplete="tel" inputmode="tel"
+                                    pattern="[\+0-9\-\s]+" minlength="9" maxlength="15" title="Hanya angka, spasi, atau tanda tambah (+)"
                                     class="w-full border border-outline-variant rounded-lg p-3 text-sm text-on-surface bg-background focus:ring-1 focus:ring-secondary focus:border-secondary outline-none font-body-md transition">
                                 @error('customerPhone') <span class="text-xs text-error font-body-md mt-1 block">{{ $message }}</span> @enderror
                             </div>
