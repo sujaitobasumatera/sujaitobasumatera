@@ -19,4 +19,4 @@ User-agent: MJ12bot
 Disallow: /
 
 # Sitemap
-Sitemap: https://www.sujailaketoba.com/sitemap.xml
+Sitemap: https://www.sujaitobasumatera.com/sitemap.xml

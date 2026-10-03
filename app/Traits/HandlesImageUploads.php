@@ -63,7 +63,7 @@ trait HandlesImageUploads
             $width = imagesx($image);
             $height = imagesy($image);
 
-            $text = 'sujailaketoba.com';
+            $text = 'sujaitobasumatera.com';
 
             $font = 5; // Built-in font size (1-5)
             $fontWidth = imagefontwidth($font);
@@ -121,7 +121,7 @@ trait HandlesImageUploads
         if ($category && $category !== 'uncategorized' && $category !== 'uploads') {
             $catFormatted = ucwords(str_replace(['-', '_'], ' ', $category));
 
-            return "Foto {$name} - Kategori {$catFormatted} | Wisata Danau Toba Sujailaketoba";
+            return "Foto {$name} - Kategori {$catFormatted} | Wisata Danau Toba Sujaitobasumatera";
         }
 
         return "Pesona Keindahan {$name} - Wonderful Lake Toba Tour";

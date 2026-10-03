@@ -3,28 +3,28 @@
     {
       "id": 1,
       "name": "Admin Utama",
-      "email": "admin@sujailaketoba.com",
+      "email": "admin@sujaitobasumatera.com",
       "role": "admin",
       "created_at": "2026-01-01 08:00:00"
     },
     {
       "id": 2,
       "name": "Admin Tour",
-      "email": "tour@sujailaketoba.com",
+      "email": "tour@sujaitobasumatera.com",
       "role": "admin_tour",
       "created_at": "2026-01-15 09:00:00"
     },
     {
       "id": 3,
       "name": "Admin Finance",
-      "email": "finance@sujailaketoba.com",
+      "email": "finance@sujaitobasumatera.com",
       "role": "admin_finance",
       "created_at": "2026-02-01 10:00:00"
     },
     {
       "id": 4,
       "name": "Super Admin",
-      "email": "superadmin@sujailaketoba.com",
+      "email": "superadmin@sujaitobasumatera.com",
       "role": "super_admin",
       "created_at": "2026-01-01 07:00:00"
     }
@@ -1668,7 +1668,7 @@
         "wa_number": "+6282277848855",
         "contact_whatsapp": "6282277848855",
         "contact_whatsapp_2": "+6281397606622",
-        "contact_email": "info@sujailaketoba.com",
+        "contact_email": "info@sujaitobasumatera.com",
         "contact_phone": "+6281397606622",
         "address": "Jl. Trimurti 109 Berastagi Kabupaten Karo",
         "office_address": "Jl. Trimurti 109 Berastagi",
@@ -1699,7 +1699,7 @@
         "hero_image": "2026/04/lake-toba-premium.png",
         "contact_wa_1": "+6282277848855",
         "contact_wa_2": "+6281397606622",
-        "contact_email": "hello@sujailaketoba.com",
+        "contact_email": "hello@sujaitobasumatera.com",
         "contact_address": "Jl. Trimurti 109 Berastagi Kabupaten Karo",
         "cta_text": "Mulai Petualangan Anda",
         "cta_link": "/tour/packages",
@@ -1735,11 +1735,11 @@
     {
       "key": "social_media",
       "value": {
-        "facebook": "https://facebook.com/sujailaketoba",
-        "instagram": "https://instagram.com/sujailaketoba",
-        "twitter": "https://twitter.com/sujailaketoba",
-        "youtube": "https://youtube.com/sujailaketoba",
-        "tiktok": "https://tiktok.com/@sujailaketoba"
+        "facebook": "https://facebook.com/sujaitobasumatera",
+        "instagram": "https://instagram.com/sujaitobasumatera",
+        "twitter": "https://twitter.com/sujaitobasumatera",
+        "youtube": "https://youtube.com/sujaitobasumatera",
+        "tiktok": "https://tiktok.com/@sujaitobasumatera"
       }
     },
     {

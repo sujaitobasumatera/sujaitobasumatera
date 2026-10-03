@@ -1,4 +1,4 @@
-# Antigravity Rules for sujailaketoba.com
+# Antigravity Rules for sujaitobasumatera.com
 
 Behavioral guidelines, cognitive frameworks, and reference rules derived from Karpathy, Matt Pocock, VoltAgent, and global personality standards.
 

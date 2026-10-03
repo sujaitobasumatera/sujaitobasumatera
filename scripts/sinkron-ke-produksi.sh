@@ -23,11 +23,11 @@ SSH_PORT=65002
 SSH_USER=u754986547
 SSH_HOST=145.79.28.35
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/sujai_produksi}"
-REMOTE_BASE='~/domains/sujailaketoba.com'
+REMOTE_BASE='~/domains/sujaitobasumatera.com'
 
 PROYEK="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MEDIA_LOKAL="$PROYEK/storage/app/public"
-CADANGAN="$PROYEK/../backup-sujailaketoba"
+CADANGAN="$PROYEK/../backup-sujaitobasumatera"
 MYSQL_BIN="${MYSQL_BIN:-/c/xampp/mysql/bin}"
 STEMPEL="$(date +%Y%m%d-%H%M%S)"
 

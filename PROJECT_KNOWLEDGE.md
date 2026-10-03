@@ -1,4 +1,4 @@
-# PROJECT_KNOWLEDGE — sujailaketoba.com
+# PROJECT_KNOWLEDGE — sujaitobasumatera.com
 
 Catatan teknis ringkas yang tidak tersurat dari kode. Lihat juga `CLAUDE.md` untuk aturan kerja.
 

@@ -6,7 +6,7 @@
     Menjalankan langkah build produksi lalu mengemas berkas yang perlu naik:
       1. composer install --no-dev --optimize-autoloader
       2. npm ci && npm run build
-      3. Mengemas ke deploy/sujailaketoba-<timestamp>.zip
+      3. Mengemas ke deploy/sujaitobasumatera-<timestamp>.zip
 
     Yang TIDAK ikut: .env, node_modules, .git, storage/logs, database lokal,
     dan berkas kredensial. Daftar lengkapnya ada di $excluded di bawah.
@@ -92,7 +92,7 @@ try {
     }
 
     $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
-    $zipPath = Join-Path $deployDir "sujailaketoba-$stamp.zip"
+    $zipPath = Join-Path $deployDir "sujaitobasumatera-$stamp.zip"
     $staging = Join-Path $env:TEMP "sujai-deploy-$stamp"
 
     # Jangan pernah ikut ke server: kredensial, berkas lokal, dan apa pun yang

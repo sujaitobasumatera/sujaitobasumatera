@@ -59,7 +59,7 @@ Semua sudah beres di server malam ini:
 
 Ini yang memakan waktu paling lama untuk diurai:
 
-1. **Auto-deploy Hostinger menarik kode tapi TIDAK PERNAH menjalankan migrasi.**
+1. **Auto-deploy Rumah Web menarik kode tapi TIDAK PERNAH menjalankan migrasi.**
    Selalu jalankan `bash ~/deploy.sh` di server setiap habis push.
 2. **Auto-deploy juga menghapus isi folder di dalam proyek.** Terbukti langsung:
    `storage/app/public` menyusut 34 MB → 16 MB di tengah pekerjaan. Media aman
@@ -82,7 +82,7 @@ Ini yang memakan waktu paling lama untuk diurai:
   1. Admin → Paket → Edit → **Simpan**
   2. **Unggah satu foto** ke paket, buka halaman detailnya ← paling menentukan
   3. `/tour/gallery` — foto tampil
-  4. Kirim `https://sujailaketoba.com/tour/detail/paket-samosir-adventure-4d3n`
+  4. Kirim `https://sujaitobasumatera.com/tour/detail/paket-samosir-adventure-4d3n`
      ke WhatsApp sendiri — pratinjau harus bawa judul, kalimat, foto
 - [ ] **Isi konten 7 paket** yang masih kosong (lihat tabel di bawah). Ini
       berdampak jauh lebih besar daripada perbaikan kode mana pun yang tersisa.

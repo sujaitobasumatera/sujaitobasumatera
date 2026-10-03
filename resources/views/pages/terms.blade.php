@@ -13,7 +13,7 @@
             {{-- Identitas Perusahaan --}}
             <div class="mb-8 p-6 bg-slate-50 border border-slate-100 rounded-2xl text-xs text-slate-500 font-normal leading-relaxed">
                 <p class="font-bold text-slate-700 mb-1">Sujai Laketoba</p>
-                <p>Nama Domain: <strong class="text-slate-800 font-medium">sujailaketoba.com</strong> — Brand resmi: <strong class="text-slate-800 font-medium">Sujai Laketoba</strong></p>
+                <p>Nama Domain: <strong class="text-slate-800 font-medium">sujaitobasumatera.com</strong> — Brand resmi: <strong class="text-slate-800 font-medium">Sujai Laketoba</strong></p>
                 <p>Dioperasikan oleh Sujai Laketoba, berdomisili di {{ $siteSettings['general']['office_address'] ?? $siteSettings['general']['address'] ?? 'Jl. Trimurti 109, Berastagi, Kabupaten Karo, Sumatera Utara' }}.</p>
                 <p class="mt-2 text-[10px] text-slate-400">Terakhir diperbarui: Juni 2025</p>
             </div>
@@ -23,7 +23,7 @@
                     {!! $content['content'] !!}
                 @else
                     <h3 class="text-slate-900 font-bold text-base mb-3 tracking-tight">1. Pendaftaran &amp; Pemesanan</h3>
-                    <p class="mb-6">Setiap pemesanan dianggap sah apabila dilakukan melalui website resmi <strong class="text-slate-900 font-medium">sujailaketoba.com</strong> atau melalui jalur komunikasi resmi (WhatsApp/Email). Kami berhak meminta uang muka (DP) sebesar 30–50% sebagai tanda jadi pemesanan paket wisata sebelum proses konfirmasi akomodasi dilakukan.</p>
+                    <p class="mb-6">Setiap pemesanan dianggap sah apabila dilakukan melalui website resmi <strong class="text-slate-900 font-medium">sujaitobasumatera.com</strong> atau melalui jalur komunikasi resmi (WhatsApp/Email). Kami berhak meminta uang muka (DP) sebesar 30–50% sebagai tanda jadi pemesanan paket wisata sebelum proses konfirmasi akomodasi dilakukan.</p>
                     
                     <h3 class="text-slate-900 font-bold text-base mb-3 tracking-tight">2. Pembayaran</h3>
                     <p class="mb-6">Pelunasan wajib dilakukan paling lambat 7 hari sebelum tanggal keberangkatan. Pembayaran dapat dilakukan melalui:</p>

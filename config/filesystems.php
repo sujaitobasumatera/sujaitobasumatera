@@ -41,7 +41,7 @@ return [
         'public' => [
             'driver' => 'local',
             // Write directly into the publicly-served folder (public/storage) instead of
-            // storage/app/public. On Hostinger the public/storage symlink cannot be created
+            // storage/app/public. On Rumah Web the public/storage symlink cannot be created
             // because public/storage already exists as a real committed directory, so files
             // saved to storage/app/public were never reachable via the /storage URL.
             'root' => env('STORAGE_ROOT_PATH')

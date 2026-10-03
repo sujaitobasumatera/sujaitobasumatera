@@ -35,8 +35,8 @@ return new class extends Migration
     {
         // 'admin' dan 'super_admin' sama-sama menjadi 'superadmin', jadi arah
         // baliknya tidak bisa disimpulkan dari nilai peran. Dikunci ke email.
-        DB::table('users')->where('email', 'admin@sujailaketoba.com')->update(['role' => 'admin']);
-        DB::table('users')->where('email', 'superadmin@sujailaketoba.com')->update(['role' => 'super_admin']);
-        DB::table('users')->where('email', 'finance@sujailaketoba.com')->update(['role' => 'admin_finance']);
+        DB::table('users')->where('email', 'admin@sujaitobasumatera.com')->update(['role' => 'admin']);
+        DB::table('users')->where('email', 'superadmin@sujaitobasumatera.com')->update(['role' => 'super_admin']);
+        DB::table('users')->where('email', 'finance@sujaitobasumatera.com')->update(['role' => 'admin_finance']);
     }
 };

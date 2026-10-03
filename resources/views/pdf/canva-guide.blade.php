@@ -193,7 +193,7 @@
         <div class="doc-badge">Panduan Praktis Tim Kreatif & Desain</div>
         <div class="doc-title">PANDUAN DESAIN & EDIT DI CANVA</div>
         <div class="doc-subtitle">
-            Standar Resmi Ukuran Kanvas, Rasio, Safe Zone, Warna Merek & Tipografi untuk <strong>sujailaketoba.com</strong>
+            Standar Resmi Ukuran Kanvas, Rasio, Safe Zone, Warna Merek & Tipografi untuk <strong>sujaitobasumatera.com</strong>
         </div>
     </div>
 
@@ -344,7 +344,7 @@
 
     <br>
     <div style="text-align: center; color: #64748b; font-size: 8pt; border-top: 1px solid #e2e8f0; padding-top: 10px;">
-        Dokumen Panduan Canva Resmi &bull; &copy; {{ date('Y') }} Sujai Lake Toba (sujailaketoba.com).
+        Dokumen Panduan Canva Resmi &bull; &copy; {{ date('Y') }} Sujai Lake Toba (sujaitobasumatera.com).
     </div>
 
 </body>

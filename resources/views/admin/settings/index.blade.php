@@ -135,7 +135,7 @@
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                 <i class="fas fa-envelope text-slate-300"></i> Email Kontak
                             </label>
-                            <input type="email" name="contact_email" value="{{ $general['contact_email'] ?? 'hello@sujailaketoba.com' }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900">
+                            <input type="email" name="contact_email" value="{{ $general['contact_email'] ?? 'hello@sujaitobasumatera.com' }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900">
                         </div>
                         <div class="space-y-4">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
@@ -178,7 +178,7 @@
                 <div class="pt-8 border-t border-slate-100 grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div class="space-y-2">
                         <label class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Instagram</label>
-                        <input type="text" name="social_instagram" value="{{ $general['social_instagram'] ?? '' }}" placeholder="@sujailaketoba" class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl font-bold text-[10px]">
+                        <input type="text" name="social_instagram" value="{{ $general['social_instagram'] ?? '' }}" placeholder="@sujaitobasumatera" class="w-full px-4 py-2.5 bg-slate-50 border-none rounded-xl font-bold text-[10px]">
                     </div>
                     <div class="space-y-2">
                         <label class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Facebook</label>

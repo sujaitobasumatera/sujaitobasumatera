@@ -26,7 +26,7 @@ Create deploy artifact (Windows PowerShell)
 
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts\package-deploy.ps1
 
-This will produce a zip under the `deploy/` folder named like `sujailaketoba-YYYYMMDD-HHMMSS.zip`.
+This will produce a zip under the `deploy/` folder named like `sujaitobasumatera-YYYYMMDD-HHMMSS.zip`.
 
 What the artifact contains
 - Project files (source), built frontend assets under `public/build`, `vendor` (Composer libs).
