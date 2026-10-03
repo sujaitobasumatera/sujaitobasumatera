@@ -74,3 +74,14 @@ Untuk **tabel daftar di panel admin**, ikuti pola berikut (acuan asli: `admin/bo
 ### Status penerapan (per audit mobile-first)
 Sudah sesuai pola: `bookings`, `cars`, `users`, `customers` (index & show), `blogs`, `cities` (tab kategori), `regencies`, `logs`, `finance`, `reports/financial`.
 Grid kartu (sudah responsif, bukan tabel): `packages/index`, `cities` (tab destinasi), `media/index`.
+
+---
+
+## Koneksi FTP dan Akses Server Langsung (100% Control)
+
+Mulai 4 Oktober 2026, kita punya kontrol **100% langsung ke production** via FTP (karena tidak ada SSH di cPanel ini). 
+
+- **Credentials FTP:** dmin@sujaitobasumatera.com / Laketoba_1
+- **Metode Sinkronisasi:** File Powershell tp_sync_files.ps1 dan tp_upload.ps1 yang ada di artifact dapat digunakan untuk me-replace kode apa pun di server secara real-time.
+- **Eksekusi Artisan via Browser:** Karena cPanel memblokir exec(), perintah Artisan dijalankan dengan melempar file PHP mandiri yang mem-bootstrap Laravel Facade langsung via web request, kemudian file tersebut otomatis menghapus dirinya sendiri setelah dieksekusi (lihat referensi un_once_refresh_og.php).
+- Dengan pola ini, ketiadaan SSH tidak lagi jadi masalah. Kita bebas membersihkan cache, regenerasi file, atau patching cepat tanpa harus mendeploy ulang satu project utuh via CI/CD.
