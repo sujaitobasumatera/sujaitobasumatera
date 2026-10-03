@@ -60,3 +60,14 @@ Behavioral guidelines, cognitive frameworks, and reference rules derived from Ka
 - **Frontend**: Tailwind CSS 4, Alpine.js 3 for interactive client-side logic.
 - **Design Aesthetics**: Modern, premium, minimalist web design. Use rich aesthetics, sleek typography, harmonious color palettes, subtle transitions/micro-animations. Responsive layout is mandatory.
 - **SEO & Performance**: Use semantic HTML, unique descriptive IDs, appropriate meta tags, and optimize for fast page loads.
+
+---
+
+## 4. Realtime Deployment & FTP Integration (WAJIB DIIKUTI)
+- **Terintegrasi Penuh:** Sistem Lokal, GitHub, dan FTP Server (Rumah Web) HARUS selalu sejajar secara real-time.
+- **SOURCE OF TRUTH ADALAH SERVER:** Apabila terjadi keraguan, konflik, atau perbedaan data/kode, maka FTP Server (Production) bertindak sebagai acuan mutlak yang paling benar (Single Source of Truth). Jangan menimpa server tanpa memeriksa versi terakhirnya jika ragu.
+- **Workflow Pasca-Edit:** Setiap kali AI mengubah kode yang mempengaruhi production:
+  1. WAJIB git add & git commit untuk mencatat sejarah (Lokal).
+  2. WAJIB git push ke GitHub (Sinkronisasi repositori).
+  3. **WAJIB FTP SYNC:** Langsung jalankan script PowerShell sinkronisasi FTP lokal yang mentransfer spesifik file yang diedit langsung ke server tp.sujaitobasumatera.com. Jangan hanya mengandalkan GitHub Actions jika pengguna meminta hasil yang real-time detik itu juga.
+- Ini menjamin bahwa *apa yang ada di memori lokal = apa yang ada di GitHub = apa yang berjalan di Server*!
