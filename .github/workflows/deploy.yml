@@ -3,10 +3,10 @@ name: Test & Deploy to Production 🚀
 on:
   push:
     branches:
-      - main
+    - main
   pull_request:
     branches:
-      - main
+    - main
 
 env:
   PHP_VERSION: '8.3'
@@ -63,6 +63,16 @@ jobs:
     - name: 📦 Install Composer dependencies
       run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: 📦 Build Frontend Assets
+      run: |
+        npm ci
+        npm run build
+
     - name: 📂 Deploy via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
@@ -70,7 +80,7 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         port: 21
-        # Explicit TLS (FTPS) — credentials & files no longer travel in plaintext.
+          # Explicit TLS (FTPS)
         protocol: ftps
         timeout: 1800000
         log-level: verbose
@@ -80,7 +90,6 @@ jobs:
           **/.git/**
           **/.git*
           **/node_modules/**
-          **/vendor/**
           vendor.zip
           **/tests/**
           **/storage/logs/**
@@ -89,13 +98,6 @@ jobs:
           **/storage/framework/sessions/**
           **/storage/app/public/**
           **/public/storage/**
-          **/public/storage
-          storage/logs/**
-          storage/framework/views/**
-          storage/framework/cache/**
-          storage/framework/sessions/**
-          storage/app/public/**
-          public/storage/**
           **/.vscode/**
           optimize.bat
           PRODUKSI.md
@@ -110,11 +112,6 @@ jobs:
           .github/**
           .env.example
           .env.production.example
-          composer.json
-          composer.lock
-          package.json
-          package-lock.json
-          vite.config.js
 
     - name: 🔔 Deployment Notification
       run: echo "✅ Deployment completed at $(date)"
