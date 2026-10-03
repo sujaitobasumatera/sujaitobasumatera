@@ -154,6 +154,8 @@ class CMSController extends Controller
             // Clear related caches so frontend updates immediately
             Cache::forget('cms_tour_settings');
             Cache::forget('site_settings_all');
+            Cache::forget('contact_whatsapp_digits');
+            Cache::forget('contact_whatsapp_digits_2');
 
             Log::alert("CMS SUCCESS: Saved '{$key}' with fields: ".implode(', ', array_keys($data)));
 
