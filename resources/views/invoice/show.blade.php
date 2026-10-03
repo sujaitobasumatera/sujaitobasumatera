@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ app()->getLocale() === 'my' ? 'ms' : str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,8 +64,14 @@
     $taxAmount     = $pb['tax'] ?? null;
     $taxPercent    = $pb['tax_percentage'] ?? null;
 
-    // Unit price dihitung dari harga dasar sebelum pajak & surcharge, sehingga
-    // harga satuan x pax benar-benar sama dengan Subtotal di bawahnya.
+    // Pesanan lama tidak menyimpan price_breakdown sehingga pajak tidak bisa
+    // dipisahkan dari totalPrice. Flag ini menyembunyikan kolom Harga Satuan
+    // pada path legacy agar invoice tidak menampilkan angka yang menyesatkan
+    // (totalPrice/pax = sudah termasuk pajak, jadi bukan harga satuan sejati).
+    $legacyOrder   = ($pb === null);
+
+    // Unit price hanya bermakna ketika subtotalBase tersedia (sebelum pajak).
+    // Untuk legacy, kolom ini diganti tanda pisah -- lihat tabel di bawah.
     $unitPrice     = ($subtotalBase !== null && $subtotalBase > 0)
         ? ($subtotalBase / $pax)
         : ($booking->totalPrice / $pax);
@@ -275,11 +281,22 @@
                                                 {{ $itemDesc }} <br>
                                                 <span class="inline-block mt-1 px-2 py-0.5 bg-neutral-100 rounded text-xs font-medium text-neutral-600">{{ __('Destinasi:') }} {{ $itemDest }}</span>
                                             </p>
+                                            {{-- Pesanan lama: pajak tidak bisa dipisahkan; tampilkan note. --}}
+                                            <p class="mt-2 text-[11px] text-amber-600 font-medium">{{ __('Total sudah termasuk pajak & layanan.') }}</p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="py-6 px-6 align-middle text-center font-semibold text-neutral-700">{{ $pax }} {{ __('Pax') }}</td>
-                                <td class="py-6 px-6 align-middle text-right text-neutral-700">{{ \App\Helpers\CurrencyHelper::formatRecord($unitPrice, $cur) }}</td>
+                                {{-- Harga Satuan disembunyikan untuk pesanan lama. totalPrice
+                                     sudah termasuk pajak, jadi totalPrice/pax bukan harga
+                                     satuan yang benar. Tampilkan '—' agar tidak menyesatkan. --}}
+                                <td class="py-6 px-6 align-middle text-right text-neutral-700">
+                                    @if($legacyOrder)
+                                        <span class="text-neutral-400">—</span>
+                                    @else
+                                        {{ \App\Helpers\CurrencyHelper::formatRecord($unitPrice, $cur) }}
+                                    @endif
+                                </td>
                                 <td class="py-6 px-6 align-middle text-right text-neutral-900 font-bold">{{ \App\Helpers\CurrencyHelper::formatRecord($itemLineTotal, $cur) }}</td>
                             </tr>
                         @endif

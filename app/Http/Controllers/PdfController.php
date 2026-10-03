@@ -71,7 +71,9 @@ class PdfController extends Controller
     {
         try {
             $view = $this->renderInvoice($identifier);
-            return response((string) $view->render());
+            return response((string) $view->render(), 200, [
+                'Content-Type' => 'text/html; charset=UTF-8',
+            ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             abort(404, 'Invoice tidak ditemukan.');
         } catch (\Throwable $e) {
@@ -106,20 +108,22 @@ class PdfController extends Controller
             ->where('bookingCode', $identifier)
             ->firstOrFail();
 
-        $general = Setting::where('key', 'general')->first()?->value ?? [];
-        $company = Setting::where('key', 'company')->first()?->value ?? [];
-        $landing = Setting::where('key', 'cms_landing')->first()?->value ?? [];
+        // Satu query menggantikan tiga.
+        $rows    = Setting::whereIn('key', ['general', 'company', 'cms_landing'])->pluck('value', 'key');
+        $general = $rows->get('general', []) ?? [];
+        $company = $rows->get('company', []) ?? [];
+        $landing = $rows->get('cms_landing', []) ?? [];
 
         $logoRaw = $general['logo_light_url'] ?? ($landing['brand_logo_url'] ?? null);
 
         $data = [
             'booking' => $booking,
             'companyName' => $general['site_name'] ?? 'Sujai Toba Sumatera',
-            'legalName' => $company['legal_name'] ?? 'PT Sujai Toba Sumatera Experience',
+            'legalName' => $company['legal_name'] ?? ($general['site_name'] ?? 'Sujai Toba Sumatera'),
             'taxId' => $company['tax_id'] ?? null,
             'bankAccount' => $company['bank_account'] ?? null,
             'bankAccountName' => $company['bank_account_name'] ?? ($company['legal_name'] ?? null),
-            'address' => $general['office_address'] ?? 'Sumatera Utara',
+            'address' => $general['office_address'] ?? 'Jl. Trimurti 109 Berastagi Kabupaten Karo',
             'email' => $general['contact_email'] ?? null,
             'instagram' => $general['social_instagram'] ?? null,
             'logoUrl' => $logoRaw ? imageUrl($logoRaw) : null,

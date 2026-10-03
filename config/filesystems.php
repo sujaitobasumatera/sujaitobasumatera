@@ -40,12 +40,16 @@ return [
 
         'public' => [
             'driver' => 'local',
-            // Write directly into the publicly-served folder (public/storage) instead of
-            // storage/app/public. On Rumah Web the public/storage symlink cannot be created
-            // because public/storage already exists as a real committed directory, so files
-            // saved to storage/app/public were never reachable via the /storage URL.
+            // Urutan prioritas (dari paling spesifik ke paling umum):
+            // 1. STORAGE_ROOT_PATH di .env — set ini secara eksplisit di server
+            //    produksi sehingga tidak perlu menebak struktur folder hosting.
+            //    Contoh: STORAGE_ROOT_PATH=/home/u754986547/persistent_uploads
+            // 2. str_contains fallback untuk server Rumah Web / cPanel yang
+            //    menaruh proyek di dalam public_html — tetap jalan tanpa harus
+            //    mengubah .env server yang sudah ada.
+            // 3. public/storage untuk lokal dan lingkungan standar.
             'root' => env('STORAGE_ROOT_PATH')
-                        ?: (str_contains(base_path(), 'public_html') 
+                        ?: (str_contains(base_path(), 'public_html')
                             ? dirname(base_path()) . '/persistent_uploads'
                             : public_path('storage')),
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
