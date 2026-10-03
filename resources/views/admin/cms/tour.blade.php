@@ -94,7 +94,7 @@ document.addEventListener('alpine:init', () => {
                 ...this.slides[this.activeSlideIdx],
                 type: 'gallery',
                 id: img.id,
-                title: img.title || 'Sujai Laketoba Gallery',
+                title: img.title || 'Sujai Toba Sumatera Gallery',
                 subtitle: img.description || '',
                 image_url: img.image_path,
                 cta_link: '#',
@@ -194,7 +194,7 @@ document.addEventListener('alpine:init', () => {
         @php
             $defaultTestimonials = [
                 ['name' => 'Andini Wijaya', 'location' => 'Jakarta, Indonesia', 'text' => 'Pelayanan sangat profesional. Tour guide ramah dan sangat menguasai medan. Itinerary juga tidak terlalu padat sehingga kami bisa benar-benar menikmati waktu.', 'image' => 'user1'],
-                ['name' => 'Budi Santoso', 'location' => 'Surabaya, Indonesia', 'text' => 'Sangat puas dengan pilihan hotel dan restorannya. Sujai Laketoba benar-benar kurasi yang terbaik untuk tamunya. Highly recommended!', 'image' => 'user2']
+                ['name' => 'Budi Santoso', 'location' => 'Surabaya, Indonesia', 'text' => 'Sangat puas dengan pilihan hotel dan restorannya. Sujai Toba Sumatera benar-benar kurasi yang terbaik untuk tamunya. Highly recommended!', 'image' => 'user2']
             ];
         @endphp
         testimonials: (() => {
@@ -438,7 +438,7 @@ document.addEventListener('alpine:init', () => {
                 <!-- Why Us Tab -->
                 <div x-show="activeTab === 'about'" x-transition class="space-y-6">
                     <h4 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-slate-900"></span> Kelebihan Sujai Laketoba
+                        <span class="w-2 h-2 rounded-full bg-slate-900"></span> Kelebihan Sujai Toba Sumatera
                     </h4>
                     <div class="space-y-6 max-h-[500px] overflow-y-auto pr-2 no-scrollbar">
                         @for($i = 1; $i <= 3; $i++)
@@ -483,7 +483,7 @@ document.addEventListener('alpine:init', () => {
                 <div x-show="activeTab === 'stats'" x-transition class="space-y-6">
                     <div class="flex items-center justify-between mb-4">
                         <h4 class="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-slate-900"></span> Statistik Sujai Laketoba
+                            <span class="w-2 h-2 rounded-full bg-slate-900"></span> Statistik Sujai Toba Sumatera
                         </h4>
                         <label class="flex items-center cursor-pointer gap-2">
                             <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Tampilkan</span>
@@ -583,7 +583,7 @@ document.addEventListener('alpine:init', () => {
                         <div class="space-y-1">
                             <label class="text-[7px] font-black text-slate-400 uppercase tracking-widest">Judul Bagian</label>
                             <input type="text" name="testimonials_title" value="{{ $settings['testimonials_title'] ?? '' }}"
-                                   placeholder="Apa Kata Mereka Tentang Sujai Laketoba?"
+                                   placeholder="Apa Kata Mereka Tentang Sujai Toba Sumatera?"
                                    class="w-full px-3 py-1.5 bg-white border-none rounded-lg font-black text-[11px]">
                         </div>
                         <div class="space-y-1">
@@ -645,7 +645,7 @@ document.addEventListener('alpine:init', () => {
                     <div class="space-y-6">
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">SEO Meta Title</label>
-                            <input type="text" name="meta_title" value="{{ $settings['meta_title'] ?? '' }}" placeholder="Sujai Laketoba | Paket Wisata Terbaik" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-green-800 font-bold text-slate-900 text-xs shadow-inner">
+                            <input type="text" name="meta_title" value="{{ $settings['meta_title'] ?? '' }}" placeholder="Sujai Toba Sumatera | Paket Wisata Terbaik" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-green-800 font-bold text-slate-900 text-xs shadow-inner">
                         </div>
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">SEO Meta Description</label>
@@ -967,7 +967,7 @@ document.addEventListener('alpine:init', () => {
                 <div class="relative z-10 max-w-2xl space-y-8">
                     <div class="flex items-center gap-3">
                         <span class="w-8 h-px bg-green-500"></span>
-                        <span class="text-green-400 text-[10px] font-black uppercase tracking-[0.3em]">Sujai Laketoba Tour</span>
+                        <span class="text-green-400 text-[10px] font-black uppercase tracking-[0.3em]">Sujai Toba Sumatera Tour</span>
                     </div>
                     <h1 class="text-4xl md:text-6xl font-black text-white leading-[0.9] tracking-tighter" x-text="heroTitle"></h1>
                     <p class="text-slate-200 text-sm font-medium leading-relaxed max-w-lg opacity-80" x-text="heroSubtitle"></p>

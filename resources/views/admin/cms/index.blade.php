@@ -17,12 +17,12 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('cmsLandingHandler', () => ({
         activeTab: 'branding',
-        brandName: @json($settings['brand_name'] ?? 'Sujai Laketoba'),
+        brandName: @json($settings['brand_name'] ?? 'Sujai Toba Sumatera'),
         brandTagline: @json($settings['brand_tagline'] ?? 'SUMATERA UTARA'),
         brandIcon: @json($resolve($settings['brand_icon_url'] ?? '', 'https://ui-avatars.com/api/?name=W&background=0f172a&color=fff')),
         brandLogo: @json($resolve($settings['brand_logo_url'] ?? '')),
-        metaTitle: @json($settings['meta_title'] ?? 'Sujai Laketoba | Premium Tour Travel'),
-        metaDescription: @json($settings['meta_description'] ?? 'Portal utama Sujai Laketoba. Pilih layanan premium Tour Travel Sumatera Utara.'),
+        metaTitle: @json($settings['meta_title'] ?? 'Sujai Toba Sumatera | Premium Tour Travel'),
+        metaDescription: @json($settings['meta_description'] ?? 'Portal utama Sujai Toba Sumatera. Pilih layanan premium Tour Travel Sumatera Utara.'),
         tourTitle: @json($settings['tour_title'] ?? "Tour &\nTravel."),
         tourSubtitle: @json($settings['tour_subtitle'] ?? 'Eksplorasi keindahan Danau Toba dengan paket liburan eksklusif.'),
         tourImage: @json($resolve($settings['tour_image_url'] ?? '', 'tour')),

@@ -310,7 +310,7 @@
                                 {!! __('Mohon lakukan transfer ke rekening berikut dan lampirkan kode referensi :code pada berita acara transfer Anda.', ['code' => $codeChip]) !!}
                             @else
                                 {!! __('Untuk mendapatkan nomor rekening dan instruksi pembayaran, silakan hubungi kami di :contact dengan menyebut kode referensi :code.', [
-                                    'contact' => '<a href="' . e(\App\Helpers\ContactHelper::whatsappLink(__('Halo Sujai Laketoba, saya ingin membayar pesanan :code.', ['code' => $booking->bookingCode]))) . '" class="font-bold text-white underline">' . e(\App\Helpers\ContactHelper::whatsappDisplay()) . '</a>',
+                                    'contact' => '<a href="' . e(\App\Helpers\ContactHelper::whatsappLink(__('Halo Sujai Toba Sumatera, saya ingin membayar pesanan :code.', ['code' => $booking->bookingCode]))) . '" class="font-bold text-white underline">' . e(\App\Helpers\ContactHelper::whatsappDisplay()) . '</a>',
                                     'code' => $codeChip,
                                 ]) !!}
                             @endif

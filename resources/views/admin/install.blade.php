@@ -22,7 +22,7 @@
     <div class="text-center p-8 bg-white rounded-2xl shadow-sm border border-slate-200 max-w-sm mx-auto">
         <img src="/icon-192.png" alt="Sujai Admin" class="w-20 h-20 mx-auto mb-4 rounded-2xl shadow">
         <h1 class="text-2xl font-bold text-slate-800 mb-2">Sujai Admin</h1>
-        <p class="text-slate-600 mb-6 text-sm">Panel manajemen wisata Sujai Laketoba. Khusus admin.</p>
+        <p class="text-slate-600 mb-6 text-sm">Panel manajemen wisata Sujai Toba Sumatera. Khusus admin.</p>
         <a href="/admin" class="inline-block bg-blue-600 text-white font-semibold py-2.5 px-8 rounded-lg hover:bg-blue-700 transition">
             Buka Panel Admin
         </a>

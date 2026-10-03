@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Syarat & Ketentuan – Sujai Laketoba | Lake Toba Tour Operator')
-@section('description', 'Syarat dan ketentuan layanan paket wisata Sujai Laketoba. Terms & conditions for Lake Toba tour packages including payment, cancellation, and liability policies.')
-@section('keywords', 'syarat ketentuan sujai laketoba, tour terms conditions lake toba, kebijakan pemesanan wisata, refund policy, lake toba tour package')
+@section('title', 'Syarat & Ketentuan – Sujai Toba Sumatera | Lake Toba Tour Operator')
+@section('description', 'Syarat dan ketentuan layanan paket wisata Sujai Toba Sumatera. Terms & conditions for Lake Toba tour packages including payment, cancellation, and liability policies.')
+@section('keywords', 'syarat ketentuan sujai toba sumatera, tour terms conditions lake toba, kebijakan pemesanan wisata, refund policy, lake toba tour package')
 
 @section('content')
 <div class="bg-slate-50 min-h-screen pt-14 pb-12">
@@ -12,9 +12,9 @@
             
             {{-- Identitas Perusahaan --}}
             <div class="mb-8 p-6 bg-slate-50 border border-slate-100 rounded-2xl text-xs text-slate-500 font-normal leading-relaxed">
-                <p class="font-bold text-slate-700 mb-1">Sujai Laketoba</p>
-                <p>Nama Domain: <strong class="text-slate-800 font-medium">sujaitobasumatera.com</strong> — Brand resmi: <strong class="text-slate-800 font-medium">Sujai Laketoba</strong></p>
-                <p>Dioperasikan oleh Sujai Laketoba, berdomisili di {{ $siteSettings['general']['office_address'] ?? $siteSettings['general']['address'] ?? 'Jl. Trimurti 109, Berastagi, Kabupaten Karo, Sumatera Utara' }}.</p>
+                <p class="font-bold text-slate-700 mb-1">Sujai Toba Sumatera</p>
+                <p>Nama Domain: <strong class="text-slate-800 font-medium">sujaitobasumatera.com</strong> — Brand resmi: <strong class="text-slate-800 font-medium">Sujai Toba Sumatera</strong></p>
+                <p>Dioperasikan oleh Sujai Toba Sumatera, berdomisili di {{ $siteSettings['general']['office_address'] ?? $siteSettings['general']['address'] ?? 'Jl. Trimurti 109, Berastagi, Kabupaten Karo, Sumatera Utara' }}.</p>
                 <p class="mt-2 text-[10px] text-slate-400">Terakhir diperbarui: Juni 2025</p>
             </div>
             
@@ -28,7 +28,7 @@
                     <h3 class="text-slate-900 font-bold text-base mb-3 tracking-tight">2. Pembayaran</h3>
                     <p class="mb-6">Pelunasan wajib dilakukan paling lambat 7 hari sebelum tanggal keberangkatan. Pembayaran dapat dilakukan melalui:</p>
                     <ul class="list-disc pl-5 mb-6 space-y-2">
-                        <li>Transfer bank rekening resmi Sujai Laketoba (BCA / BNI / Mandiri)</li>
+                        <li>Transfer bank rekening resmi Sujai Toba Sumatera (BCA / BNI / Mandiri)</li>
                         <li>Transfer internasional via Wise (Transferwise) untuk tamu dari Singapura dan Malaysia</li>
                         <li>Mata uang yang diterima: IDR (Rupiah), MYR (Ringgit Malaysia), SGD (Singapore Dollar)</li>
                     </ul>
@@ -43,10 +43,10 @@
                     </ul>
                     
                     <h3 class="text-slate-900 font-bold text-base mb-3 tracking-tight">4. Tanggung Jawab &amp; Asuransi</h3>
-                    <p class="mb-6">Sujai Laketoba bertanggung jawab atas keselamatan dan kenyamanan tamu selama program berlangsung sesuai itinerary yang disepakati. Kami menyediakan asuransi perjalanan dasar untuk setiap tamu. Tamu disarankan untuk memiliki asuransi perjalanan pribadi yang mencakup evakuasi medis, terutama untuk tamu internasional.</p>
+                    <p class="mb-6">Sujai Toba Sumatera bertanggung jawab atas keselamatan dan kenyamanan tamu selama program berlangsung sesuai itinerary yang disepakati. Kami menyediakan asuransi perjalanan dasar untuk setiap tamu. Tamu disarankan untuk memiliki asuransi perjalanan pribadi yang mencakup evakuasi medis, terutama untuk tamu internasional.</p>
                     
                     <h3 class="text-slate-900 font-bold text-base mb-3 tracking-tight">5. Perubahan Jadwal</h3>
-                    <p class="mb-6">Sujai Laketoba berhak mengubah itinerary atau jadwal perjalanan apabila terjadi kondisi force majeure (bencana alam, penutupan akses oleh pemerintah, cuaca ekstrem, dll) demi keselamatan dan kenyamanan tamu. Perubahan akan diberitahukan paling lambat 24 jam sebelum keberangkatan.</p>
+                    <p class="mb-6">Sujai Toba Sumatera berhak mengubah itinerary atau jadwal perjalanan apabila terjadi kondisi force majeure (bencana alam, penutupan akses oleh pemerintah, cuaca ekstrem, dll) demi keselamatan dan kenyamanan tamu. Perubahan akan diberitahukan paling lambat 24 jam sebelum keberangkatan.</p>
                     
                     <h3 class="text-slate-900 font-bold text-base mb-3 tracking-tight">6. Hak &amp; Kewajiban Tamu</h3>
                     <ul class="list-disc pl-5 mb-6 space-y-2">

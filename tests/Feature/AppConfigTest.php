@@ -156,7 +156,7 @@ class AppConfigTest extends TestCase
     {
         $this->actingAs($this->superadmin)
             ->post(route('admin.settings.app-config.update'), $this->validPayload([
-                'app_name' => 'Sujai Laketoba Travel',
+                'app_name' => 'Sujai Toba Sumatera Travel',
                 'session_lifetime' => 120,
             ]))
             ->assertSessionHasNoErrors()
@@ -164,7 +164,7 @@ class AppConfigTest extends TestCase
 
         AppConfigService::apply();
 
-        $this->assertSame('Sujai Laketoba Travel', config('app.name'));
+        $this->assertSame('Sujai Toba Sumatera Travel', config('app.name'));
         $this->assertSame(120, config('session.lifetime'));
     }
 
@@ -197,7 +197,7 @@ class AppConfigTest extends TestCase
         $this->actingAs($this->superadmin)->post(
             route('admin.settings.app-config.update'),
             $this->validPayload([
-                'app_name' => 'Sujai Laketoba',
+                'app_name' => 'Sujai Toba Sumatera',
                 // Tidak ditawarkan form. Harus dibuang, bukan disimpan.
                 'DB_PASSWORD' => 'dibajak',
                 'APP_KEY' => 'base64:dibajak',
@@ -210,7 +210,7 @@ class AppConfigTest extends TestCase
         $this->assertArrayNotHasKey('DB_PASSWORD', $stored);
         $this->assertArrayNotHasKey('APP_KEY', $stored);
         $this->assertArrayNotHasKey('db_password', $stored);
-        $this->assertSame('Sujai Laketoba', $stored['app_name']);
+        $this->assertSame('Sujai Toba Sumatera', $stored['app_name']);
     }
 
     public function test_denylist_wins_even_if_a_credential_is_added_to_the_field_list(): void

@@ -1205,7 +1205,7 @@
       ],
       "status": "published",
       "published_at": "2026-04-01 10:00:00",
-      "metaTitle": "5 Destinasi Wisata Wajib di Danau Toba | Sujai Laketoba",
+      "metaTitle": "5 Destinasi Wisata Wajib di Danau Toba | Sujai Toba Sumatera",
       "metaDescription": "Jelajahi 5 destinasi wisata terbaik di Danau Toba yang harus dikunjungi. Dari Pulau Samosir hingga Air Terjun Sipiso-piso."
     },
     {
@@ -1225,7 +1225,7 @@
       ],
       "status": "published",
       "published_at": "2026-04-10 09:00:00",
-      "metaTitle": "Panduan Transfer dari Kualanamu ke Danau Toba | Sujai Laketoba",
+      "metaTitle": "Panduan Transfer dari Kualanamu ke Danau Toba | Sujai Toba Sumatera",
       "metaDescription": "Guide lengkap transportasi dari Bandara Kualanamu ke Danau Toba. Pilihan mobil, bus, dan shuttle."
     },
     {
@@ -1246,7 +1246,7 @@
       ],
       "status": "published",
       "published_at": "2026-04-15 14:00:00",
-      "metaTitle": "Kuliner Khas Medan yang Wajib Dicoba | Sujai Laketoba",
+      "metaTitle": "Kuliner Khas Medan yang Wajib Dicoba | Sujai Toba Sumatera",
       "metaDescription": "Rekomendasi makanan khas Medan yang harus dicoba. Dari Mie Aceh hingga Soto Medan."
     },
     {
@@ -1266,7 +1266,7 @@
       ],
       "status": "published",
       "published_at": "2026-04-20 11:00:00",
-      "metaTitle": "Halal Food Guide Danau Toba | Sujai Laketoba",
+      "metaTitle": "Halal Food Guide Danau Toba | Sujai Toba Sumatera",
       "metaDescription": "Panduan makanan halal di Danau Toba untuk wisatawan Muslim. Restoran dan tips kuliner."
     },
     {
@@ -1286,7 +1286,7 @@
       ],
       "status": "published",
       "published_at": "2026-04-25 08:00:00",
-      "metaTitle": "Tips Trekking Bukit Lawang untuk Pemula | Sujai Laketoba",
+      "metaTitle": "Tips Trekking Bukit Lawang untuk Pemula | Sujai Toba Sumatera",
       "metaDescription": "Tips trekking di Bukit Lawang untuk pemula. Persiapan, perlengkapan, dan keselamatan."
     },
     {
@@ -1307,7 +1307,7 @@
       ],
       "status": "published",
       "published_at": "2026-05-01 10:00:00",
-      "metaTitle": "Budaya Suku Batak di Samosir | Sujai Laketoba",
+      "metaTitle": "Budaya Suku Batak di Samosir | Sujai Toba Sumatera",
       "metaDescription": "Mengenal budaya dan tradisi suku Batak di Pulau Samosir. Rumah adat, upacara, dan kerajinan."
     },
     {
@@ -1663,7 +1663,7 @@
     {
       "key": "general",
       "value": {
-        "site_name": "Sujai Laketoba",
+        "site_name": "Sujai Toba Sumatera",
         "site_tagline": "Sumatera Utara Travel Experience",
         "wa_number": "+6282277848855",
         "contact_whatsapp": "6282277848855",
@@ -1673,15 +1673,15 @@
         "address": "Jl. Trimurti 109 Berastagi Kabupaten Karo",
         "office_address": "Jl. Trimurti 109 Berastagi",
         "office_city": "Kabupaten Karo, Sumatera Utara",
-        "seo_meta_title": "Sujai Laketoba | Premium Tour Travel",
-        "seo_meta_desc": "Portal utama Sujai Laketoba. Pilih layanan premium Tour Travel Sumatera Utara.",
+        "seo_meta_title": "Sujai Toba Sumatera | Premium Tour Travel",
+        "seo_meta_desc": "Portal utama Sujai Toba Sumatera. Pilih layanan premium Tour Travel Sumatera Utara.",
         "seo_meta_keywords": "tour danau toba, travel sumatera utara, paket wisata toba"
       }
     },
     {
       "key": "cms_landing",
       "value": {
-        "brand_name": "Sujai Laketoba",
+        "brand_name": "Sujai Toba Sumatera",
         "brand_tagline": "Sumatera Utara",
         "brand_icon": "icons/icon-192x192.png",
         "tour_title": "Tour &\nTravel.",
@@ -1707,7 +1707,7 @@
         "stat_customers": "7500+",
         "stat_destinations": "50+",
         "stat_awards": "15+",
-        "why_us_title": "Mengapa Memilih Sujai Laketoba?",
+        "why_us_title": "Mengapa Memilih Sujai Toba Sumatera?",
         "why_us_items": [
           {
             "title": "Pemandu Berpengalaman",
@@ -1747,7 +1747,7 @@
       "value": {
         "bank_name": "Bank Central Asia (BCA)",
         "bank_account": "1234567890",
-        "bank_holder": "PT Sujai Laketoba Travel",
+        "bank_holder": "PT Sujai Toba Sumatera Travel",
         "ewallet": {
           "dana": "+6281323888207",
           "gopay": "+6281323888207",

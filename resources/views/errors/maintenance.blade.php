@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maintenance - Sujai Laketoba</title>
+    <title>Maintenance - Sujai Toba Sumatera</title>
     @vite(['resources/css/app.css'])
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
@@ -23,7 +23,7 @@
 
         <div class="space-y-4">
             <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-tight">Sedang Pembaruan</h1>
-            <p class="text-slate-500 font-bold leading-relaxed">Sujai Laketoba sedang melakukan pemeliharaan rutin untuk meningkatkan pengalaman perjalanan Anda. Kami akan segera kembali!</p>
+            <p class="text-slate-500 font-bold leading-relaxed">Sujai Toba Sumatera sedang melakukan pemeliharaan rutin untuk meningkatkan pengalaman perjalanan Anda. Kami akan segera kembali!</p>
         </div>
 
         <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col items-center">
@@ -42,7 +42,7 @@
             </a>
         </div>
 
-        <p class="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em]">Sujai Laketoba &bull; Management v3.0</p>
+        <p class="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em]">Sujai Toba Sumatera &bull; Management v3.0</p>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 </body>

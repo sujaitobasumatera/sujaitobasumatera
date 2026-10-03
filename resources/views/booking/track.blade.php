@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', __('Tracking Booking') . ' ' . $booking->bookingCode . ' | Sujai Laketoba')
-@section('description', __('Lihat status booking wisata Sujai Laketoba dengan kode booking.'))
+@section('title', __('Tracking Booking') . ' ' . $booking->bookingCode . ' | Sujai Toba Sumatera')
+@section('description', __('Lihat status booking wisata Sujai Toba Sumatera dengan kode booking.'))
 
 @php
     $statusMap = [
@@ -17,7 +17,7 @@
         ],
         'completed' => [
             'label' => __('Selesai'),
-            'description' => __('Perjalanan sudah selesai. Terima kasih telah memilih Sujai Laketoba.'),
+            'description' => __('Perjalanan sudah selesai. Terima kasih telah memilih Sujai Toba Sumatera.'),
             'class' => 'bg-slate-50 text-slate-700 border-slate-200',
         ],
         'cancelled' => [
@@ -34,7 +34,7 @@
     // Satu sumber nomor. Rantai ?? sebelumnya menyebut kunci yang sama tiga kali
     // dan tetap bisa menghasilkan nomor yang berbeda dari yang tampil di footer.
     $waNumber = \App\Helpers\ContactHelper::whatsappDigits();
-    $waText = urlencode(__('Halo Sujai Laketoba, saya ingin bertanya tentang booking :code.', ['code' => $booking->bookingCode]));
+    $waText = urlencode(__('Halo Sujai Toba Sumatera, saya ingin bertanya tentang booking :code.', ['code' => $booking->bookingCode]));
 
     // Tenggat pembatalan khusus pesanan ini, diturunkan dari aturan di /terms
     // (>14 hari 100%, 7-14 hari 50%, <7 hari hangus). Aturannya sudah tertulis
@@ -73,7 +73,7 @@
             {{ $booking->bookingCode }}
         </h1>
         <p class="mt-5 max-w-2xl text-sm leading-7 text-slate-200 md:text-base">
-            {{ __('Simpan kode booking ini saat berkomunikasi dengan admin Sujai Laketoba.') }}
+            {{ __('Simpan kode booking ini saat berkomunikasi dengan admin Sujai Toba Sumatera.') }}
         </p>
         <div class="mt-7 flex flex-col gap-3 sm:flex-row">
             <button type="button" @click="copyCode()" class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-green-50">

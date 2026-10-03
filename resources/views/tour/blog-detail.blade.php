@@ -14,7 +14,7 @@
     }
 @endphp
 
-@section('title', ($post->translated_title ?? 'Blog') . ' – Sujai Laketoba')
+@section('title', ($post->translated_title ?? 'Blog') . ' – Sujai Toba Sumatera')
 {{-- Isi artikel adalah HTML dari editor. Str::limit atas HTML mentah memotong
      160 huruf PERTAMA -- yang sebagian besar berisi tag pembuka, bukan kalimat,
      sehingga pratinjau tautan terbaca sebagai kode. Ringkasan dipakai lebih
@@ -40,7 +40,7 @@
   "datePublished": "{{ date('c', strtotime($post->createdAt)) }}",
   "author": [{
       "@type": "Organization",
-      "name": "Sujai Laketoba"
+      "name": "Sujai Toba Sumatera"
     }]
 }
 </script>
@@ -108,7 +108,7 @@
                         </div>
                         <div>
                             <p class="font-label-caps text-[9px] text-secondary uppercase tracking-wider mb-0.5">{{ __('Ditulis Oleh') }}</p>
-                            <p class="text-base font-bold text-on-surface tracking-tight font-headline-md">{{ __('Tim Redaksi Sujai Laketoba') }}</p>
+                            <p class="text-base font-bold text-on-surface tracking-tight font-headline-md">{{ __('Tim Redaksi Sujai Toba Sumatera') }}</p>
                         </div>
                     </div>
 
@@ -172,7 +172,7 @@
                             <p class="text-xs text-on-surface-variant font-body-md">{{ __('Bantu orang lain menemukan petualangan impian mereka.') }}</p>
                         </div>
                         <div class="flex items-center gap-3">
-                            <a href="https://wa.me/?text={{ urlencode(__('Baca artikel ini dari Sujai Laketoba: ') . $post->translated_title . ' ' . url()->current()) }}" 
+                            <a href="https://wa.me/?text={{ urlencode(__('Baca artikel ini dari Sujai Toba Sumatera: ') . $post->translated_title . ' ' . url()->current()) }}" 
                                target="_blank"
                                class="w-10 h-10 bg-toba-green text-white rounded-xl flex items-center justify-center shadow-sm hover:scale-105 transition">
                                 <x-icon name="whatsapp" class="w-5 h-5" />
@@ -227,7 +227,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="font-bold text-on-surface text-sm font-body-md">Sujai Laketoba</p>
+                                <p class="font-bold text-on-surface text-sm font-body-md">Sujai Toba Sumatera</p>
                                 <p class="font-label-caps text-[9px] text-secondary uppercase tracking-wider">{{ __('Editorial Team') }}</p>
                             </div>
                         </div>

@@ -84,7 +84,7 @@
 <body>
     <div class="header">
         <h1>{{ $package->translated_name }}</h1>
-        <p>{{ $siteSettings['general']['site_name'] ?? 'Sujai Laketoba' }} – Sumatera Utara</p>
+        <p>{{ $siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera' }} – Sumatera Utara</p>
     </div>
 
     <div class="section">
@@ -146,7 +146,7 @@
     </div>
 
     <div class="footer">
-        <p>&copy; {{ date('Y') }} {{ $siteSettings['general']['site_name'] ?? 'Sujai Laketoba' }}. All rights reserved.</p>
+        <p>&copy; {{ date('Y') }} {{ $siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera' }}. All rights reserved.</p>
         <p>Hubungi kami: {{ \App\Helpers\ContactHelper::whatsappDisplay() }} | {{ \App\Helpers\ContactHelper::email() }}</p>
     </div>
 </body>

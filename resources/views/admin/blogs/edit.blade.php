@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Edit Artikel Mandiri - Sujai Laketoba')
+@section('title', 'Edit Artikel Mandiri - Sujai Toba Sumatera')
 
 @section('content')
 <div class="w-full max-w-full">

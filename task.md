@@ -408,7 +408,7 @@ BELUM (butuh keputusan bisnis / risiko tinggi — JANGAN diklaim beres):
 
 ---
 
-# Task — Redesign Besar Mobile-First (Sujai Laketoba)
+# Task — Redesign Besar Mobile-First (Sujai Toba Sumatera)
 
 Tujuan: seluruh situs **mobile-first, lancar, ringan, enak dilihat**. Dikerjakan bertahap agar tidak merusak situs yang sudah jalan.
 

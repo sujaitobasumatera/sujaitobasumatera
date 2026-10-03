@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>503 — {{ __('Layanan Sedang Terganggu') }} | Sujai Laketoba</title>
+    <title>503 — {{ __('Layanan Sedang Terganggu') }} | Sujai Toba Sumatera</title>
     <meta name="robots" content="noindex, nofollow">
     {{-- Halaman ini muncul justru ketika ada yang rusak, sering kali database.
          Karena itu ia TIDAK menyentuh database, tidak memanggil helper yang

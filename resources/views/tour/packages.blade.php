@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Paket Wisata Sumatera Utara – Sujai Laketoba')
+@section('title', 'Paket Wisata Sumatera Utara – Sujai Toba Sumatera')
 @section('description', 'Pilihan paket wisata Danau Toba terbaik mulai dari private tour, group gathering, hingga corporate outing dengan layanan premium.')
 @section('keywords', 'paket wisata murah danau toba, private tour danau toba, paket gathering medan, harga paket wisata toba')
 
@@ -27,7 +27,7 @@
                     'price'        => (string) $pkgPrice,
                     'priceCurrency'=> \App\Helpers\CurrencyHelper::PRICE_BASE,
                     'availability' => 'https://schema.org/InStock',
-                    'seller'       => ['@type' => 'TravelAgency', 'name' => 'Sujai Laketoba'],
+                    'seller'       => ['@type' => 'TravelAgency', 'name' => 'Sujai Toba Sumatera'],
                 ],
             ],
         ];
@@ -35,7 +35,7 @@
     $schemaData = [
         '@context'     => 'https://schema.org',
         '@type'        => 'ItemList',
-        'name'         => 'Paket Wisata Sumatera Utara – Sujai Laketoba',
+        'name'         => 'Paket Wisata Sumatera Utara – Sujai Toba Sumatera',
         'description'  => 'Pilihan lengkap paket wisata premium Danau Toba, Samosir, Berastagi, Tangkahan, dan seluruh Sumatera Utara.',
         'url'          => url()->current(),
         'numberOfItems'=> count($packages),

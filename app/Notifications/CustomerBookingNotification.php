@@ -46,7 +46,7 @@ class CustomerBookingNotification extends Notification
         return (new MailMessage)
             ->subject('Konfirmasi Pemesanan: '.$this->booking->bookingCode)
             ->greeting('Halo '.$this->booking->customerName.',')
-            ->line('Terima kasih telah memilih Sujai Laketoba untuk rencana perjalanan Anda.')
+            ->line('Terima kasih telah memilih Sujai Toba Sumatera untuk rencana perjalanan Anda.')
             ->line('Pesanan Anda untuk paket **'.$packageName.'** telah kami terima dan saat ini sedang dalam proses verifikasi.')
             ->line('Kode Booking: **'.$this->booking->bookingCode.'**')
             ->line('Kami telah melampirkan invoice resmi pada email ini sebagai referensi pembayaran Anda.')
@@ -55,6 +55,6 @@ class CustomerBookingNotification extends Notification
             ])
             ->action('Lihat Detail Pesanan', url('/tour/package/'.($this->booking->package->slug ?? '')))
             ->line('Jika Anda memiliki pertanyaan, jangan ragu untuk menghubungi kami melalui WhatsApp.')
-            ->line('Salam hangat, Tim Sujai Laketoba.');
+            ->line('Salam hangat, Tim Sujai Toba Sumatera.');
     }
 }

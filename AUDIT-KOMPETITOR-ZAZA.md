@@ -9,7 +9,7 @@ pembanding *model bisnis dan struktur komersial*, bukan sebagai rival perebutan 
 
 ## 1. Ringkasan Eksekutif
 
-| | Zaza Tour | Sujai Laketoba |
+| | Zaza Tour | Sujai Toba Sumatera |
 |---|---|---|
 | **Jenis** | Situs brosur (company profile + katalog) | Aplikasi web (katalog + transaksi) |
 | **Kekuatan** | Cakupan segmen pasar, lini pendapatan ganda | Rekayasa produk, otomasi, infrastruktur SEO |

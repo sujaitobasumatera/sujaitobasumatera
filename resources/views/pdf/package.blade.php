@@ -117,7 +117,7 @@
 <body>
 
     <div class="header">
-        <h1>Sujai Laketoba</h1>
+        <h1>Sujai Toba Sumatera</h1>
         <p>Solusi Perjalanan & Outbound Terbaik di Sumatera Utara</p>
         {{-- Nomor lewat ContactHelper, bukan nilai contoh '+6281234567890'
              yang dulu tercetak di PDF yang dikirim ke calon pembeli. --}}
@@ -185,7 +185,7 @@
     @endforelse
 
     <div class="footer">
-        Dokumen ini digenerate secara otomatis oleh sistem Sujai Laketoba.<br>
+        Dokumen ini digenerate secara otomatis oleh sistem Sujai Toba Sumatera.<br>
         Harga dan ketersediaan dapat berubah sewaktu-waktu. Silakan hubungi admin untuk konfirmasi.
     </div>
 

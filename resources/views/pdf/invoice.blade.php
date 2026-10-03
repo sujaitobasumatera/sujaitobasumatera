@@ -62,8 +62,8 @@
 </head>
 <body>
     @php
-        $companyName     = $siteSettings['general']['site_name'] ?? 'Sujai Laketoba';
-        $legalName       = $siteSettings['company']['legal_name'] ?? 'PT Sujai Laketoba Experience';
+        $companyName     = $siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera';
+        $legalName       = $siteSettings['company']['legal_name'] ?? 'PT Sujai Toba Sumatera Experience';
         $bankAccount     = $siteSettings['company']['bank_account'] ?? null;
         $bankAccountName = $siteSettings['company']['bank_account_name'] ?? $legalName;
         $taxId           = $siteSettings['company']['tax_id'] ?? null;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>500 — {{ __('Terjadi Kesalahan') }} | Sujai Laketoba</title>
+    <title>500 — {{ __('Terjadi Kesalahan') }} | Sujai Toba Sumatera</title>
     <meta name="robots" content="noindex, nofollow">
     {{-- Sama seperti 503: tanpa database, tanpa aset dari luar. Halaman yang
          muncul saat sistem gagal tidak boleh ikut bergantung pada sistem itu. --}}

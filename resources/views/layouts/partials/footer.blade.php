@@ -9,7 +9,7 @@
                 <div class="flex items-center">
                     @php
                         $logoDark = asset('images/logo_compressed.webp');
-                        $brandName = $siteSettings['general']['site_name'] ?? 'Sujai Laketoba';
+                        $brandName = $siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera';
                     @endphp
 
                     @if($logoDark)
@@ -177,7 +177,7 @@
         <!-- ── Bottom bar ── -->
         <div class="pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
                 <p class="text-slate-500 font-label-caps text-[10px] uppercase tracking-wider">
-                &copy; {{ date('Y') }} <span class="text-white/80">{{ $siteSettings['general']['site_copyright'] ?? ($siteSettings['general']['site_name'] ?? 'Sujai Laketoba') }}</span>. {{ __('All rights reserved.') }}
+                &copy; {{ date('Y') }} <span class="text-white/80">{{ $siteSettings['general']['site_copyright'] ?? ($siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera') }}</span>. {{ __('All rights reserved.') }}
             </p>
             <div class="flex items-center gap-4">
                 @php

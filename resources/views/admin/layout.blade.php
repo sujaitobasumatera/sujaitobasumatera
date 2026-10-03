@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>@yield('title', 'Dashboard') - Sujai Laketoba Admin</title>
+    <title>@yield('title', 'Dashboard') - Sujai Toba Sumatera Admin</title>
     @php
         $iconUrl = $siteSettings['general']['icon_url'] ?? ($siteSettings['cms_landing']['brand_icon_url'] ?? asset('favicon.ico'));
         if ($iconUrl && !Str::startsWith($iconUrl, ['http', '//', 'data:', 'blob:'])) {
@@ -146,7 +146,7 @@
                             <span class="text-white font-black text-xl">W</span>
                         </div>
                         <h1 class="text-base font-black text-slate-900 tracking-tight leading-tight mb-3">
-                            {{ $siteSettings['general']['site_name'] ?? ($siteSettings['cms_landing']['brand_name'] ?? 'Sujai Laketoba') }}
+                            {{ $siteSettings['general']['site_name'] ?? ($siteSettings['cms_landing']['brand_name'] ?? 'Sujai Toba Sumatera') }}
                         </h1>
                     @endif
                     <a href="{{ route('index') }}" target="_blank"
@@ -553,7 +553,7 @@
             {{-- Footer --}}
             <footer class="px-8 py-5 border-t border-slate-50 flex flex-col sm:flex-row items-center justify-between gap-2 flex-shrink-0">
                 <p class="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em]">
-                    Sujai Laketoba Engine &bull; Management v3.0
+                    Sujai Toba Sumatera Engine &bull; Management v3.0
                 </p>
                 <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest">
                     Crafted with <i class="fas fa-heart text-rose-400"></i> for Wonderful Indonesia

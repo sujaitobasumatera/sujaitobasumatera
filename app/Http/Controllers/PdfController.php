@@ -114,8 +114,8 @@ class PdfController extends Controller
 
         $data = [
             'booking' => $booking,
-            'companyName' => $general['site_name'] ?? 'Sujai Laketoba',
-            'legalName' => $company['legal_name'] ?? 'PT Sujai Laketoba Experience',
+            'companyName' => $general['site_name'] ?? 'Sujai Toba Sumatera',
+            'legalName' => $company['legal_name'] ?? 'PT Sujai Toba Sumatera Experience',
             'taxId' => $company['tax_id'] ?? null,
             'bankAccount' => $company['bank_account'] ?? null,
             'bankAccountName' => $company['bank_account_name'] ?? ($company['legal_name'] ?? null),

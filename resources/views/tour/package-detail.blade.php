@@ -91,7 +91,7 @@
 @php
     $originSuffix = isset($originCity) && $originCity ? ' dari ' . $originCity : '';
 @endphp
-@section('title', ($package->translated_name ?? 'Paket Wisata') . $originSuffix . ' – Sujai Laketoba')
+@section('title', ($package->translated_name ?? 'Paket Wisata') . $originSuffix . ' – Sujai Toba Sumatera')
 
 {{-- Deskripsi paket datang dari editor teks kaya, jadi isinya HTML. Ditaruh
      mentah ke meta description, hasilnya terbaca sebagai kode di pratinjau
@@ -164,7 +164,7 @@
       "description": "{{ Str::limit(strip_tags($package->translated_description), 160) }}",
       "provider": {
         "@@type": "TravelAgency",
-        "name": "Sujai Laketoba",
+        "name": "Sujai Toba Sumatera",
         "url": "{{ url('/') }}"
       },
       "itinerary": {
@@ -1300,7 +1300,7 @@
                         </div>
                         <h3 class="text-lg font-semibold text-slate-900 mb-2 font-headline-md">{{ __('Bagikan Pengalaman Anda') }}</h3>
                         <p class="text-slate-600 font-body-md max-w-sm mx-auto mb-6 text-sm leading-relaxed">{{ __('Sudah pernah bepergian bersama kami? Ceritamu akan sangat membantu orang lain memilih.') }}</p>
-                        <a :href="'https://wa.me/' + waNumber + '?text=' + encodeURIComponent('Halo Sujai Laketoba, saya ingin berbagi pengalaman wisata bersama kalian 😊')" target="_blank"
+                        <a :href="'https://wa.me/' + waNumber + '?text=' + encodeURIComponent('Halo Sujai Toba Sumatera, saya ingin berbagi pengalaman wisata bersama kalian 😊')" target="_blank"
                            class="inline-flex items-center gap-2 bg-primary text-on-primary px-8 min-h-[46px] rounded-xl font-semibold text-xs uppercase tracking-wider hover:bg-primary-container transition shadow-sm">
                             <span class="material-symbols-outlined text-[18px]">chat</span>
                             {{ __('Ceritakan Perjalananmu') }}
@@ -1886,7 +1886,7 @@
         </div>
         <div class="flex items-center gap-4 w-full md:w-auto justify-between">
             <a 
-                :href="'https://wa.me/' + waNumber + '?text=' + encodeURIComponent('Halo Sujai Laketoba, saya ingin bertanya tentang paket: *' + package.name + '*') "
+                :href="'https://wa.me/' + waNumber + '?text=' + encodeURIComponent('Halo Sujai Toba Sumatera, saya ingin bertanya tentang paket: *' + package.name + '*') "
                 target="_blank"
                 class="bg-white text-secondary border border-slate-200 px-4 md:px-6 py-2 rounded-full font-semibold text-xs hover:bg-slate-50 transition-colors"
             >

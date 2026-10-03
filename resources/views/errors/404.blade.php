@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>404 — {{ __('Halaman Tidak Ditemukan') }} | Sujai Laketoba</title>
+    <title>404 — {{ __('Halaman Tidak Ditemukan') }} | Sujai Toba Sumatera</title>
     <meta name="robots" content="noindex, nofollow">
     
     {{-- Plus Jakarta Sans sudah di-host sendiri di app.css, jadi Google Fonts
@@ -44,10 +44,10 @@
                 $logoUrl = imageUrl($siteSettings['general']['logo_dark_url'] ?? null, asset('images/logo_compressed.webp'));
             @endphp
             @if(!empty($logoUrl))
-                <img src="{{ $logoUrl }}" class="h-14 w-auto object-contain brightness-0 invert opacity-90 transition hover:opacity-100" alt="Sujai Laketoba">
+                <img src="{{ $logoUrl }}" class="h-14 w-auto object-contain brightness-0 invert opacity-90 transition hover:opacity-100" alt="Sujai Toba Sumatera">
             @else
                 <div class="flex items-center gap-3">
-                    <span class="text-white font-outfit font-black text-2xl uppercase tracking-widest">Sujai Laketoba</span>
+                    <span class="text-white font-outfit font-black text-2xl uppercase tracking-widest">Sujai Toba Sumatera</span>
                 </div>
             @endif
         </div>
@@ -72,7 +72,7 @@
                 {{ __('Halaman Tidak Ditemukan') }}
             </h1>
             <p class="text-slate-400 font-normal text-xs md:text-sm max-w-sm mx-auto mb-8 leading-relaxed">
-                {{ __('Destinasi yang Anda cari belum ditemukan atau sudah dialihkan. Temukan petualangan menarik lainnya bersama Sujai Laketoba.') }}
+                {{ __('Destinasi yang Anda cari belum ditemukan atau sudah dialihkan. Temukan petualangan menarik lainnya bersama Sujai Toba Sumatera.') }}
             </p>
 
             <!-- CTA Buttons -->
@@ -104,7 +104,7 @@
         {{-- Halaman ini berdiri sendiri tanpa navbar/footer, jadi tanpa baris ini
              SEMUA jalur kontak lenyap tepat ketika pengunjung sedang tersesat. --}}
         <div class="mt-8">
-            <a href="{{ \App\Helpers\ContactHelper::whatsappLink(__('Halo Sujai Laketoba, saya tidak menemukan halaman yang saya cari.')) }}"
+            <a href="{{ \App\Helpers\ContactHelper::whatsappLink(__('Halo Sujai Toba Sumatera, saya tidak menemukan halaman yang saya cari.')) }}"
                target="_blank" rel="noopener"
                class="inline-flex items-center gap-2 text-[11px] font-bold text-slate-400 hover:text-toba-green transition-colors">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.15h-.01a8.2 8.2 0 01-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 01-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23a8.2 8.2 0 018.23 8.24c0 4.54-3.69 8.23-8.23 8.23z"/></svg>

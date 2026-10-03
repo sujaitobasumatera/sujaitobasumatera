@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Cara Pembayaran – Sujai Laketoba | Payment Methods for International Guests')
-@section('description', 'Panduan lengkap cara pembayaran paket wisata Sujai Laketoba untuk tamu dari Singapura dan Malaysia. Bank transfer, Wise, dan mata uang yang diterima.')
-@section('keywords', 'cara pembayaran sujai laketoba, payment methods lake toba tour, bank transfer singapura malaysia, wise payment toba')
+@section('title', 'Cara Pembayaran – Sujai Toba Sumatera | Payment Methods for International Guests')
+@section('description', 'Panduan lengkap cara pembayaran paket wisata Sujai Toba Sumatera untuk tamu dari Singapura dan Malaysia. Bank transfer, Wise, dan mata uang yang diterima.')
+@section('keywords', 'cara pembayaran sujai toba sumatera, payment methods lake toba tour, bank transfer singapura malaysia, wise payment toba')
 
 @section('content')
 <div class="bg-slate-50 min-h-screen pt-14 pb-12">
@@ -109,7 +109,7 @@
                             @else
                             <div class="card-flat-soft p-4">
                                 <p class="text-sm text-slate-600 font-normal leading-relaxed">Nomor rekening dikirim bersama konfirmasi pesanan. Sudah memesan tapi belum menerimanya? Kirim kode booking Anda ke
-                                    <a href="{{ \App\Helpers\ContactHelper::whatsappLink('Halo Sujai Laketoba, saya ingin nomor rekening untuk pembayaran.') }}" target="_blank" rel="noopener" class="font-semibold text-toba-green hover:underline">{{ \App\Helpers\ContactHelper::whatsappDisplay() }}</a>.
+                                    <a href="{{ \App\Helpers\ContactHelper::whatsappLink('Halo Sujai Toba Sumatera, saya ingin nomor rekening untuk pembayaran.') }}" target="_blank" rel="noopener" class="font-semibold text-toba-green hover:underline">{{ \App\Helpers\ContactHelper::whatsappDisplay() }}</a>.
                                 </p>
                             </div>
                             @endif

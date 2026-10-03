@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Paket Wisata Danau Toba dari ' . $originName . ' – Harga Terbaik 2026')
-@section('description', 'Pilihan paket liburan premium ke Danau Toba, Samosir, dan sekitarnya keberangkatan dari ' . $originName . ' bersama Sujai Laketoba.')
+@section('description', 'Pilihan paket liburan premium ke Danau Toba, Samosir, dan sekitarnya keberangkatan dari ' . $originName . ' bersama Sujai Toba Sumatera.')
 @section('keywords', __('paket wisata danau toba dari ' . strtolower($originName) . ', travel danau toba dari ' . strtolower($originName) . ', tour samosir ' . strtolower($originName)))
 
 
@@ -31,7 +31,7 @@
             [
                 '@type'       => 'TravelAgency',
                 '@id'         => url('/') . '/#organization',
-                'name'        => 'Sujai Laketoba',
+                'name'        => 'Sujai Toba Sumatera',
                 'url'         => url('/'),
                 'logo'        => [
                     '@type' => 'ImageObject',
@@ -56,7 +56,7 @@
                 '@type'       => 'WebSite',
                 '@id'         => url('/') . '/#website',
                 'url'         => url('/'),
-                'name'        => 'Sujai Laketoba',
+                'name'        => 'Sujai Toba Sumatera',
                 'description' => $schemaDesc,
                 'publisher'   => ['@id' => url('/') . '/#organization'],
                 'potentialAction' => [
@@ -109,7 +109,7 @@
                 Penerbangan dan perjalanan Anda dari {{ $originName }} kini lebih mudah. Nikmati penjemputan VIP dari bandara Kualanamu / Silangit, rute terkurasi, dan pengalaman premium di Danau Toba tanpa ribet.
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="https://wa.me/{{ \App\Helpers\ContactHelper::whatsappDigits() }}?text={{ urlencode('Halo Sujai Laketoba, saya tertarik paket wisata Danau Toba dari ' . $originName) }}" 
+                <a href="https://wa.me/{{ \App\Helpers\ContactHelper::whatsappDigits() }}?text={{ urlencode('Halo Sujai Toba Sumatera, saya tertarik paket wisata Danau Toba dari ' . $originName) }}" 
                    class="w-full sm:w-auto bg-toba-green hover:bg-primary-container text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition shadow-xl flex items-center justify-center gap-2">
                     <span class="material-symbols-outlined text-[20px]">chat</span>
                     Konsultasi Gratis
@@ -318,7 +318,7 @@
                         <div class="relative h-64 md:h-72 rounded-2xl overflow-hidden shadow-lg border border-white/10 transition-all duration-500 ease-out group-hover/card:shadow-2xl group-hover/card:shadow-black/50 group-hover/card:-translate-y-2">
                             <img src="{{ $slideUrl }}"
                                  @if($__ss = imageSrcset($slideUrl)) srcset="{{ $__ss }}" sizes="280px" @endif
-                                 alt="{{ $slideCap !== '' ? $slideCap : 'Sujai Laketoba' }}"
+                                 alt="{{ $slideCap !== '' ? $slideCap : 'Sujai Toba Sumatera' }}"
                                  class="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover/card:scale-105"
                                  loading="lazy" decoding="async"
                                  onerror="this.src='{{ asset('images/home/tour.webp') }}'">
@@ -464,11 +464,11 @@
                 $faqs = $settings['faqs'] ?? [
                     [
                         'q' => 'Bagaimana cara terbaik menuju Danau Toba dari Bandara Kualanamu (KNO)?',
-                        'a' => 'Cara terbaik dan paling nyaman adalah menggunakan layanan transfer private (armada premium dengan supir pribadi) yang disediakan oleh Sujai Laketoba. Perjalanan darat memakan waktu sekitar 3.5 hingga 4 jam melalui jalan tol Medan-Tebing Tinggi, lalu dilanjutkan ke Parapat, pintu gerbang utama menuju Pulau Samosir.'
+                        'a' => 'Cara terbaik dan paling nyaman adalah menggunakan layanan transfer private (armada premium dengan supir pribadi) yang disediakan oleh Sujai Toba Sumatera. Perjalanan darat memakan waktu sekitar 3.5 hingga 4 jam melalui jalan tol Medan-Tebing Tinggi, lalu dilanjutkan ke Parapat, pintu gerbang utama menuju Pulau Samosir.'
                     ],
                     [
                         'q' => 'Apakah makanan halal mudah ditemukan di sekitar Danau Toba?',
-                        'a' => 'Ya, sangat mudah. Di Parapat dan Pulau Samosir (terutama daerah wisata Tuk-tuk dan Tomok), terdapat banyak restoran Muslim lokal yang bersertifikat halal atau menyajikan menu ramah Muslim seperti ikan mas bakar, ayam penyet, dan masakan khas Minang/Padang. Supir dan pemandu Sujai Laketoba akan selalu mengarahkan Anda ke tempat makan halal pilihan.'
+                        'a' => 'Ya, sangat mudah. Di Parapat dan Pulau Samosir (terutama daerah wisata Tuk-tuk dan Tomok), terdapat banyak restoran Muslim lokal yang bersertifikat halal atau menyajikan menu ramah Muslim seperti ikan mas bakar, ayam penyet, dan masakan khas Minang/Padang. Supir dan pemandu Sujai Toba Sumatera akan selalu mengarahkan Anda ke tempat makan halal pilihan.'
                     ],
                     [
                         'q' => 'Mata uang apa yang digunakan, dan apakah kartu kredit diterima?',
@@ -510,7 +510,7 @@
     <section class="py-8 md:py-14 px-5 md:px-8 bg-surface">
         <div class="max-w-7xl mx-auto bg-primary rounded-[2rem] md:rounded-[4rem] p-8 md:p-24 relative overflow-hidden shadow-[0_50px_100px_-20px] shadow-primary/30">
             <div class="absolute inset-0 opacity-40">
-                <img src="{{ $ctaImg }}" alt="{{ $ctaAlt ?? __('Suasana perjalanan bersama Sujai Laketoba') }}" @if($__ss = imageSrcset($ctaImg)) srcset="{{ $__ss }}" sizes="(max-width: 1023px) 100vw, 800px" @endif class="w-full h-full object-cover" loading="lazy" decoding="async">
+                <img src="{{ $ctaImg }}" alt="{{ $ctaAlt ?? __('Suasana perjalanan bersama Sujai Toba Sumatera') }}" @if($__ss = imageSrcset($ctaImg)) srcset="{{ $__ss }}" sizes="(max-width: 1023px) 100vw, 800px" @endif class="w-full h-full object-cover" loading="lazy" decoding="async">
             </div>
             <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary/60 to-transparent"></div>
             

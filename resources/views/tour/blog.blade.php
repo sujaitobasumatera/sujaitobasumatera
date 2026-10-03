@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('Blog & Inspirasi Wisata – Sujai Laketoba'))
+@section('title', __('Blog & Inspirasi Wisata – Sujai Toba Sumatera'))
 @section('description', __('Tips, panduan, dan cerita menarik untuk rencana liburan Anda ke Sumatera Utara.'))
 @section('keywords', 'blog wisata toba, artikel travel sumatera utara, tips liburan danau toba, cerita perjalanan sujai')
 

@@ -77,7 +77,7 @@
                         </div>
                         <div class="space-y-4">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Situs</label>
-                            <input type="text" name="site_name" value="{{ $general['site_name'] ?? 'Sujai Laketoba' }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-toba-green font-bold text-slate-900">
+                            <input type="text" name="site_name" value="{{ $general['site_name'] ?? 'Sujai Toba Sumatera' }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-toba-green font-bold text-slate-900">
                         </div>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                         </div>
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Teks Copyright Footer</label>
-                            <input type="text" name="site_copyright" value="{{ $general['site_copyright'] ?? '' }}" placeholder="Sujai Laketoba" class="w-full px-5 py-3 bg-slate-50 border-none rounded-xl font-bold text-xs text-slate-700">
+                            <input type="text" name="site_copyright" value="{{ $general['site_copyright'] ?? '' }}" placeholder="Sujai Toba Sumatera" class="w-full px-5 py-3 bg-slate-50 border-none rounded-xl font-bold text-xs text-slate-700">
                             <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest italic">Tahun & "All rights reserved" otomatis ditambahkan.</p>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                         </div>
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">WA Welcome Message</label>
-                            <input type="text" name="wa_message" value="{{ $general['wa_message'] ?? 'Halo Sujai Laketoba, saya ingin bertanya tentang...' }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-700 text-xs">
+                            <input type="text" name="wa_message" value="{{ $general['wa_message'] ?? 'Halo Sujai Toba Sumatera, saya ingin bertanya tentang...' }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-700 text-xs">
                         </div>
                     </div>
 
@@ -252,7 +252,7 @@
                 <div class="space-y-8">
                     <div class="space-y-3">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Meta Title Global (Brand)</label>
-                        <input type="text" name="seo_meta_title" value="{{ $general['seo_meta_title'] ?? 'Sujai Laketoba - Tour & Travel Agency' }}" class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-black text-slate-900 text-lg shadow-inner">
+                        <input type="text" name="seo_meta_title" value="{{ $general['seo_meta_title'] ?? 'Sujai Toba Sumatera - Tour & Travel Agency' }}" class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-black text-slate-900 text-lg shadow-inner">
                         <p class="text-[9px] text-slate-400 font-bold italic">Rekomendasi: 50-60 karakter.</p>
                     </div>
 
@@ -337,7 +337,7 @@
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                 <i class="fas fa-id-card-clip text-slate-300"></i> Nama Legal Perusahaan
                             </label>
-                            <input type="text" name="company[legal_name]" value="{{ $company['legal_name'] ?? '' }}" placeholder="PT Sujai Laketoba Experience" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900">
+                            <input type="text" name="company[legal_name]" value="{{ $company['legal_name'] ?? '' }}" placeholder="PT Sujai Toba Sumatera Experience" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900">
                         </div>
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
@@ -360,7 +360,7 @@
                             </div>
                             <div class="space-y-2">
                                 <label class="text-[9px] font-black text-amber-500/70 uppercase tracking-widest">Atas Nama</label>
-                                <input type="text" name="company[bank_account_name]" value="{{ $company['bank_account_name'] ?? '' }}" placeholder="PT Sujai Laketoba Experience" class="w-full px-6 py-4 bg-white border-none rounded-2xl font-bold text-slate-700 shadow-sm">
+                                <input type="text" name="company[bank_account_name]" value="{{ $company['bank_account_name'] ?? '' }}" placeholder="PT Sujai Toba Sumatera Experience" class="w-full px-6 py-4 bg-white border-none rounded-2xl font-bold text-slate-700 shadow-sm">
                             </div>
                             <p class="text-[8px] font-bold text-amber-400 uppercase tracking-widest italic">Instruksi transfer hanya muncul bila nomor rekening diisi.</p>
                         </div>

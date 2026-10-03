@@ -1,6 +1,6 @@
-# Panduan Standar Ukuran Desain Gambar — Sujai Laketoba
+# Panduan Standar Ukuran Desain Gambar — Sujai Toba Sumatera
 
-Dokumen ini adalah acuan resmi ukuran dan rasio desain aset visual untuk website **Sujai Laketoba**.
+Dokumen ini adalah acuan resmi ukuran dan rasio desain aset visual untuk website **Sujai Toba Sumatera**.
 Pastikan setiap desainer grafis dan administrator konten mengikuti panduan ini agar tampilan visual di desktop maupun smartphone tetap tajam, proporsional, dan tidak terpotong.
 
 ---
@@ -42,7 +42,7 @@ Pastikan setiap desainer grafis dan administrator konten mengikuti panduan ini a
   - Maksimal upload di form admin: **15 MB**.
   - Rekomendasi berat berkas optimal: **300 KB – 1.5 MB** agar cepat diunggah.
 - **Otomatisasi Server:**
-  Sistem server Sujai Laketoba telah dilengkapi mesin kompresi otomatis:
+  Sistem server Sujai Toba Sumatera telah dilengkapi mesin kompresi otomatis:
   1. Mengonversi gambar ke format modern **WebP**.
   2. Menghasilkan salinan multi-resolusi (`srcset`: 400w, 800w, 1200w, 1600w).
   3. Menyimpan gambar asli untuk penampil zoom layar penuh resolusi tinggi.

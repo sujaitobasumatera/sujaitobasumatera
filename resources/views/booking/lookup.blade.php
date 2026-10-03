@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Cek Booking | Sujai Laketoba')
-@section('description', 'Masukkan kode booking untuk melihat status pesanan wisata Sujai Laketoba.')
+@section('title', 'Cek Booking | Sujai Toba Sumatera')
+@section('description', 'Masukkan kode booking untuk melihat status pesanan wisata Sujai Toba Sumatera.')
 
 @section('content')
 <section class="bg-slate-950 text-white">
@@ -21,7 +21,7 @@
         @if(session('error'))
             <div class="mb-5 rounded-2xl border border-amber-200 bg-amber-50 p-5">
                 <p class="text-sm font-semibold leading-6 text-amber-900">{{ session('error') }}</p>
-                <a href="{{ \App\Helpers\ContactHelper::whatsappLink(__('Halo Sujai Laketoba, saya kesulitan melacak pesanan saya.')) }}"
+                <a href="{{ \App\Helpers\ContactHelper::whatsappLink(__('Halo Sujai Toba Sumatera, saya kesulitan melacak pesanan saya.')) }}"
                    target="_blank" rel="noopener"
                    class="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 underline">
                     {{ __('Hubungi admin') }} — {{ \App\Helpers\ContactHelper::whatsappDisplay() }}

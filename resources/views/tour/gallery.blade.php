@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', __('Galeri Foto Wisata – Sujai Laketoba'))
-@section('description', 'Koleksi momen perjalanan dan foto-foto eksklusif wisata Danau Toba, Samosir, dan destinasi Sumatera Utara lainnya bersama Sujai Laketoba.')
-@section('keywords', 'galeri danau toba, foto wisata sumatera utara, dokumentasi sujai laketoba, gambar pemandangan toba')
+@section('title', __('Galeri Foto Wisata – Sujai Toba Sumatera'))
+@section('description', 'Koleksi momen perjalanan dan foto-foto eksklusif wisata Danau Toba, Samosir, dan destinasi Sumatera Utara lainnya bersama Sujai Toba Sumatera.')
+@section('keywords', 'galeri danau toba, foto wisata sumatera utara, dokumentasi sujai toba sumatera, gambar pemandangan toba')
 
 @section('content')
 <div 
@@ -190,7 +190,7 @@
             @foreach($images as $img)
                 @php
                     $imgUrl = $img->image_url;
-                    $imgAlt = trim((string) ($img->caption ?? '')) !== '' ? $img->caption : __('Galeri Sujai Laketoba');
+                    $imgAlt = trim((string) ($img->caption ?? '')) !== '' ? $img->caption : __('Galeri Sujai Toba Sumatera');
                 @endphp
                 <div
                     class="break-inside-avoid relative rounded-3xl overflow-hidden group cursor-pointer shadow-lg transition duration-[0.6s] border border-outline-variant/20 hover:border-secondary/40 hover:-translate-y-1 bg-white"

@@ -36,7 +36,7 @@
                         </div>
                         <div>
                             <h3 class="text-base font-black text-slate-900 tracking-tight leading-tight">Panduan Standar Ukuran Desain Gambar</h3>
-                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Sujai Laketoba &bull; Spesifikasi Dimensi &amp; Rasio Aset Visual</p>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Sujai Toba Sumatera &bull; Spesifikasi Dimensi &amp; Rasio Aset Visual</p>
                         </div>
                     </div>
                     <button type="button" @click="openGuide = false"

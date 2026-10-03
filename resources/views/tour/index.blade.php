@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', $settings['meta_title'] ?? $settings['hero_title'] ?? 'Sujai Laketoba – Wisata Sumatera Utara')
-@section('description', $settings['meta_description'] ?? $settings['hero_subtitle'] ?? 'Temukan keindahan Danau Toba, Samosir, Berastagi, Tangkahan, dan Bukit Lawang bersama Sujai Laketoba.')
-@section('keywords', __('paket wisata danau toba, layanan premium danau toba, private tour samosir, travel vip medan, wisata sumatera utara, sujai laketoba'))
+@section('title', $settings['meta_title'] ?? $settings['hero_title'] ?? 'Sujai Toba Sumatera – Wisata Sumatera Utara')
+@section('description', $settings['meta_description'] ?? $settings['hero_subtitle'] ?? 'Temukan keindahan Danau Toba, Samosir, Berastagi, Tangkahan, dan Bukit Lawang bersama Sujai Toba Sumatera.')
+@section('keywords', __('paket wisata danau toba, layanan premium danau toba, private tour samosir, travel vip medan, wisata sumatera utara, sujai toba sumatera'))
 
 @push('schema')
 @php
@@ -30,7 +30,7 @@
             [
                 '@type'       => 'TravelAgency',
                 '@id'         => url('/') . '/#organization',
-                'name'        => 'Sujai Laketoba',
+                'name'        => 'Sujai Toba Sumatera',
                 'url'         => url('/'),
                 'logo'        => [
                     '@type' => 'ImageObject',
@@ -56,7 +56,7 @@
                 '@type'       => 'WebSite',
                 '@id'         => url('/') . '/#website',
                 'url'         => url('/'),
-                'name'        => 'Sujai Laketoba',
+                'name'        => 'Sujai Toba Sumatera',
                 'description' => $schemaDesc,
                 'publisher'   => ['@id' => url('/') . '/#organization'],
                 'potentialAction' => [
@@ -82,14 +82,14 @@
          tak ada tempat wajar untuk heading terlihat tanpa merusak desainnya.
          Diletakkan di level halaman (di luar guard show_slider) supaya satu h1
          ini tetap ada meski slider dimatikan. --}}
-    <h1 class="sr-only">{{ $settings['hero_title'] ?? __('Sujai Laketoba — Paket Wisata Danau Toba & Sumatera Utara') }}</h1>
+    <h1 class="sr-only">{{ $settings['hero_title'] ?? __('Sujai Toba Sumatera — Paket Wisata Danau Toba & Sumatera Utara') }}</h1>
 
     <!-- Premium Hero Slider -->
     @if($settings['show_slider'] ?? true)
     <x-home-slider :settings="$settings" :packages="$packages" />
     @endif
 
-    <!-- Kenapa Memilih Sujai Laketoba (4 Keunggulan Utama) -->
+    <!-- Kenapa Memilih Sujai Toba Sumatera (4 Keunggulan Utama) -->
     <section class="py-6 md:py-10 bg-white border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-5 md:px-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
@@ -354,7 +354,7 @@
                         <div class="relative h-64 md:h-72 rounded-2xl overflow-hidden shadow-lg border border-white/10 transition-all duration-500 ease-out group-hover/card:shadow-2xl group-hover/card:shadow-black/50 group-hover/card:-translate-y-2">
                             <img src="{{ $slideUrl }}"
                                  @if($__ss = imageSrcset($slideUrl)) srcset="{{ $__ss }}" sizes="280px" @endif
-                                 alt="{{ $slideCap !== '' ? $slideCap : 'Sujai Laketoba' }}"
+                                 alt="{{ $slideCap !== '' ? $slideCap : 'Sujai Toba Sumatera' }}"
                                  class="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover/card:scale-105"
                                  loading="lazy" decoding="async"
                                  onerror="this.src='{{ asset('images/home/tour.webp') }}'">
@@ -428,7 +428,7 @@
                 <span class="w-6 h-px bg-toba-green"></span>
             </span>
             <h2 class="text-3xl md:text-5xl font-bold text-primary tracking-tight leading-[1.1]">
-                {{ $settings['testimonials_title'] ?? __('Apa Kata Mereka Tentang Sujai Laketoba?') }}
+                {{ $settings['testimonials_title'] ?? __('Apa Kata Mereka Tentang Sujai Toba Sumatera?') }}
             </h2>
             @if(! empty($settings['testimonials_subtitle']))
             <p class="text-on-surface-variant text-sm md:text-base mt-4 leading-relaxed">
@@ -556,11 +556,11 @@
                 $faqs = $settings['faqs'] ?? [
                     [
                         'q' => 'Bagaimana cara terbaik menuju Danau Toba dari Bandara Kualanamu (KNO)?',
-                        'a' => 'Cara terbaik dan paling nyaman adalah menggunakan layanan transfer private (armada premium dengan supir pribadi) yang disediakan oleh Sujai Laketoba. Perjalanan darat memakan waktu sekitar 3.5 hingga 4 jam melalui jalan tol Medan-Tebing Tinggi, lalu dilanjutkan ke Parapat, pintu gerbang utama menuju Pulau Samosir.'
+                        'a' => 'Cara terbaik dan paling nyaman adalah menggunakan layanan transfer private (armada premium dengan supir pribadi) yang disediakan oleh Sujai Toba Sumatera. Perjalanan darat memakan waktu sekitar 3.5 hingga 4 jam melalui jalan tol Medan-Tebing Tinggi, lalu dilanjutkan ke Parapat, pintu gerbang utama menuju Pulau Samosir.'
                     ],
                     [
                         'q' => 'Apakah makanan halal mudah ditemukan di sekitar Danau Toba?',
-                        'a' => 'Ya, sangat mudah. Di Parapat dan Pulau Samosir (terutama daerah wisata Tuk-tuk dan Tomok), terdapat banyak restoran Muslim lokal yang bersertifikat halal atau menyajikan menu ramah Muslim seperti ikan mas bakar, ayam penyet, dan masakan khas Minang/Padang. Supir dan pemandu Sujai Laketoba akan selalu mengarahkan Anda ke tempat makan halal pilihan.'
+                        'a' => 'Ya, sangat mudah. Di Parapat dan Pulau Samosir (terutama daerah wisata Tuk-tuk dan Tomok), terdapat banyak restoran Muslim lokal yang bersertifikat halal atau menyajikan menu ramah Muslim seperti ikan mas bakar, ayam penyet, dan masakan khas Minang/Padang. Supir dan pemandu Sujai Toba Sumatera akan selalu mengarahkan Anda ke tempat makan halal pilihan.'
                     ],
                     [
                         'q' => 'Mata uang apa yang digunakan, dan apakah kartu kredit diterima?',
@@ -638,7 +638,7 @@
                         ];
                         @endphp
                         @foreach($avatarPhotos as $avatarUrl)
-                            <img src="{{ $avatarUrl }}" loading="lazy" decoding="async" class="w-14 h-14 rounded-full border-4 border-primary shadow-xl object-cover" alt="Pelanggan Sujai Laketoba">
+                            <img src="{{ $avatarUrl }}" loading="lazy" decoding="async" class="w-14 h-14 rounded-full border-4 border-primary shadow-xl object-cover" alt="Pelanggan Sujai Toba Sumatera">
                         @endforeach
                         <div class="w-14 h-14 rounded-full border-4 border-primary bg-secondary flex items-center justify-center text-white text-[10px] font-bold">
                             {{ $touristsCount }}

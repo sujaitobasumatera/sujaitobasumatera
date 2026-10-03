@@ -69,7 +69,7 @@
     </table>
 
     <div class="footer">
-        © {{ date('Y') }} Sujai Laketoba – Laporan Sistem Internal. Rahasia & Terbatas.
+        © {{ date('Y') }} Sujai Toba Sumatera – Laporan Sistem Internal. Rahasia & Terbatas.
     </div>
 </body>
 </html>

@@ -67,11 +67,11 @@ document.addEventListener('alpine:init', () => {
                 <div class="space-y-6">
                     <div class="space-y-3">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Judul Utama</label>
-                        <input type="text" name="title" value="{{ $about['title'] ?? 'Mengenal Lebih Dekat Sujai Laketoba' }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-sm">
+                        <input type="text" name="title" value="{{ $about['title'] ?? 'Mengenal Lebih Dekat Sujai Toba Sumatera' }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-sm">
                     </div>
                     <div class="space-y-3">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Deskripsi Singkat</label>
-                        <textarea name="description" rows="4" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-sm">{{ $about['description'] ?? 'Berawal dari kecintaan terhadap keindahan alam Sumatera Utara, Sujai Laketoba hadir untuk memberikan pengalaman perjalanan yang tak terlupakan bagi setiap wisatawan.' }}</textarea>
+                        <textarea name="description" rows="4" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-sm">{{ $about['description'] ?? 'Berawal dari kecintaan terhadap keindahan alam Sumatera Utara, Sujai Toba Sumatera hadir untuk memberikan pengalaman perjalanan yang tak terlupakan bagi setiap wisatawan.' }}</textarea>
                     </div>
                     <div class="bg-slate-50 rounded-2xl p-6 space-y-4">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">📊 Statistik Pencapaian</p>
@@ -113,7 +113,7 @@ document.addEventListener('alpine:init', () => {
                         <div class="bg-slate-50 rounded-2xl p-6 space-y-3">
                             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">💬 Testimoni / Kutipan</p>
                             <textarea name="testimonial_quote" rows="2" placeholder="Isi kutipan testimoni..." class="w-full px-4 py-2 bg-white border-none rounded-xl font-bold text-[11px] leading-tight">{{ $about['testimonial_quote'] ?? 'Layanan terbaik, armada baru, dan guide yang sangat informatif.' }}</textarea>
-                            <input type="text" name="testimonial_name" value="{{ $about['testimonial_name'] ?? 'Pelanggan Setia Sujai Laketoba' }}" placeholder="Nama pelanggan..." class="w-full px-4 py-2 bg-white border-none rounded-xl font-bold text-[11px]">
+                            <input type="text" name="testimonial_name" value="{{ $about['testimonial_name'] ?? 'Pelanggan Setia Sujai Toba Sumatera' }}" placeholder="Nama pelanggan..." class="w-full px-4 py-2 bg-white border-none rounded-xl font-bold text-[11px]">
                         </div>
                     </div>
                 </div>
@@ -150,7 +150,7 @@ document.addEventListener('alpine:init', () => {
 
             <div class="space-y-3">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Konten Halaman (HTML didukung)</label>
-                <textarea name="content" rows="15" class="w-full px-8 py-6 bg-slate-50 border-none rounded-[2rem] font-medium text-sm leading-relaxed">{{ $terms['content'] ?? "<h3>1. Ketentuan Umum</h3><p>Seluruh layanan yang disediakan oleh Sujai Laketoba tunduk pada syarat dan ketentuan yang berlaku...</p>" }}</textarea>
+                <textarea name="content" rows="15" class="w-full px-8 py-6 bg-slate-50 border-none rounded-[2rem] font-medium text-sm leading-relaxed">{{ $terms['content'] ?? "<h3>1. Ketentuan Umum</h3><p>Seluruh layanan yang disediakan oleh Sujai Toba Sumatera tunduk pada syarat dan ketentuan yang berlaku...</p>" }}</textarea>
             </div>
         </form>
     </div>

@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Laporan Keuangan - Sujai Laketoba')
+@section('title', 'Laporan Keuangan - Sujai Toba Sumatera')
 
 @section('content')
 <div class="space-y-6">

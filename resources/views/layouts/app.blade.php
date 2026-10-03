@@ -20,8 +20,8 @@
         }
     @endphp
 
-    <title>@yield('title', $siteSettings['general']['seo_meta_title'] ?? 'Sujai Laketoba | Premium Tour Travel')</title>
-    <meta name="description" content="{{ strip_tags($__env->yieldContent('description', $siteSettings['general']['seo_meta_desc'] ?? 'Portal utama Sujai Laketoba. Pilih layanan premium Tour Travel Sumatera Utara.')) }}">
+    <title>@yield('title', $siteSettings['general']['seo_meta_title'] ?? 'Sujai Toba Sumatera | Premium Tour Travel')</title>
+    <meta name="description" content="{{ strip_tags($__env->yieldContent('description', $siteSettings['general']['seo_meta_desc'] ?? 'Portal utama Sujai Toba Sumatera. Pilih layanan premium Tour Travel Sumatera Utara.')) }}">
     <meta name="keywords" content="{{ strip_tags($__env->yieldContent('keywords', $siteSettings['general']['seo_meta_keywords'] ?? 'tour danau toba, travel sumatera utara')) }}">
     {{-- Bawaannya URL halaman itu sendiri. Halaman yang punya kembaran dengan
          isi sama (mis. detail paket versi tanpa form) menimpanya lewat
@@ -36,7 +36,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="{{ $siteSettings['general']['site_name'] ?? 'Sujai Laketoba' }}">
+    <meta name="apple-mobile-web-app-title" content="{{ $siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera' }}">
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
 
     <!-- Open Graph / Facebook -->
@@ -48,15 +48,15 @@
     @endphp
     <meta property="og:type" content="{{ isset($post) ? 'article' : 'website' }}">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="{{ strip_tags($__env->yieldContent('title', $siteSettings['general']['seo_meta_title'] ?? 'Sujai Laketoba | Premium Tour Travel')) }}">
-    <meta property="og:description" content="{{ strip_tags($__env->yieldContent('description', $siteSettings['general']['seo_meta_desc'] ?? 'Portal utama Sujai Laketoba. Pilih layanan premium Tour Travel Sumatera Utara.')) }}">
+    <meta property="og:title" content="{{ strip_tags($__env->yieldContent('title', $siteSettings['general']['seo_meta_title'] ?? 'Sujai Toba Sumatera | Premium Tour Travel')) }}">
+    <meta property="og:description" content="{{ strip_tags($__env->yieldContent('description', $siteSettings['general']['seo_meta_desc'] ?? 'Portal utama Sujai Toba Sumatera. Pilih layanan premium Tour Travel Sumatera Utara.')) }}">
     <meta property="og:image" content="{{ $__env->yieldContent('og_image', $ogDefault) }}">
 
     <!-- Twitter (X reads the `name` attribute, not `property`) -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="{{ url()->current() }}">
-    <meta name="twitter:title" content="{{ strip_tags($__env->yieldContent('title', $siteSettings['general']['seo_meta_title'] ?? 'Sujai Laketoba | Premium Tour Travel')) }}">
-    <meta name="twitter:description" content="{{ strip_tags($__env->yieldContent('description', $siteSettings['general']['seo_meta_desc'] ?? 'Portal utama Sujai Laketoba. Pilih layanan premium Tour Travel Sumatera Utara.')) }}">
+    <meta name="twitter:title" content="{{ strip_tags($__env->yieldContent('title', $siteSettings['general']['seo_meta_title'] ?? 'Sujai Toba Sumatera | Premium Tour Travel')) }}">
+    <meta name="twitter:description" content="{{ strip_tags($__env->yieldContent('description', $siteSettings['general']['seo_meta_desc'] ?? 'Portal utama Sujai Toba Sumatera. Pilih layanan premium Tour Travel Sumatera Utara.')) }}">
     <meta name="twitter:image" content="{{ $__env->yieldContent('og_image', $ogDefault) }}">
 
     <!-- Styles & Scripts -->

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kebijakan Privasi – Sujai Laketoba')
+@section('title', 'Kebijakan Privasi – Sujai Toba Sumatera')
 
 @section('content')
 <div class="bg-slate-50 min-h-screen pt-14 pb-12">
@@ -24,7 +24,7 @@
                     {!! $content['content'] !!}
                 @else
                     <h3 class="text-slate-900 font-bold text-base mb-3 tracking-tight">Perlindungan Data</h3>
-                    <p class="mb-6">Sujai Laketoba berkomitmen untuk melindungi privasi pelanggan kami. Kami hanya mengumpulkan informasi yang diperlukan untuk memproses pemesanan Anda dan meningkatkan layanan kami.</p>
+                    <p class="mb-6">Sujai Toba Sumatera berkomitmen untuk melindungi privasi pelanggan kami. Kami hanya mengumpulkan informasi yang diperlukan untuk memproses pemesanan Anda dan meningkatkan layanan kami.</p>
                     
                     <h3 class="text-slate-900 font-bold text-base mb-3 tracking-tight">Informasi yang Kami Kumpulkan</h3>
                     <p class="mb-6">Informasi yang kami kumpulkan meliputi nama, alamat email, nomor telepon, dan detail perjalanan yang diperlukan untuk koordinasi tour.</p>

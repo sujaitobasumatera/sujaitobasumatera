@@ -351,7 +351,7 @@ class PublicController extends Controller
                 ->locale($carbonLocale)
                 ->translatedFormat('d F Y, H:i');
 
-            $waMessage = __('Halo Sujai Laketoba, saya ingin memesan paket wisata.')."\n\n".
+            $waMessage = __('Halo Sujai Toba Sumatera, saya ingin memesan paket wisata.')."\n\n".
                          '*'.__('Detail Pesanan:')."*\n".
                          '- '.__('Kode Booking').': '.$booking->bookingCode."\n".
                          '- '.__('Status').': '.__('Menunggu konfirmasi admin')."\n".
@@ -512,7 +512,7 @@ class PublicController extends Controller
             return back()->with('error', __('Nomor WhatsApp belum dikonfigurasi.'));
         }
 
-        $message = "Halo Sujai Laketoba, saya ingin meminta penawaran outbound.\n\n"
+        $message = "Halo Sujai Toba Sumatera, saya ingin meminta penawaran outbound.\n\n"
             ."Company: {$validated['company_name']}\n"
             ."Peserta: {$validated['participants']}\n"
             ."Lokasi: {$validated['location']}\n"

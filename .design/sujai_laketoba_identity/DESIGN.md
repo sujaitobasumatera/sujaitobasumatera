@@ -1,5 +1,5 @@
 ---
-name: Sujai Laketoba Identity
+name: Sujai Toba Sumatera Identity
 colors:
   surface: '#fcf9f8'
   surface-dim: '#dcd9d9'
