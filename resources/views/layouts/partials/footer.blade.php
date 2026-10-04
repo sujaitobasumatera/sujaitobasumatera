@@ -137,15 +137,7 @@
                             {{ \App\Helpers\ContactHelper::whatsappDisplay2() }} <span class="text-slate-500 text-[11px]">(CS 2)</span>
                         </a>
                     </div>
-                    @if($g['contact_phone'] ?? false)
-                    <div class="flex items-center space-x-3">
-                        <span class="material-symbols-outlined text-secondary text-[18px] shrink-0">call</span>
-                        <a href="tel:{{ preg_replace('/[^0-9+]/', '', $g['contact_phone']) }}"
-                           class="hover:text-secondary transition-colors">
-                            {{ $g['contact_phone'] }}
-                        </a>
-                    </div>
-                    @endif
+                    {{-- contact_phone removed as requested to strictly display only the 2 WhatsApp numbers --}}
                     <div class="flex items-center space-x-3">
                         <span class="material-symbols-outlined text-secondary text-[18px] shrink-0">mail</span>
                         {{-- Lewat ContactHelper. Footer punya nilai bawaan sendiri
