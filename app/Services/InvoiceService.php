@@ -13,10 +13,15 @@ class InvoiceService
      */
     public function generateInvoice(Booking $booking)
     {
+        // Satu query menggantikan tiga: whereIn + pluck lebih efisien
+        // daripada tiga kali Setting::where()->first() terpisah.
+        $rows = Setting::whereIn('key', ['general', 'company', 'cms_landing'])
+            ->pluck('value', 'key');
+
         $siteSettings = [
-            'general' => Setting::where('key', 'general')->first()?->value ?? [],
-            'company' => Setting::where('key', 'company')->first()?->value ?? [],
-            'cms_landing' => Setting::where('key', 'cms_landing')->first()?->value ?? [],
+            'general'     => $rows->get('general', []) ?? [],
+            'company'     => $rows->get('company', []) ?? [],
+            'cms_landing' => $rows->get('cms_landing', []) ?? [],
         ];
 
         $data = [

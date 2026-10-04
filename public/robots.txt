@@ -2,7 +2,13 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /admin/
+Disallow: /admin-app
+Disallow: /login
 Disallow: /api/
+Disallow: /invoice/
+Disallow: /track-booking
+Disallow: /download-itinerary/
+Disallow: /tour/detail/
 Disallow: /storage/framework/
 Disallow: /storage/logs/
 Disallow: /*.php$
@@ -18,5 +24,5 @@ Crawl-delay: 10
 User-agent: MJ12bot
 Disallow: /
 
-# Sitemap
-Sitemap: https://www.sujaitobasumatera.com/sitemap.xml
+# Sitemap (host kanonik: tanpa www)
+Sitemap: https://sujaitobasumatera.com/sitemap.xml

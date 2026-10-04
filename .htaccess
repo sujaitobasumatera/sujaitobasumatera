@@ -8,6 +8,39 @@
     # 1. BLOKIR AKSES KE FOLDER .git (Sangat Penting!)
     RewriteRule ^\.git - [F,L]
 
+    # 2. Paksa HTTPS (lewati bila di belakang proxy yang sudah HTTPS).
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+    RewriteRule ^ https://sujaitobasumatera.com%{REQUEST_URI} [L,R=301]
+
+    # 3. Satu host kanonik: www -> non-www (canonical, sitemap, dan OG memakai non-www).
+    RewriteCond %{HTTP_HOST} ^www\.sujaitobasumatera\.com$ [NC]
+    RewriteRule ^ https://sujaitobasumatera.com%{REQUEST_URI} [L,R=301]
+
+    # 4. /public/... tidak boleh diakses langsung (konten ganda). THE_REQUEST hanya
+    #    berisi baris permintaan asli dari klien, jadi rewrite internal ke public/
+    #    di bawah tidak ikut terpengaruh.
+    RewriteCond %{THE_REQUEST} \s/public(/|\s|\?) [NC]
+    RewriteRule ^public/?(.*)$ /$1 [L,R=301]
+
+    # 5. Blokir dotfile (kecuali .well-known untuk SSL & assetlinks) dan berkas
+    #    sisa deploy/backup yang tidak boleh disajikan.
+    RewriteRule (^|/)\.(?!well-known) - [F,L]
+    RewriteRule \.(sql|bak|log|py|neon|lock|yml|yaml|md|sh)$ - [F,L]
+
+    # 6. Blokir file sensitif di root — WAJIB SEBELUM front-controller [L].
+    #    Sebelumnya aturan-aturan ini ada SESUDAH RewriteRule ^(.*)$ public/$1 [L]
+    #    sehingga tidak pernah terjangkau (flag [L] menghentikan pemrosesan).
+    RewriteRule ^\.env$ - [F,L]
+    RewriteRule ^composer\.(json|lock)$ - [F,L]
+    RewriteRule ^package(-lock)?\.json$ - [F,L]
+    RewriteRule ^artisan$ - [F,L]
+    # Blokir skrip utilitas PHP yang tidak boleh diakses publik
+    RewriteRule ^(check_translations|clear_cache|clear_specific_cache|get_itinerary|update_itinerary|update_packages|update_settings|sujaitobasumatera|unzip_now|unzipper)\.php$ - [F,L]
+    # Blokir akses langsung ke folder privat
+    RewriteRule ^storage/(app|framework|logs)/(.*)$ - [F,L]
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|tests|vendor)/(.*)$ - [F,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -20,14 +53,15 @@
     # Handle Front Controller (Redirect everything to public folder)
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteRule ^(.*)$ public/$1 [L]
-
-    # Block access to sensitive files
-    RewriteRule ^\.env$ - [F,L]
-    RewriteRule ^composer\.(json|lock)$ - [F,L]
-    RewriteRule ^package(-lock)?\.json$ - [F,L]
-    RewriteRule ^artisan$ - [F,L]
-    # Allow public storage assets, but block private storage subfolders
-    RewriteRule ^storage/(app|framework|logs)/(.*)$ - [F,L]
-    RewriteRule ^(app|bootstrap|config|database|resources|routes|tests|vendor)/(.*)$ - [F,L]
 </IfModule>
 
+# Jangan bocorkan versi PHP.
+<IfModule mod_headers.c>
+    Header always unset X-Powered-By
+    Header unset X-Powered-By
+</IfModule>
+
+# error_log PHP berisi path server & jejak error -- jangan pernah disajikan.
+<FilesMatch "^(error_log|\.ftpquota)$">
+    Require all denied
+</FilesMatch>

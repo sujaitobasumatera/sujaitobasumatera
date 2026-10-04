@@ -1,3 +1,26 @@
+# Update — Sesi 4 Oktober 2026
+
+Commit `e9ff111` — 4 perbaikan teknis + 1 command baru. Tes: view:cache hijau (Blade bersih).
+
+## Yang dikerjakan sesi ini
+
+| File | Perbaikan |
+|---|---|
+| `PdfController.php` | `streamInvoice()` kini mengembalikan header `Content-Type: text/html; charset=UTF-8` — sebelumnya tanpa header, browser bisa merender invoice sebagai teks biasa |
+| `resources/views/invoice/show.blade.php` | Tambah flag `$legacyOrder`. Untuk pesanan lama (tanpa `price_breakdown`), kolom "Harga Satuan" kini menampilkan `—` bukan `totalPrice/pax` yang menyesatkan (totalPrice sudah termasuk pajak) |
+| `config/filesystems.php` | Komentar diperbarui: prioritas deteksi environment diurutkan eksplisit (env var → str_contains fallback → public/storage lokal) |
+| `.env.sujai` | Tambah contoh `STORAGE_ROOT_PATH` sehingga admin tahu cara overriding path storage secara eksplisit |
+| `app/Console/Commands/RefreshOgBanners.php` | **Command baru:** `php artisan og-banner:refresh` — menghapus cache banner OG semua paket & blog agar dibuat ulang dengan harga terbaru (lazy regeneration) |
+
+## Setelah deploy ke server
+
+```bash
+bash ~/deploy.sh
+php artisan og-banner:refresh   # ← WAJIB setelah migrasi harga MYR
+```
+
+---
+
 # Update — Sesi 3 Agustus 2026
 
 Catatan serah-terima. Mulai baca dari **"Lanjut dari sini"** di bagian bawah.

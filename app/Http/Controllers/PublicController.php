@@ -282,7 +282,15 @@ class PublicController extends Controller
             $packages = $this->tourService->getFeaturedPackages();
             $blogs = $this->tourService->getBlogs(3);
 
-            return view('tour.landing-origin', compact('packages', 'blogs', 'siteSettings', 'originName', 'kotaSlug', 'originImage'));
+            // Tautan internal ke landing page kota asal lainnya.
+            $otherOrigins = collect($allowedOrigins)
+                ->reject(fn ($o) => $o === $kotaSlug)
+                ->unique()
+                ->map(fn ($o) => ['slug' => $o, 'name' => Str::title(str_replace('-', ' ', $o))])
+                ->values()
+                ->all();
+
+            return view('tour.landing-origin', compact('packages', 'blogs', 'siteSettings', 'originName', 'kotaSlug', 'originImage', 'otherOrigins'));
         } catch (\Exception $e) {
             Log::error('Error loading pSEO landing page: '.$e->getMessage());
             return redirect()->route('tour.packages');
@@ -504,15 +512,21 @@ class PublicController extends Controller
             'whatsapp' => 'required|string|max:255',
         ]);
 
-        $generalSettings = Setting::where('key', 'general')->first()?->value ?? [];
-        $waSource = $generalSettings['contact_whatsapp'] ?? config('services.whatsapp.number');
-        $waNumber = preg_replace('/[^0-9]/', '', (string) $waSource);
+        // Satu sumber kebenaran (ContactHelper), sama dengan navbar/footer/booking.
+        // Sebelumnya blok ini menurunkan nomor dari settings secara langsung,
+        // sehingga bisa berbeda dari yang tertera di halaman bila cache belum bersih.
+        $waNumber = \App\Helpers\ContactHelper::whatsappDigits();
 
         if ($waNumber === '') {
             return back()->with('error', __('Nomor WhatsApp belum dikonfigurasi.'));
         }
 
-        $message = "Halo Sujai Toba Sumatera, saya ingin meminta penawaran outbound.\n\n"
+        // Catat permintaan di log: halaman ini hanya membuat tautan WhatsApp,
+        // jadi bila tamu menutup halaman sebelum menekan tombolnya, permintaan
+        // ini hilang tanpa jejak. Dengan log, admin masih bisa menindaklanjuti.
+        Log::info('Outbound quote request', $validated);
+
+        $message = __('Halo Sujai Toba Sumatera, saya ingin meminta penawaran outbound.')."\n\n"
             ."Company: {$validated['company_name']}\n"
             ."Peserta: {$validated['participants']}\n"
             ."Lokasi: {$validated['location']}\n"

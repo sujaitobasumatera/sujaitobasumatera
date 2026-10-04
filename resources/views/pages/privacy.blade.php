@@ -21,7 +21,7 @@
                 <p class="mb-8 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Terakhir diperbarui: {{ $privacyUpdated }}</p>
                 
                 @if(isset($content['content']))
-                    {!! $content['content'] !!}
+                    {!! strip_tags($content['content'], '<p><h2><h3><h4><ul><ol><li><strong><em><a><br><blockquote><table><thead><tbody><tr><th><td>') !!}
                 @else
                     <h3 class="text-slate-900 font-bold text-base mb-3 tracking-tight">Perlindungan Data</h3>
                     <p class="mb-6">Sujai Toba Sumatera berkomitmen untuk melindungi privasi pelanggan kami. Kami hanya mengumpulkan informasi yang diperlukan untuk memproses pemesanan Anda dan meningkatkan layanan kami.</p>

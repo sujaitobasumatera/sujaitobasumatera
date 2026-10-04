@@ -151,11 +151,22 @@ class CMSController extends Controller
 
             DB::commit();
 
-            // Clear related caches so frontend updates immediately
-            Cache::forget('cms_tour_settings');
-            Cache::forget('site_settings_all');
-            Cache::forget('contact_whatsapp_digits');
-            Cache::forget('contact_whatsapp_digits_2');
+            // Clear related caches so frontend updates immediately.
+            // CATATAN: SettingObserver::saved() juga dipanggil secara otomatis ketika
+            // $setting->save() di atas dieksekusi, tapi kita tetap eksplisit di sini
+            // supaya kode ini bisa dibaca tanpa harus tahu detail observer.
+            // 'cms_tour_settings' sudah tidak dipakai — key yang benar adalah di bawah.
+            foreach ([
+                'site_settings_global', 'site_settings_all', 'tour_homepage_data',
+                'contact_whatsapp_digits', 'contact_whatsapp_digits_2',
+                'site_settings_structured_cms_tour_general',
+                'site_settings_structured_cms_landing_cms_tour_general',
+                'site_settings_structured_cms_landing_general',
+                'site_settings_structured_general',
+                'featured_packages', 'tour_packages_all', 'tour_packages_nav',
+            ] as $cacheKey) {
+                Cache::forget($cacheKey);
+            }
 
             Log::alert("CMS SUCCESS: Saved '{$key}' with fields: ".implode(', ', array_keys($data)));
 

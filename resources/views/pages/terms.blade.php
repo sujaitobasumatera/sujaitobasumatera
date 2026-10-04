@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Syarat & Ketentuan – Sujai Toba Sumatera | Lake Toba Tour Operator')
-@section('description', 'Syarat dan ketentuan layanan paket wisata Sujai Toba Sumatera. Terms & conditions for Lake Toba tour packages including payment, cancellation, and liability policies.')
+@section('title', 'Syarat dan Ketentuan – Sujai Toba Sumatera')
+@section('description', 'Syarat dan ketentuan layanan paket wisata Sujai Toba Sumatera: pemesanan, pembayaran, pembatalan, dan tanggung jawab layanan perjalanan Danau Toba.')
 @section('keywords', 'syarat ketentuan sujai toba sumatera, tour terms conditions lake toba, kebijakan pemesanan wisata, refund policy, lake toba tour package')
 
 @section('content')
@@ -15,12 +15,17 @@
                 <p class="font-bold text-slate-700 mb-1">Sujai Toba Sumatera</p>
                 <p>Nama Domain: <strong class="text-slate-800 font-medium">sujaitobasumatera.com</strong> — Brand resmi: <strong class="text-slate-800 font-medium">Sujai Toba Sumatera</strong></p>
                 <p>Dioperasikan oleh Sujai Toba Sumatera, berdomisili di {{ $siteSettings['general']['office_address'] ?? $siteSettings['general']['address'] ?? 'Jl. Trimurti 109, Berastagi, Kabupaten Karo, Sumatera Utara' }}.</p>
-                <p class="mt-2 text-[10px] text-slate-400">Terakhir diperbarui: Juni 2025</p>
+                @php
+                    $termsUpdated = !empty($content['updated_at'])
+                        ? \Illuminate\Support\Carbon::parse($content['updated_at'])->translatedFormat('d F Y')
+                        : 'Juni 2025';
+                @endphp
+                <p class="mt-2 text-[10px] text-slate-400">Terakhir diperbarui: {{ $termsUpdated }}</p>
             </div>
             
             <div class="prose prose-slate max-w-none text-slate-600 text-sm font-normal leading-relaxed">
                 @if(isset($content['content']))
-                    {!! $content['content'] !!}
+                    {!! strip_tags($content['content'], '<p><h2><h3><h4><ul><ol><li><strong><em><a><br><blockquote><table><thead><tbody><tr><th><td>') !!}
                 @else
                     <h3 class="text-slate-900 font-bold text-base mb-3 tracking-tight">1. Pendaftaran &amp; Pemesanan</h3>
                     <p class="mb-6">Setiap pemesanan dianggap sah apabila dilakukan melalui website resmi <strong class="text-slate-900 font-medium">sujaitobasumatera.com</strong> atau melalui jalur komunikasi resmi (WhatsApp/Email). Kami berhak meminta uang muka (DP) sebesar 30–50% sebagai tanda jadi pemesanan paket wisata sebelum proses konfirmasi akomodasi dilakukan.</p>

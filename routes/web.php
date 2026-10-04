@@ -43,9 +43,8 @@ Route::get('/home', function () {
 Route::get('/login', [WebAuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [WebAuthController::class, 'login'])->middleware('throttle:10,1');
 Route::post('/logout', [WebAuthController::class, 'logout'])->name('logout');
-Route::post('/register', [WebAuthController::class, 'register'])
-    ->name('register')
-    ->middleware('throttle:5,1');
+// Pendaftaran publik sengaja TIDAK disediakan: situs ini tidak punya area
+// pelanggan, akun hanya dibuat admin lewat panel (users.*).
 
 // API Sync (Realtime without Supabase)
 Route::get('/api/sync/version', [SyncController::class, 'getVersion'])->name('api.sync.version');
@@ -201,14 +200,15 @@ Route::get('/about', [PublicController::class, 'about'])->name('about');
 Route::get('/terms', [PublicController::class, 'terms'])->name('terms');
 Route::get('/privacy', [PublicController::class, 'privacy'])->name('privacy');
 Route::get('/payment', [PublicController::class, 'payment'])->name('payment');
-Route::post('/outbound/quote/submit', [PublicController::class, 'submitOutboundQuote'])->name('outbound.quote.submit');
+Route::post('/outbound/quote/submit', [PublicController::class, 'submitOutboundQuote'])->middleware('throttle:5,1')->name('outbound.quote.submit');
 
 // Invoice & Itinerary
-Route::get('/invoice/{code}', [PdfController::class, 'streamInvoice'])->name('invoice.download');
+// Kode booking dibatasi lajunya: tanpa ini, kode 6 karakter bisa ditebak massal.
+Route::get('/invoice/{code}', [PdfController::class, 'streamInvoice'])->middleware('throttle:30,1')->name('invoice.download');
 Route::get('/download-itinerary/{slug}', [PdfController::class, 'downloadItinerary'])->name('itinerary.download');
 Route::get('/track-booking', [PublicController::class, 'showTrackBookingForm'])->name('booking.track.form');
-Route::post('/track-booking', [PublicController::class, 'redirectTrackBooking'])->name('booking.track.lookup');
-Route::get('/track-booking/{code}', [PublicController::class, 'trackBooking'])->name('booking.track');
+Route::post('/track-booking', [PublicController::class, 'redirectTrackBooking'])->middleware('throttle:20,1')->name('booking.track.lookup');
+Route::get('/track-booking/{code}', [PublicController::class, 'trackBooking'])->middleware('throttle:30,1')->name('booking.track');
 
 // Dynamic OpenGraph Banners
 Route::get('/og-banner/{type}/{id}.webp', [PublicController::class, 'generateOgBanner'])->name('og-banner');

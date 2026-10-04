@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Paket Wisata Danau Toba dari ' . $originName . ' – Harga Terbaik 2026')
-@section('description', 'Pilihan paket liburan premium ke Danau Toba, Samosir, dan sekitarnya keberangkatan dari ' . $originName . ' bersama Sujai Toba Sumatera.')
+@section('title', 'Paket Wisata Danau Toba dari ' . $originName . ' – Harga Terbaik ' . date('Y') . ' | Sujai Toba Sumatera')
+@section('description', 'Paket wisata Danau Toba dari ' . $originName . ': rute penerbangan ke Kualanamu, penjemputan private, hotel & itinerary Samosir–Berastagi. Cek harga & pesan lewat WhatsApp.')
 @section('keywords', __('paket wisata danau toba dari ' . strtolower($originName) . ', travel danau toba dari ' . strtolower($originName) . ', tour samosir ' . strtolower($originName)))
 
 
@@ -43,7 +43,8 @@
                 'email'       => $schemaEmail,
                 'address'     => [
                     '@type'           => 'PostalAddress',
-                    'addressLocality' => 'Balige',
+                    'streetAddress'   => $siteSettings['general']['office_address'] ?? 'Jl. Trimurti 109 Berastagi Kabupaten Karo',
+                    'addressLocality' => 'Berastagi',
                     'addressRegion'   => 'Sumatera Utara',
                     'addressCountry'  => 'ID',
                 ],
@@ -68,6 +69,14 @@
                     'query-input' => 'required name=search_term_string',
                 ],
                 'inLanguage' => ['id', 'en', 'ms'],
+            ],
+            [
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => url('/')],
+                    ['@type' => 'ListItem', 'position' => 2, 'name' => 'Paket Wisata', 'item' => route('tour.packages')],
+                    ['@type' => 'ListItem', 'position' => 3, 'name' => 'Dari ' . $originName, 'item' => route('landing.origin', $kotaSlug)],
+                ],
             ],
         ],
     ];
@@ -484,6 +493,23 @@
                     ]
                 ];
             @endphp
+            @php
+                // Pertanyaan khusus kota ini -- satu-satunya FAQ yang berbeda antar
+                // halaman, dan yang paling dicari orang dari kota tersebut.
+                $faqs = array_merge([[
+                    'q' => 'Bagaimana cara ke Danau Toba dari ' . $originName . '?',
+                    'a' => 'Dari ' . $originName . ', terbang atau menuju Bandara Kualanamu (KNO) Medan, atau Bandara Silangit (DTB) bila jadwalnya tersedia. Setelah mendarat, tim Sujai Toba Sumatera menjemput Anda dengan kendaraan private menuju Parapat dan Pulau Samosir; perjalanan darat dari Kualanamu sekitar 3,5 hingga 4 jam. Kami bantu menyusun rute dan jadwal penjemputan sesuai jam kedatangan Anda.'
+                ]], $faqs);
+            @endphp
+            <script type="application/ld+json">{!! json_encode([
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'mainEntity' => collect($faqs)->map(fn ($f) => [
+                    '@type' => 'Question',
+                    'name' => $f['q'],
+                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['a']],
+                ])->values()->all(),
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
             <div class="space-y-2 md:space-y-4" x-data="{ selected: 1 }">
                 @foreach($faqs as $index => $faq)
                 <div class="bg-white px-5 md:px-6 rounded-2xl border border-slate-100 shadow-xs transition-shadow hover:shadow-sm">
@@ -505,6 +531,24 @@
             </div>
         </div>
     </section>
+
+    {{-- Tautan internal ke landing page kota lain: menyebarkan otoritas halaman
+         dan memberi perayap jalur ke seluruh halaman pSEO. --}}
+    @if(!empty($otherOrigins))
+    <section class="py-8 md:py-10 bg-white border-t border-slate-100">
+        <div class="max-w-5xl mx-auto px-5 md:px-8 text-center">
+            <h2 class="text-lg md:text-xl font-bold text-primary mb-4">{{ __('Berangkat dari kota lain?') }}</h2>
+            <div class="flex flex-wrap justify-center gap-2">
+                @foreach($otherOrigins as $o)
+                <a href="{{ route('landing.origin', $o['slug']) }}"
+                   class="px-4 py-2 rounded-full border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition">
+                    {{ __('Paket Wisata Danau Toba dari :city', ['city' => $o['name']]) }}
+                </a>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
 
     <!-- Cinema CTA -->
     <section class="py-8 md:py-14 px-5 md:px-8 bg-surface">

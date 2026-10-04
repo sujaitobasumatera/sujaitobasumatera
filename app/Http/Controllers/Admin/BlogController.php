@@ -30,8 +30,12 @@ class BlogController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
+                // Pencarian pada kolom 'content' (TEXT) dengan LIKE '%...'
+                // tidak bisa menggunakan indeks dan menyebabkan full table scan.
+                // Title + excerpt sudah cukup untuk kebutuhan pencarian admin.
                 $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('content', 'like', "%{$search}%");
+                    ->orWhere('excerpt', 'like', "%{$search}%")
+                    ->orWhere('author', 'like', "%{$search}%");
             });
         }
 
@@ -43,7 +47,7 @@ class BlogController extends Controller
             $query->where('status', $request->status);
         }
 
-        $blogs = $query->latest()->paginate(15);
+        $blogs = $query->with('coverImage')->latest()->paginate(15);
 
         return view('admin.blogs.index', compact('blogs'));
     }

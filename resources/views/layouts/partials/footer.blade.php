@@ -181,10 +181,15 @@
             </p>
             <div class="flex items-center gap-4">
                 @php
-                    $partnerLogoUrl = $siteSettings['cms_landing']['brand_partner_logo_url'] ?? 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Wonderful_Indonesia_logo.svg';
+                    // Tanpa nilai bawaan eksternal: hotlink ke Wikimedia sebelumnya
+                    // gagal dimuat (gambar rusak). Logo tampil hanya bila admin
+                    // mengunggah/mengisinya di pengaturan CMS.
+                    $partnerLogoUrl = $siteSettings['cms_landing']['brand_partner_logo_url'] ?? null;
                 @endphp
                 <div class="flex items-center gap-3">
+                    @if(!empty($partnerLogoUrl))
                     <x-premium-image :src="$partnerLogoUrl" alt="Wonderful Indonesia" class="h-6 opacity-30 grayscale hover:grayscale-0 hover:opacity-70 transition" />
+                    @endif
                     <span class="text-slate-500 font-label-caps text-[8px] uppercase tracking-wider leading-tight">{{ __('Agen Resmi') }}<br>Wonderful Indonesia</span>
                 </div>
             </div>

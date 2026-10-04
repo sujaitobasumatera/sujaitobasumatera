@@ -1,0 +1,33 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # 1. BLOKIR AKSES KE FOLDER .git (Sangat Penting!)
+    RewriteRule ^\.git - [F,L]
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Directory...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Handle Front Controller (Redirect everything to public folder)
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    # Block access to sensitive files
+    RewriteRule ^\.env$ - [F,L]
+    RewriteRule ^composer\.(json|lock)$ - [F,L]
+    RewriteRule ^package(-lock)?\.json$ - [F,L]
+    RewriteRule ^artisan$ - [F,L]
+    # Allow public storage assets, but block private storage subfolders
+    RewriteRule ^storage/(app|framework|logs)/(.*)$ - [F,L]
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|tests|vendor)/(.*)$ - [F,L]
+</IfModule>
+

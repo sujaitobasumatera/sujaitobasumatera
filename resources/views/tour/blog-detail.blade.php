@@ -145,7 +145,7 @@
                                 prose-blockquote:border-l-4 prose-blockquote:border-green-500 prose-blockquote:bg-green-50/50 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:text-slate-700 prose-blockquote:not-italic prose-blockquote:rounded-r-xl
                                 prose-img:rounded-2xl prose-img:shadow-sm">
                         @if(!empty($post->content) && strlen($post->content) > 10)
-                            {!! nl2br($post->content) !!}
+                            {!! nl2br(e($post->content)) !!}
                         @else
                             <p class="text-slate-400 italic text-center py-6">{{ $post->translated_excerpt }}</p>
                         @endif

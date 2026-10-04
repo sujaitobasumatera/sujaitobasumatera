@@ -108,8 +108,14 @@ class AppServiceProvider extends ServiceProvider
                 // Pending-bookings count for the admin notification bell. Only the
                 // admin layout renders it, so scope the query to admin routes instead
                 // of running a COUNT on every public visitor's request.
+                // Di-cache 60 detik — cukup cepat untuk terasa real-time tapi tidak
+                // memukul DB setiap klik di panel admin. BookingObserver sudah
+                // membersihkan 'pending_bookings_count' ketika status booking berubah.
                 if (! $this->app->runningInConsole() && request()->is('admin*')) {
-                    view()->share('pendingBookingsCount', Booking::where('status', 'pending')->count());
+                    $pendingCount = Cache::remember('pending_bookings_count', 60, function () {
+                        return Booking::where('status', 'pending')->count();
+                    });
+                    view()->share('pendingBookingsCount', $pendingCount);
                 }
             } catch (\Exception $e) {
                 // Silently fail if DB not ready

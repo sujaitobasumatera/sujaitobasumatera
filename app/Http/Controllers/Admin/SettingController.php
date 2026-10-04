@@ -15,91 +15,92 @@ class SettingController extends Controller
 
     public function generateSitemap(Request $request)
     {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>';
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-
-        // Base URLs
-        $baseUrl = url('/');
-        $urls = [
-            '',
-            '/tour',
-            '/tour/packages',
-            '/tour/blog',
-            '/about',
-            '/terms',
-            '/privacy',
-        ];
-
-        foreach ($urls as $url) {
-            $xml .= '<url>';
-            $xml .= '<loc>'.$baseUrl.$url.'</loc>';
-            $xml .= '<changefreq>daily</changefreq>';
-            $xml .= '<priority>0.8</priority>';
-            $xml .= '</url>';
-        }
-
-        // Packages (canonical)
-        $packages = Package::where('status', 'active')->get();
-        foreach ($packages as $package) {
-            $xml .= '<url>';
-            $xml .= '<loc>'.route('tour.package.detail', $package->slug).'</loc>';
-            $xml .= '<lastmod>'.($package->updatedAt ?? $package->createdAt)->format('Y-m-d').'</lastmod>';
-            $xml .= '<changefreq>weekly</changefreq>';
-            $xml .= '<priority>0.9</priority>';
-            $xml .= '</url>';
-        }
-
-        // Programmatic SEO: Packages × Cities
-        // e.g. /tour/paket-danau-toba-3h2m/dari-jakarta
-        $seoSetting    = Setting::where('key', 'general')->first();
-        $originsString = $seoSetting->value['seo_pseo_origins'] ?? 'jakarta, surabaya, bandung, bali, batam, palembang, makassar, semarang, yogyakarta, kuala-lumpur, singapore, penang, pekanbaru, padang, malaysia';
-        $allowedOrigins = array_values(array_filter(array_map(
-            fn($o) => str_replace(' ', '-', trim(strtolower($o))),
-            explode(',', $originsString)
-        )));
-
-        foreach ($packages as $package) {
-            $lastmod = ($package->updatedAt ?? $package->createdAt)->format('Y-m-d');
-            foreach ($allowedOrigins as $kota) {
-                $xml .= '<url>';
-                $xml .= '<loc>'.url('/tour/package/'.$package->slug.'-dari-'.$kota).'</loc>';
-                $xml .= '<lastmod>'.$lastmod.'</lastmod>';
-                $xml .= '<changefreq>weekly</changefreq>';
-                $xml .= '<priority>0.85</priority>';
-                $xml .= '</url>';
-            }
-        }
-
-        // Blogs
-        $blogs = Blog::where('status', 'published')->get();
-        foreach ($blogs as $blog) {
-            $xml .= '<url>';
-            $xml .= '<loc>'.route('tour.blog.detail', $blog->slug).'</loc>';
-            $xml .= '<lastmod>'.($blog->updatedAt ?? $blog->createdAt)->format('Y-m-d').'</lastmod>';
-            $xml .= '<changefreq>weekly</changefreq>';
-            $xml .= '<priority>0.7</priority>';
-            $xml .= '</url>';
-        }
-
-        // Programmatic SEO: City Landing Pages (/dari-{kota})
-        foreach ($allowedOrigins as $kota) {
-            $xml .= '<url>';
-            $xml .= '<loc>'.route('landing.origin', $kota).'</loc>';
-            $xml .= '<changefreq>weekly</changefreq>';
-            $xml .= '<priority>0.8</priority>';
-            $xml .= '</url>';
-        }
-
-        $xml .= '</urlset>';
-
+        // POST = admin menyimpan salinan statis; GET publik dilayani dari cache.
         if ($request->isMethod('post')) {
+            $xml = $this->buildSitemapXml();
             file_put_contents(public_path('sitemap.xml'), $xml);
+            \Illuminate\Support\Facades\Cache::forget('sitemap_xml_v2');
             $this->logActivity('system', 'Generated new sitemap.xml');
 
             return response()->json(['message' => 'Sitemap.xml berhasil diperbarui dan disimpan di folder public!']);
         }
 
-        return response($xml, 200, ['Content-Type' => 'application/xml']);
+        $xml = \Illuminate\Support\Facades\Cache::remember('sitemap_xml_v2', 3600, fn () => $this->buildSitemapXml());
+
+        return response($xml, 200, [
+            'Content-Type' => 'application/xml; charset=UTF-8',
+            'Cache-Control' => 'public, max-age=3600',
+        ]);
+    }
+
+    /**
+     * Hanya URL KANONIK yang masuk sitemap.
+     *
+     * Halaman paket versi "-dari-{kota}" (paket x kota) sengaja DIKELUARKAN:
+     * canonical-nya menunjuk ke paket induk, jadi mendaftarkannya di sini
+     * mengirim sinyal yang bertentangan ke Google ("indeks ini" vs "abaikan
+     * ini") dan menghabiskan crawl budget. Yang mewakili tiap kota asal adalah
+     * landing page /paket-wisata-danau-toba-dari-{kota} -- berdiri sendiri,
+     * ber-canonical diri sendiri -- dan itu yang didaftarkan.
+     */
+    private function buildSitemapXml(): string
+    {
+        $esc = fn (string $u) => htmlspecialchars($u, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+        $now = now()->format('Y-m-d');
+
+        $entries = [];
+        $add = function (string $loc, ?string $lastmod, string $freq, string $prio) use (&$entries, $esc) {
+            $entries[] = '<url><loc>'.$esc($loc).'</loc>'
+                .($lastmod ? '<lastmod>'.$lastmod.'</lastmod>' : '')
+                .'<changefreq>'.$freq.'</changefreq><priority>'.$prio.'</priority></url>';
+        };
+
+        // Halaman statis. /tour hanya mengalihkan ke beranda, jadi tidak didaftarkan.
+        $add(url('/'), $now, 'daily', '1.0');
+        $add(route('tour.packages'), $now, 'daily', '0.9');
+        $add(route('tour.gallery'), $now, 'weekly', '0.6');
+        $add(route('tour.blog'), $now, 'weekly', '0.7');
+        $add(route('about'), $now, 'monthly', '0.5');
+        $add(route('payment'), $now, 'monthly', '0.4');
+        $add(route('terms'), $now, 'yearly', '0.3');
+        $add(route('privacy'), $now, 'yearly', '0.3');
+
+        // Paket (kanonik)
+        foreach (Package::where('status', 'active')->get() as $package) {
+            $add(
+                route('tour.package.detail', $package->slug),
+                ($package->updatedAt ?? $package->createdAt)?->format('Y-m-d'),
+                'weekly',
+                '0.9'
+            );
+        }
+
+        // Blog
+        foreach (Blog::where('status', 'published')->get() as $blog) {
+            $add(
+                route('tour.blog.detail', $blog->slug),
+                ($blog->updatedAt ?? $blog->createdAt)?->format('Y-m-d'),
+                'monthly',
+                '0.7'
+            );
+        }
+
+        // Landing page kota asal (pSEO) -- satu per kota
+        $general = Setting::where('key', 'general')->first();
+        $originsString = $general?->value['seo_pseo_origins'] ?? 'jakarta, surabaya, bandung, bali, batam, palembang, makassar, semarang, yogyakarta, kuala-lumpur, singapore, penang, pekanbaru, padang, malaysia';
+        $origins = array_values(array_unique(array_filter(array_map(
+            fn ($o) => str_replace(' ', '-', trim(strtolower($o))),
+            explode(',', $originsString)
+        ))));
+
+        foreach ($origins as $kota) {
+            $add(route('landing.origin', $kota), $now, 'weekly', '0.7');
+        }
+
+        return '<?xml version="1.0" encoding="UTF-8"?>'
+            .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+            .implode('', $entries)
+            .'</urlset>';
     }
 
     public function refreshExchangeRates(Request $request)

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="antialiased">
+<html lang="{{ app()->getLocale() === 'my' ? 'ms' : str_replace('_', '-', app()->getLocale()) }}" class="antialiased">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -47,6 +47,8 @@
             : (!empty($siteSettings['general']['og_image_url']) ? imageUrl($siteSettings['general']['og_image_url']) : ogBannerUrl(null));
     @endphp
     <meta property="og:type" content="{{ isset($post) ? 'article' : 'website' }}">
+    <meta property="og:site_name" content="{{ $siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera' }}">
+    <meta property="og:locale" content="{{ ['id' => 'id_ID', 'my' => 'ms_MY', 'en' => 'en_US'][app()->getLocale()] ?? 'id_ID' }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="{{ strip_tags($__env->yieldContent('title', $siteSettings['general']['seo_meta_title'] ?? 'Sujai Toba Sumatera | Premium Tour Travel')) }}">
     <meta property="og:description" content="{{ strip_tags($__env->yieldContent('description', $siteSettings['general']['seo_meta_desc'] ?? 'Portal utama Sujai Toba Sumatera. Pilih layanan premium Tour Travel Sumatera Utara.')) }}">
@@ -416,13 +418,11 @@
     @include('layouts.partials.footer')
 
     @php
-        // Resolve the floating WhatsApp number from saved settings.
-        // env() returns null once config is cached, so never read COMPANY_PHONE here.
-        $waFloat = preg_replace('/[^0-9]/', '', (string) (
-            $siteSettings['general']['contact_whatsapp']
-            ?? config('services.whatsapp.number')
-            ?? ''
-        ));
+        // Satu sumber kebenaran — sama dengan navbar dan footer. Sebelumnya
+        // blok ini membaca $siteSettings['general']['contact_whatsapp'] secara
+        // langsung: jika admin menyimpan nomor baru, $waFloat bisa berbeda dari
+        // nomor yang sudah ditampilkan di tempat lain sampai cache dikosongkan.
+        $waFloat = \App\Helpers\ContactHelper::whatsappDigits();
     @endphp
     <!-- Floating WhatsApp & Top (Desktop Only) -->
     <div class="fixed bottom-8 right-8 z-[90] hidden md:flex flex-col gap-4" x-data="{ showTop: false }" @scroll.window="showTop = window.scrollY > 500">

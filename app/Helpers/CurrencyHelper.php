@@ -101,23 +101,44 @@ class CurrencyHelper
     /**
      * Manual IDR-per-unit rates from settings.
      *
+     * Di-cache dua lapis:
+     * 1. Static property ($cached) — nol query DB setelah panggilan pertama
+     *    dalam request yang sama, berapa pun harga yang ditampilkan.
+     * 2. Cache Laravel ('currency_manual_rates', 300 detik) — menghindari query
+     *    DB pada request berikutnya. SettingObserver membuang key ini saat
+     *    admin menyimpan pengaturan nilai tukar.
+     *
      * @return array{myr: float, sgd: float}
      */
+    protected static array $cachedRates = [];
+
     protected static function manualRates()
     {
-        $settings = Setting::where('key', 'general')->value('value') ?? [];
-        if (is_string($settings)) {
-            $settings = json_decode($settings, true) ?: [];
+        if (! empty(static::$cachedRates)) {
+            return static::$cachedRates;
         }
-        $finance = $settings['finance'] ?? [];
 
-        $myr = (float) ($finance['exchange_rate_manual_myr'] ?? self::DEFAULT_MYR_IDR);
-        $sgd = (float) ($finance['exchange_rate_manual_sgd'] ?? self::DEFAULT_SGD_IDR);
+        static::$cachedRates = \Illuminate\Support\Facades\Cache::remember(
+            'currency_manual_rates',
+            300,
+            function () {
+                $settings = Setting::where('key', 'general')->value('value') ?? [];
+                if (is_string($settings)) {
+                    $settings = json_decode($settings, true) ?: [];
+                }
+                $finance = $settings['finance'] ?? [];
 
-        return [
-            'myr' => $myr > 0 ? $myr : self::DEFAULT_MYR_IDR,
-            'sgd' => $sgd > 0 ? $sgd : self::DEFAULT_SGD_IDR,
-        ];
+                $myr = (float) ($finance['exchange_rate_manual_myr'] ?? self::DEFAULT_MYR_IDR);
+                $sgd = (float) ($finance['exchange_rate_manual_sgd'] ?? self::DEFAULT_SGD_IDR);
+
+                return [
+                    'myr' => $myr > 0 ? $myr : self::DEFAULT_MYR_IDR,
+                    'sgd' => $sgd > 0 ? $sgd : self::DEFAULT_SGD_IDR,
+                ];
+            }
+        );
+
+        return static::$cachedRates;
     }
 
     /**
