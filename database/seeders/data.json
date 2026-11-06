@@ -3,28 +3,28 @@
     {
       "id": 1,
       "name": "Admin Utama",
-      "email": "admin@sujailaketoba.com",
+      "email": "admin@sujaitobasumatera.com",
       "role": "admin",
       "created_at": "2026-01-01 08:00:00"
     },
     {
       "id": 2,
       "name": "Admin Tour",
-      "email": "tour@sujailaketoba.com",
+      "email": "tour@sujaitobasumatera.com",
       "role": "admin_tour",
       "created_at": "2026-01-15 09:00:00"
     },
     {
       "id": 3,
       "name": "Admin Finance",
-      "email": "finance@sujailaketoba.com",
+      "email": "finance@sujaitobasumatera.com",
       "role": "admin_finance",
       "created_at": "2026-02-01 10:00:00"
     },
     {
       "id": 4,
       "name": "Super Admin",
-      "email": "superadmin@sujailaketoba.com",
+      "email": "superadmin@sujaitobasumatera.com",
       "role": "super_admin",
       "created_at": "2026-01-01 07:00:00"
     }
@@ -725,6 +725,122 @@
       "cityId": 2,
       "cost_price": 100000,
       "created_at": "2026-05-10 10:00:00"
+    },
+    {
+      "id": 9,
+      "name": "Paket Sumatera Utara 6D5N",
+      "slug": "paket-sumatera-utara-6d5n",
+      "shortDescription": "Jelajahi Danau Toba, Samosir, Berastagi, dan Bukit Lawang dalam satu paket lengkap 6 hari 5 malam",
+      "description": "Nikmati petualangan terbaik Sumatera Utara dalam 6 hari 5 malam! Paket ini dirancang untuk wisatawan yang ingin merasakan semua keindahan Sumatera Utara secara menyeluruh: dari udara sejuk pegunungan Berastagi, eksotisme Danau Toba, budaya Batak di Pulau Samosir, hingga sensasi hutan tropis dan orangutan di Bukit Lawang.",
+      "locationTag": "Medan, Berastagi, Parapat, Samosir, Bukit Lawang",
+      "price": 3800000,
+      "priceDisplay": "per orang (min. 4 pax)",
+      "duration": "6 Hari 5 Malam",
+      "images": [
+        "images/sumut/toba_hero.webp",
+        "images/sumut/sipiso_piso.webp",
+        "images/sumut/orangutan.webp",
+        "images/sumut/berastagi.webp"
+      ],
+      "includes": [
+        "Hotel bintang 3 (5 malam, rotasi lokasi)",
+        "Transportasi AC selama tour",
+        "Makan 15x (5 breakfast, 5 lunch, 5 dinner)",
+        "Tiket masuk semua objek wisata",
+        "Boat ke Pulau Samosir",
+        "Guide berpengalaman & bersertifikasi",
+        "Air mineral harian",
+        "Asuransi perjalanan"
+      ],
+      "excludes": [
+        "Tiket pesawat/kereta",
+        "Pengeluaran pribadi",
+        "Tips guide & driver",
+        "Makan di luar jadwal",
+        "Drone fee (opsional)"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Kedatangan & Medan City Tour",
+          "activities": [
+            "Penjemputan di Bandara Kualanamu",
+            "City tour: Istana Maimun & Masjid Raya",
+            "Tjong A Fie Mansion",
+            "Kuliner khas Medan (mie Aceh, Soto Medan)",
+            "Check-in hotel Medan"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Medan – Berastagi",
+          "activities": [
+            "Sarapan pagi",
+            "Perjalanan ke Berastagi (±2 jam)",
+            "Gundaling Hill viewpoint",
+            "Air Terjun Sipiso-piso",
+            "Pasar buah Berastagi",
+            "Check-in hotel Berastagi"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Berastagi – Parapat",
+          "activities": [
+            "Sarapan pagi",
+            "Taman Alam Lumbini",
+            "Desa Lingga (wisata budaya Karo)",
+            "Perjalanan ke Parapat",
+            "Pemandangan Danau Toba dari Parapat",
+            "Check-in resort Parapat"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Pulau Samosir Full Day",
+          "activities": [
+            "Sarapan pagi",
+            "Naik boat ke Pulau Samosir",
+            "Huta Bolon Siallagan (makam raja-raja)",
+            "Desa Tomok",
+            "Tuktuk Siadong",
+            "Makan siang seafood",
+            "Pura Parhaladan",
+            "Kembali ke Parapat"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Parapat – Bukit Lawang",
+          "activities": [
+            "Sarapan pagi",
+            "Perjalanan ke Bukit Lawang",
+            "Briefing keselamatan trekking",
+            "Jungle trek & observasi orangutan",
+            "Sungai tubing",
+            "Check-in lodge Bukit Lawang"
+          ]
+        },
+        {
+          "day": 6,
+          "title": "Bukit Lawang – Pulang",
+          "activities": [
+            "Sarapan pagi",
+            "Morning trek (opsional)",
+            "Rehabilitation center orangutan",
+            "Perjalanan kembali ke Medan",
+            "Belanja oleh-oleh",
+            "Drop off Bandara/Stasiun"
+          ]
+        }
+      ],
+      "status": "active",
+      "isFeatured": true,
+      "cityId": 1,
+      "cost_price": 2400000,
+      "childPrice": 3000000,
+      "dronePrice": 1000000,
+      "created_at": "2026-10-03 07:00:00"
     }
   ],
   "package_images": [
@@ -781,6 +897,24 @@
       "package_id": 3,
       "image_path": "assets/images/packages/medan-2.jpg",
       "sort_order": 2
+    },
+    {
+      "id": 10,
+      "package_id": 9,
+      "image_path": "images/sumut/toba_hero.webp",
+      "sort_order": 1
+    },
+    {
+      "id": 11,
+      "package_id": 9,
+      "image_path": "images/sumut/sipiso_piso.webp",
+      "sort_order": 2
+    },
+    {
+      "id": 12,
+      "package_id": 9,
+      "image_path": "images/sumut/orangutan.webp",
+      "sort_order": 3
     }
   ],
   "package_amenities": [
@@ -1071,7 +1205,7 @@
       ],
       "status": "published",
       "published_at": "2026-04-01 10:00:00",
-      "metaTitle": "5 Destinasi Wisata Wajib di Danau Toba | Sujai Laketoba",
+      "metaTitle": "5 Destinasi Wisata Wajib di Danau Toba | Sujai Toba Sumatera",
       "metaDescription": "Jelajahi 5 destinasi wisata terbaik di Danau Toba yang harus dikunjungi. Dari Pulau Samosir hingga Air Terjun Sipiso-piso."
     },
     {
@@ -1091,7 +1225,7 @@
       ],
       "status": "published",
       "published_at": "2026-04-10 09:00:00",
-      "metaTitle": "Panduan Transfer dari Kualanamu ke Danau Toba | Sujai Laketoba",
+      "metaTitle": "Panduan Transfer dari Kualanamu ke Danau Toba | Sujai Toba Sumatera",
       "metaDescription": "Guide lengkap transportasi dari Bandara Kualanamu ke Danau Toba. Pilihan mobil, bus, dan shuttle."
     },
     {
@@ -1112,7 +1246,7 @@
       ],
       "status": "published",
       "published_at": "2026-04-15 14:00:00",
-      "metaTitle": "Kuliner Khas Medan yang Wajib Dicoba | Sujai Laketoba",
+      "metaTitle": "Kuliner Khas Medan yang Wajib Dicoba | Sujai Toba Sumatera",
       "metaDescription": "Rekomendasi makanan khas Medan yang harus dicoba. Dari Mie Aceh hingga Soto Medan."
     },
     {
@@ -1132,7 +1266,7 @@
       ],
       "status": "published",
       "published_at": "2026-04-20 11:00:00",
-      "metaTitle": "Halal Food Guide Danau Toba | Sujai Laketoba",
+      "metaTitle": "Halal Food Guide Danau Toba | Sujai Toba Sumatera",
       "metaDescription": "Panduan makanan halal di Danau Toba untuk wisatawan Muslim. Restoran dan tips kuliner."
     },
     {
@@ -1152,7 +1286,7 @@
       ],
       "status": "published",
       "published_at": "2026-04-25 08:00:00",
-      "metaTitle": "Tips Trekking Bukit Lawang untuk Pemula | Sujai Laketoba",
+      "metaTitle": "Tips Trekking Bukit Lawang untuk Pemula | Sujai Toba Sumatera",
       "metaDescription": "Tips trekking di Bukit Lawang untuk pemula. Persiapan, perlengkapan, dan keselamatan."
     },
     {
@@ -1173,7 +1307,7 @@
       ],
       "status": "published",
       "published_at": "2026-05-01 10:00:00",
-      "metaTitle": "Budaya Suku Batak di Samosir | Sujai Laketoba",
+      "metaTitle": "Budaya Suku Batak di Samosir | Sujai Toba Sumatera",
       "metaDescription": "Mengenal budaya dan tradisi suku Batak di Pulau Samosir. Rumah adat, upacara, dan kerajinan."
     },
     {
@@ -1529,21 +1663,25 @@
     {
       "key": "general",
       "value": {
-        "site_name": "Sujai Laketoba",
+        "site_name": "Sujai Toba Sumatera",
         "site_tagline": "Sumatera Utara Travel Experience",
-        "wa_number": "+62 813-2388-8207",
-        "contact_email": "info@sujailaketoba.com",
-        "contact_phone": "+62 813-2388-8207",
-        "address": "Jl. Sisingamangaraja No. 1, Parapat, Sumatera Utara",
-        "seo_meta_title": "Sujai Laketoba | Premium Tour Travel",
-        "seo_meta_desc": "Portal utama Sujai Laketoba. Pilih layanan premium Tour Travel Sumatera Utara.",
+        "wa_number": "+6282277848855",
+        "contact_whatsapp": "6282277848855",
+        "contact_whatsapp_2": "+6281397606622",
+        "contact_email": "info@sujaitobasumatera.com",
+        "contact_phone": "+6281397606622",
+        "address": "Jl. Trimurti 109 Berastagi Kabupaten Karo",
+        "office_address": "Jl. Trimurti 109 Berastagi",
+        "office_city": "Kabupaten Karo, Sumatera Utara",
+        "seo_meta_title": "Sujai Toba Sumatera | Premium Tour Travel",
+        "seo_meta_desc": "Portal utama Sujai Toba Sumatera. Pilih layanan premium Tour Travel Sumatera Utara.",
         "seo_meta_keywords": "tour danau toba, travel sumatera utara, paket wisata toba"
       }
     },
     {
       "key": "cms_landing",
       "value": {
-        "brand_name": "Sujai Laketoba",
+        "brand_name": "Sujai Toba Sumatera",
         "brand_tagline": "Sumatera Utara",
         "brand_icon": "icons/icon-192x192.png",
         "tour_title": "Tour &\nTravel.",
@@ -1559,17 +1697,17 @@
         "hero_title": "Explore the Beauty of Lake Toba",
         "hero_subtitle": "Nikmati pengalaman tak terlupakan menjelajahi keindahan Sumatera Utara bersama kami",
         "hero_image": "2026/04/lake-toba-premium.png",
-        "contact_wa_1": "+6281323888207",
-        "contact_wa_2": "+6281323888208",
-        "contact_email": "hello@sujailaketoba.com",
-        "contact_address": "Jl. Sisingamangaraja No. 1, Parapat, Sumatera Utara",
+        "contact_wa_1": "+6282277848855",
+        "contact_wa_2": "+6281397606622",
+        "contact_email": "hello@sujaitobasumatera.com",
+        "contact_address": "Jl. Trimurti 109 Berastagi Kabupaten Karo",
         "cta_text": "Mulai Petualangan Anda",
         "cta_link": "/tour/packages",
         "stat_trips": "1500+",
         "stat_customers": "7500+",
         "stat_destinations": "50+",
         "stat_awards": "15+",
-        "why_us_title": "Mengapa Memilih Sujai Laketoba?",
+        "why_us_title": "Mengapa Memilih Sujai Toba Sumatera?",
         "why_us_items": [
           {
             "title": "Pemandu Berpengalaman",
@@ -1597,11 +1735,11 @@
     {
       "key": "social_media",
       "value": {
-        "facebook": "https://facebook.com/sujailaketoba",
-        "instagram": "https://instagram.com/sujailaketoba",
-        "twitter": "https://twitter.com/sujailaketoba",
-        "youtube": "https://youtube.com/sujailaketoba",
-        "tiktok": "https://tiktok.com/@sujailaketoba"
+        "facebook": "https://facebook.com/sujaitobasumatera",
+        "instagram": "https://instagram.com/sujaitobasumatera",
+        "twitter": "https://twitter.com/sujaitobasumatera",
+        "youtube": "https://youtube.com/sujaitobasumatera",
+        "tiktok": "https://tiktok.com/@sujaitobasumatera"
       }
     },
     {
@@ -1609,7 +1747,7 @@
       "value": {
         "bank_name": "Bank Central Asia (BCA)",
         "bank_account": "1234567890",
-        "bank_holder": "PT Sujai Laketoba Travel",
+        "bank_holder": "PT Sujai Toba Sumatera Travel",
         "ewallet": {
           "dana": "+6281323888207",
           "gopay": "+6281323888207",

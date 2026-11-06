@@ -11,10 +11,13 @@ use App\Observers\BookingObserver;
 use App\Observers\PackageObserver;
 use App\Observers\SettingObserver;
 use App\Repositories\BookingRepository;
+use App\Services\AppConfigService;
 use App\Services\BookingService;
 use App\Services\DashboardService;
+use App\Services\TourService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -46,6 +49,13 @@ class AppServiceProvider extends ServiceProvider
         Booking::observe(BookingObserver::class);
         Setting::observe(SettingObserver::class);
 
+        // Dropdown navbar membaca katalog paket yang sebenarnya, jadi menu tidak
+        // pernah menjanjikan halaman yang tidak ada. Cache-nya dibersihkan oleh
+        // PackageObserver -> TourService::clearCache().
+        View::composer('layouts.partials.navbar', function ($view) {
+            $view->with('navPackages', (new TourService)->getNavPackages());
+        });
+
         // Share settings globally
         if (!$this->app->runningInConsole()) {
             try {
@@ -72,6 +82,11 @@ class AppServiceProvider extends ServiceProvider
 
                 view()->share('siteSettings', $decodedSettings);
 
+                // Admin-editable config, layered over .env. Fed from the cache
+                // above so this costs no extra query. See config/editable.php —
+                // credentials are excluded there and enforced in the service.
+                AppConfigService::apply($decodedSettings[AppConfigService::STORAGE_KEY] ?? null);
+
                 // Override Mail Config from Database Settings
                 if (isset($decodedSettings['mail'])) {
                     $mail = $decodedSettings['mail'];
@@ -90,10 +105,17 @@ class AppServiceProvider extends ServiceProvider
                     }
                 }
 
-                // Share pending bookings count globally for notification bell
-                if (!$this->app->runningInConsole()) {
-                    $pendingBookingsCount = Booking::where('status', 'pending')->count();
-                    view()->share('pendingBookingsCount', $pendingBookingsCount);
+                // Pending-bookings count for the admin notification bell. Only the
+                // admin layout renders it, so scope the query to admin routes instead
+                // of running a COUNT on every public visitor's request.
+                // Di-cache 60 detik — cukup cepat untuk terasa real-time tapi tidak
+                // memukul DB setiap klik di panel admin. BookingObserver sudah
+                // membersihkan 'pending_bookings_count' ketika status booking berubah.
+                if (! $this->app->runningInConsole() && request()->is('admin*')) {
+                    $pendingCount = Cache::remember('pending_bookings_count', 60, function () {
+                        return Booking::where('status', 'pending')->count();
+                    });
+                    view()->share('pendingBookingsCount', $pendingCount);
                 }
             } catch (\Exception $e) {
                 // Silently fail if DB not ready

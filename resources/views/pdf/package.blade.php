@@ -13,7 +13,7 @@
         }
         .header {
             text-align: center;
-            border-bottom: 2px solid #10B981;
+            border-bottom: 2px solid #10b951;
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
@@ -48,7 +48,7 @@
             font-size: 14px;
         }
         .meta-info strong {
-            color: #10B981;
+            color: #10b951;
         }
         .price {
             font-size: 20px;
@@ -91,7 +91,7 @@
         }
         .itinerary-day {
             font-weight: bold;
-            color: #10B981;
+            color: #10b951;
             font-size: 14px;
         }
         .itinerary-title {
@@ -117,9 +117,11 @@
 <body>
 
     <div class="header">
-        <h1>Sujai Laketoba</h1>
+        <h1>Sujai Toba Sumatera</h1>
         <p>Solusi Perjalanan & Outbound Terbaik di Sumatera Utara</p>
-        <p>Telp: {{ $settings['contact_whatsapp'] ?? '+6281234567890' }} | Email: {{ $settings['contact_email'] ?? 'hello@sujailaketoba.com' }}</p>
+        {{-- Nomor lewat ContactHelper, bukan nilai contoh '+6281234567890'
+             yang dulu tercetak di PDF yang dikirim ke calon pembeli. --}}
+        <p>Telp: {{ \App\Helpers\ContactHelper::whatsappDisplay() }} | Email: {{ \App\Helpers\ContactHelper::email() }}</p>
     </div>
 
     <div class="package-title">{{ $package->name }}</div>
@@ -128,7 +130,7 @@
         <table>
             <tr>
                 <td><strong>Durasi:</strong> {{ $package->duration }}</td>
-                <td class="price">Rp {{ number_format($package->price, 0, ',', '.') }} <span style="font-size:12px;color:#64748b;font-weight:normal;">/ pax</span></td>
+                <td class="price">{{ \App\Helpers\CurrencyHelper::formatIn($package->price, \App\Helpers\CurrencyHelper::PRICE_BASE) }} <span style="font-size:12px;color:#64748b;font-weight:normal;">/ pax</span></td>
             </tr>
             <tr>
                 <td><strong>Lokasi:</strong> {{ $package->locationTag ?? 'Sumatera Utara' }}</td>
@@ -183,7 +185,7 @@
     @endforelse
 
     <div class="footer">
-        Dokumen ini digenerate secara otomatis oleh sistem Sujai Laketoba.<br>
+        Dokumen ini digenerate secara otomatis oleh sistem Sujai Toba Sumatera.<br>
         Harga dan ketersediaan dapat berubah sewaktu-waktu. Silakan hubungi admin untuk konfirmasi.
     </div>
 

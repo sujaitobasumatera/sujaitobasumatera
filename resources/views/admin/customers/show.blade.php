@@ -4,7 +4,7 @@
 @section('page-title', 'Profil Pelanggan')
 
 @section('content')
-<div class="space-y-8 pb-20">
+<div class="space-y-8 pb-10">
     <div class="flex items-center justify-between">
         <a href="{{ route('admin.customers.index') }}" class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-slate-900 transition">
             <i class="fas fa-arrow-left"></i> Kembali
@@ -18,20 +18,20 @@
         <!-- Profile Info -->
         <div class="lg:col-span-1 space-y-8">
             <div class="bg-white rounded-[2.5rem] p-10 border border-slate-50 shadow-sm text-center">
-                <div class="w-24 h-24 rounded-[2.5rem] bg-indigo-50 text-indigo-500 flex items-center justify-center font-black text-3xl uppercase mx-auto mb-6 shadow-xl shadow-indigo-50">
+                <div class="w-24 h-24 rounded-[2.5rem] bg-green-100 text-green-700 flex items-center justify-center font-black text-3xl uppercase mx-auto mb-6 shadow-xl shadow-green-100">
                     {{ substr($customer->name, 0, 1) }}
                 </div>
                 <h2 class="text-2xl font-black text-slate-900 tracking-tight">{{ $customer->name }}</h2>
                 <p class="text-xs font-bold text-slate-400 mt-1">{{ $customer->email }}</p>
                 
-                <div class="grid grid-cols-2 gap-4 mt-10">
+                <div class="grid grid-cols-2 gap-4 mt-6">
                     <div class="p-5 rounded-3xl bg-slate-50 text-center">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Trip</p>
                         <p class="text-xl font-black text-slate-900">{{ $customer->total_bookings }}</p>
                     </div>
                     <div class="p-5 rounded-3xl bg-slate-50 text-center">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Lifetime Value</p>
-                        <p class="text-xl font-black text-emerald-600">Rp {{ number_format($customer->total_spent / 1000, 0) }}K</p>
+                        <p class="text-xl font-black text-green-600">{{ \App\Helpers\CurrencyHelper::formatIn($customer->total_spent, 'IDR') }}</p>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
                                     @php
                                         $colors = [
                                             'pending' => 'bg-amber-50 text-amber-600',
-                                            'confirmed' => 'bg-emerald-50 text-emerald-600',
+                                            'confirmed' => 'bg-green-50 text-green-600',
                                             'completed' => 'bg-blue-50 text-blue-600',
                                             'cancelled' => 'bg-rose-50 text-rose-600',
                                         ];
@@ -109,7 +109,7 @@
                                         </span>
                                     </td>
                                     <td class="px-5 md:px-10 py-6 text-right">
-                                        <span class="text-xs font-black text-slate-900 whitespace-nowrap">Rp {{ number_format($booking->totalPrice / 1000, 0) }}K</span>
+                                        <span class="text-xs font-black text-slate-900 whitespace-nowrap">{{ \App\Helpers\CurrencyHelper::formatIn($booking->totalPrice, $booking->currency) }}</span>
                                     </td>
                                 </tr>
                             @endforeach

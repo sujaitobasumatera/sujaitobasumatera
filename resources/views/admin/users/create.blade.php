@@ -82,7 +82,7 @@
 
                 <!-- Submit Buttons -->
                 <div class="flex items-center gap-4 pt-6 border-t border-gray-200">
-                    <button type="submit" class="inline-flex items-center justify-center bg-gradient-to-r from-toba-green to-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-toba-green/30 transition shadow-md">
+                    <button type="submit" class="inline-flex items-center justify-center bg-gradient-to-r from-toba-green to-green-600 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-toba-green/30 transition shadow-md">
                         <i class="fas fa-save mr-2"></i> Create User
                     </button>
                     <a href="{{ route('admin.users.index') }}" class="inline-flex items-center justify-center bg-gray-100 text-gray-700 px-8 py-3 rounded-xl font-bold hover:bg-gray-200 transition">

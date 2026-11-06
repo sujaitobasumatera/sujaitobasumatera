@@ -41,7 +41,7 @@ class NewBookingNotification extends Notification
         return (new MailMessage)
             ->subject('Pesanan Baru: '.$this->booking->bookingCode)
             ->greeting('Halo Admin,')
-            ->line('Ada pesanan baru masuk ke sistem Sujai Laketoba.')
+            ->line('Ada pesanan baru masuk ke sistem Sujai Toba Sumatera.')
             ->line('Kode Booking: '.$this->booking->bookingCode)
             ->line('Pelanggan: '.$this->booking->customerName)
             ->line('Paket: '.$packageName)

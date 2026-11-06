@@ -47,6 +47,10 @@ class BookingIntegrationTest extends TestCase
                 'startDate' => date('Y-m-d', strtotime('+1 day')),
                 'pax' => 2,
                 'notes' => 'Test booking via integration test',
+                // Persetujuan S&K + Privasi jadi wajib sejak commit a207940
+                // (UU PDP 27/2022 & PDPA). Tanpa baris ini tes mengirim form
+                // yang memang seharusnya ditolak, lalu mengeluh ditolak.
+                'terms' => 'on',
             ]);
 
         $response->assertStatus(302);

@@ -20,6 +20,12 @@ class BookingRepository
             $query->where('type', $filters['type']);
         }
 
+        // Filter category sebelumnya dikirim dari BookingController tapi tidak
+        // pernah diproses di sini — filter dropdown di admin diabaikan diam-diam.
+        if (! empty($filters['category'])) {
+            $query->whereHas('package', fn ($q) => $q->where('category', $filters['category']));
+        }
+
         if (isset($filters['search'])) {
             $query->where(function ($q) use ($filters) {
                 $q->where('bookingCode', 'like', "%{$filters['search']}%")

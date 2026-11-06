@@ -23,11 +23,31 @@
         <p class="text-xs text-gray-500 mb-3">{{ $help }}</p>
     @endif
 
+    <!-- Design Guidelines Guide -->
+    <div class="mb-3 p-3.5 rounded-xl bg-green-50 border border-green-200 text-xs text-slate-600 space-y-1.5 shadow-sm">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 font-black text-slate-800 text-[11px] uppercase tracking-wider">
+                <i class="fas fa-ruler-combined text-toba-green"></i>
+                <span>Standar Ukuran Gambar &amp; Rasio</span>
+            </div>
+            <button type="button" @click="$dispatch('open-image-guide')"
+                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-green-700 hover:bg-green-800 text-white font-bold text-[10px] transition shadow-sm">
+                <i class="fas fa-table-list text-[9px]"></i>
+                <span>Lihat Semua Ukuran</span>
+            </button>
+        </div>
+        <p class="text-[11px] leading-relaxed">
+            • <strong>Rekomendasi Utama:</strong> <span class="font-bold text-slate-900">1600 &times; 1200 px</span> (Rasio <strong>4:3</strong>). Resolusi minimal 1200 &times; 900 px.<br>
+            • <strong>Foto Sampul:</strong> Gambar pertama otomatis dijadikan foto sampul kartu paket &amp; thumbnail share WhatsApp.<br>
+            • <strong>Komposisi:</strong> Letakkan titik fokus/objek di tengah dengan margin aman 10% dari tepi bingkai.
+        </p>
+    </div>
+
     <!-- Media Library Picker Button -->
     <div class="flex flex-col gap-4 mb-4">
         <button type="button" @click="openMediaPicker()" 
-                class="w-full border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-indigo-500 hover:bg-indigo-50/30 transition group bg-gray-50/50 flex flex-col items-center justify-center gap-3">
-            <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
+                class="w-full border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-green-700 hover:bg-green-100/30 transition group bg-gray-50/50 flex flex-col items-center justify-center gap-3">
+            <div class="w-14 h-14 rounded-2xl bg-green-100 text-green-800 flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
                 <i class="fas fa-images text-2xl"></i>
             </div>
             <p class="text-lg font-black text-slate-800 tracking-tight">Pilih dari Media Library</p>
@@ -42,13 +62,19 @@
          :class="{{ $multiple ? '\'grid-cols-3 sm:grid-cols-4 md:grid-cols-6\'' : '\'grid-cols-1\'' }}" 
          x-show="selectedMedia.length > 0">
         <template x-for="(item, idx) in selectedMedia" :key="'media-' + item.id">
-            <div class="relative aspect-square rounded-lg overflow-hidden border-2 border-indigo-500 shadow-lg group">
+            <div class="relative aspect-square rounded-lg overflow-hidden border-2 border-green-700 shadow-lg group">
                 <img :src="item.thumbnail_url || item.url" 
                      :alt="item.alt_text || 'Selected image'"
                      class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                <div class="absolute inset-0 bg-slate-900/50 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                    <button type="button" @click="$dispatch('zoom-image', { url: item.url || item.thumbnail_url, title: item.title || item.alt_text || 'Foto Galeri' })"
+                            class="w-9 h-9 rounded-lg bg-slate-900/90 hover:bg-slate-900 text-white flex items-center justify-center shadow-lg transition"
+                            title="Pratinjau & Zoom Foto">
+                        <i class="fas fa-search-plus text-xs"></i>
+                    </button>
                     <button type="button" @click="removeSelectedMedia(idx)" 
-                            class="w-8 h-8 rounded-lg bg-rose-500 text-white flex items-center justify-center shadow-lg hover:bg-rose-600 transition">
+                            class="w-9 h-9 rounded-lg bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center shadow-lg transition"
+                            title="Hapus">
                         <i class="fas fa-times text-xs"></i>
                     </button>
                 </div>
@@ -56,7 +82,7 @@
                 <input type="hidden" 
                        :name="{{ $multiple ? "'{$name}_media_ids[]'" : "'{$name}_media_id'" }}" 
                        :value="item.id">
-                <div class="absolute top-1 right-1 bg-indigo-600 text-[7px] text-white px-2 py-1 rounded-full font-black tracking-widest">LIBRARY</div>
+                <div class="absolute top-1 right-1 bg-green-800 text-[7px] text-white px-2 py-1 rounded-full font-black tracking-widest pointer-events-none">LIBRARY</div>
             </div>
         </template>
     </div>
@@ -79,17 +105,23 @@
          :class="{{ $multiple ? '\'grid-cols-3 sm:grid-cols-4 md:grid-cols-6\'' : '\'grid-cols-1\'' }}" 
          x-show="localPreviews.length > 0">
         <template x-for="(preview, idx) in localPreviews" :key="'local-' + idx">
-            <div class="relative aspect-square rounded-lg overflow-hidden border-2 border-emerald-500 shadow-lg group">
+            <div class="relative aspect-square rounded-lg overflow-hidden border-2 border-green-500 shadow-lg group">
                 <img :src="preview.url" 
                      :alt="preview.file.name"
                      class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                <div class="absolute inset-0 bg-slate-900/50 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                    <button type="button" @click="$dispatch('zoom-image', { url: preview.url, title: preview.file.name })"
+                            class="w-9 h-9 rounded-lg bg-slate-900/90 hover:bg-slate-900 text-white flex items-center justify-center shadow-lg transition"
+                            title="Pratinjau & Zoom Foto">
+                        <i class="fas fa-search-plus text-xs"></i>
+                    </button>
                     <button type="button" @click="removeLocalFile(idx)" 
-                            class="w-8 h-8 rounded-lg bg-rose-500 text-white flex items-center justify-center shadow-lg hover:bg-rose-600 transition">
+                            class="w-9 h-9 rounded-lg bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center shadow-lg transition"
+                            title="Hapus">
                         <i class="fas fa-times text-xs"></i>
                     </button>
                 </div>
-                <div class="absolute top-1 right-1 bg-emerald-600 text-[7px] text-white px-2 py-1 rounded-full font-black tracking-widest">LOCAL</div>
+                <div class="absolute top-1 right-1 bg-green-600 text-[7px] text-white px-2 py-1 rounded-full font-black tracking-widest pointer-events-none">LOCAL</div>
             </div>
         </template>
     </div>

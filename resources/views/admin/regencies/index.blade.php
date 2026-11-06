@@ -21,8 +21,8 @@
 
     {{-- Flash Messages --}}
     @if(session('success'))
-        <div class="flex items-center gap-3 p-5 bg-emerald-50 border border-emerald-100 rounded-2xl text-emerald-700 text-sm font-bold">
-            <i class="fas fa-check-circle text-emerald-500 text-lg"></i>
+        <div class="flex items-center gap-3 p-5 bg-green-50 border border-green-100 rounded-2xl text-green-700 text-sm font-bold">
+            <i class="fas fa-check-circle text-green-500 text-lg"></i>
             {{ session('success') }}
         </div>
     @endif
@@ -40,7 +40,7 @@
                 @endforeach
             </select>
         </div>
-        <button type="submit" class="px-8 py-3 bg-toba-green text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition shadow-lg shadow-toba-green/20">
+        <button type="submit" class="px-8 py-3 bg-toba-green text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-green-600 transition shadow-lg shadow-toba-green/20">
             <i class="fas fa-filter mr-2"></i>Filter
         </button>
         @if(request('province_id'))
@@ -93,7 +93,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="px-8 py-20 text-center">
+                        <td colspan="4" class="px-8 py-10 text-center">
                             <div class="flex flex-col items-center gap-4 text-slate-300">
                                 <i class="fas fa-map text-4xl"></i>
                                 <p class="font-black text-sm uppercase tracking-widest">Tidak ada data kabupaten</p>

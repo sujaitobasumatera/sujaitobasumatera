@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Regency extends Model
 {
-    protected $fillable = ['province_id', 'name'];
+    protected $fillable = ['province_id', 'name', 'category', 'image'];
 
     public function province()
     {

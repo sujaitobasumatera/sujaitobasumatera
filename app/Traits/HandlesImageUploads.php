@@ -63,7 +63,7 @@ trait HandlesImageUploads
             $width = imagesx($image);
             $height = imagesy($image);
 
-            $text = 'sujailaketoba.com';
+            $text = 'sujaitobasumatera.com';
 
             $font = 5; // Built-in font size (1-5)
             $fontWidth = imagefontwidth($font);
@@ -121,7 +121,7 @@ trait HandlesImageUploads
         if ($category && $category !== 'uncategorized' && $category !== 'uploads') {
             $catFormatted = ucwords(str_replace(['-', '_'], ' ', $category));
 
-            return "Foto {$name} - Kategori {$catFormatted} | Wisata Danau Toba Sujailaketoba";
+            return "Foto {$name} - Kategori {$catFormatted} | Wisata Danau Toba Sujaitobasumatera";
         }
 
         return "Pesona Keindahan {$name} - Wonderful Lake Toba Tour";
@@ -212,10 +212,36 @@ trait HandlesImageUploads
     }
 
     /**
+     * Reject anything that is not a bitmap image before it can hit a raw-store fallback.
+     * Uses the content-sniffed MIME (finfo) plus an extension allowlist. SVG is excluded
+     * on purpose (it can carry scripts → stored XSS when served inline).
+     *
+     * @throws \RuntimeException
+     */
+    protected function assertUploadedImage($file): void
+    {
+        $allowedMimes = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/webp', 'image/gif'];
+        $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+        $ext = strtolower((string) (method_exists($file, 'getClientOriginalExtension') ? $file->getClientOriginalExtension() : ''));
+        $mime = method_exists($file, 'getMimeType') ? (string) $file->getMimeType() : '';
+
+        if (! in_array($mime, $allowedMimes, true) || ! in_array($ext, $allowedExt, true)) {
+            throw new \RuntimeException('File ditolak: hanya gambar JPG, PNG, WEBP, atau GIF yang diizinkan.');
+        }
+    }
+
+    /**
      * Core upload and conversion engine.
      */
     protected function uploadAndConvert($file, $directory = 'uploads', $quality = 80, $watermark = false)
     {
+        // SECURITY: never let a non-image reach the raw-store fallbacks below (GD missing
+        // at :231, or decode failure at :313) — those keep the original extension, so a
+        // .php/.svg/.html upload would land in public/storage (RCE / stored XSS). Every
+        // upload path funnels through here via uploadAndIndex(), so this one guard covers all.
+        $this->assertUploadedImage($file);
+
         // Ensure directory exists
         if (! Storage::disk('public')->exists($directory)) {
             Storage::disk('public')->makeDirectory($directory);
@@ -436,6 +462,53 @@ trait HandlesImageUploads
     }
 
     /**
+     * SSRF guard: true only if the URL is http(s) and every resolved IP is a public address.
+     */
+    protected function isPublicHttpUrl($url): bool
+    {
+        $parts = parse_url($url);
+        if (! $parts || ! in_array(strtolower($parts['scheme'] ?? ''), ['http', 'https'], true)) {
+            return false;
+        }
+
+        $host = $parts['host'] ?? '';
+        if ($host === '') {
+            return false;
+        }
+
+        $ips = [];
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            $ips[] = $host;
+        } else {
+            foreach (@dns_get_record($host, DNS_A + DNS_AAAA) ?: [] as $r) {
+                if (! empty($r['ip'])) {
+                    $ips[] = $r['ip'];
+                }
+                if (! empty($r['ipv6'])) {
+                    $ips[] = $r['ipv6'];
+                }
+            }
+            $resolved = @gethostbyname($host);
+            if ($resolved && $resolved !== $host) {
+                $ips[] = $resolved;
+            }
+        }
+
+        if (empty($ips)) {
+            return false;
+        }
+
+        foreach ($ips as $ip) {
+            // Reject private + reserved (loopback, link-local, LAN, cloud-metadata) ranges.
+            if (! filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Download an image from an external URL, convert to WebP, and index to Media Library.
      *
      * @param  string  $url
@@ -449,6 +522,12 @@ trait HandlesImageUploads
     {
         try {
             if (! filter_var($url, FILTER_VALIDATE_URL)) {
+                return false;
+            }
+
+            // SECURITY (SSRF): only fetch public http(s) hosts. Blocks loopback, private,
+            // and link-local ranges (127.0.0.1, 169.254.169.254 cloud metadata, 10/172/192 LAN).
+            if (! $this->isPublicHttpUrl($url)) {
                 return false;
             }
 

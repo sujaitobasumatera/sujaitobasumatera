@@ -9,7 +9,10 @@
   font-family: 'Material Symbols Outlined';
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  /* block, bukan swap: font ikon. swap menampilkan teks ligatur mentah
+     ("travel_explore" dll) selama font belum termuat. block menyembunyikannya
+     sampai glyph siap sehingga tidak ada flash teks. */
+  font-display: block;
   src: url('../fonts/material-symbols-subset.woff2') format('woff2');
 }
 
@@ -21,63 +24,62 @@
 @theme {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 
-  /* Brand Colors - Sujai Laketoba (Darkened for Accessibility) */
-  --color-toba-green: #166534;      /* Emerald 800 - Lebih kontras */
-  --color-toba-accent: #15803d;     /* Emerald 700 - Lebih solid */
-  --color-toba-light: #f0fdf4;      /* Hijau sangat muda */
-  --color-toba-blue: #075985;       /* Sky 800 */
+  /* ============================================================
+     PALET SUJAI LAKETOBA
+     Aturan: SEMUA hijau wajib di hue 143deg. Tidak ada pengecualian.
+     Butuh hijau lebih muda/pekat? Pakai modifier opasitas
+     (bg-toba-green/10), JANGAN bikin hex baru.
+     ============================================================ */
+
+  /* -- Hijau: identitas (hue 143deg) -- */
+  --color-toba-green: #166534;      /* HIJAU MEREK - 143deg, 7.13:1 di putih */
+  --color-primary: #052e15;         /* 143deg - latar gelap besar, 14.91:1 */
+  --color-primary-container: #0b3c1e; /* 143deg - hover & blok sorot, 12.51:1 */
+  --color-on-primary-container: #77a789; /* 143deg - teks di atas primary-container */
+  --color-on-primary: #ffffff;
+
+  /* -- Oranye: ajakan bertindak (hue 24-28deg) -- */
+  --color-toba-orange: #e67e22;     /* tombol & state aktif */
+  --color-toba-orange-dark: #d35400; /* hover tombol */
+
+  /* -- Emas: aksen sekunder (hue 43-48deg, ~197 pemakaian) -- */
+  --color-secondary: #735c00;
+  --color-secondary-container: #fed65b;
+  --color-secondary-fixed: #ffe088;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-fixed: #241a00;
+  --color-on-secondary-fixed-variant: #574500;
+
+  /* -- Merah: semantik galat saja, bukan warna merek -- */
+  --color-error: #ba1a1a;
+
+  /* -- Netral -- */
+  --color-background: #fcf9f8;
+  --color-surface: #fcf9f8;
+  --color-surface-container: #f0edec;
+  --color-surface-container-low: #f6f3f2;
+  --color-surface-container-highest: #e5e2e1;
+  --color-surface-variant: #e5e2e1;
+  --color-on-background: #1c1b1b;
+  --color-on-surface: #1c1b1b;
+  --color-on-surface-variant: #414942;
+  --color-outline: #717972;
+  --color-outline-variant: #c0c9c3;
+
+  /* -- Invoice --
+     Dulu warna ini hidup di dalam tailwind.config yang ditulis inline di
+     invoice/show.blade.php dan dikompilasi di browser oleh cdn.tailwindcss.com.
+     Invoice adalah dokumen yang disimpan, dicetak, dan dibuka lagi berbulan
+     kemudian: kalau CDN-nya diblokir jaringan kantor atau mati, tamu menerima
+     teks mentah tanpa gaya. Sekarang ikut ter-build bersama aset lain. */
+  --color-brand: #006b29;
+  --color-brand-dark: #004d1e;
+  --color-brand-light: #e0f2e7;
+  --color-brand-accent: #d4af37;
+
   /* Premium Shadows - Softened for Minimalist look */
   --shadow-premium: 0 12px 30px -10px rgba(0, 0, 0, 0.04);
   --shadow-glass: 0 4px 20px 0 rgba(15, 23, 42, 0.03);
-
-  /* Stitch Redesign Colors */
-  --color-inverse-primary: #a0d2b0;
-  --color-on-error: #ffffff;
-  --color-surface-container-highest: #e5e2e1;
-  --color-surface: #fcf9f8;
-  --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #55252b;
-  --color-on-tertiary-fixed: #360d14;
-  --color-tertiary: #3b1017;
-  --color-surface-container: #f0edec;
-  --color-on-primary: #ffffff;
-  --color-surface-bright: #fcf9f8;
-  --color-secondary-container: #fed65b;
-  --color-on-background: #1c1b1b;
-  --color-secondary-fixed: #ffe088;
-  --color-inverse-surface: #313030;
-  --color-background: #fcf9f8;
-  --color-tertiary-fixed-dim: #fdb3b9;
-  --color-surface-tint: #3a684c;
-  --color-surface-container-lowest: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-error: #ba1a1a;
-  --color-on-surface-variant: #414942;
-  --color-on-secondary-fixed-variant: #574500;
-  --color-on-primary-fixed-variant: #224f36;
-  --color-surface-container-low: #f6f3f2;
-  --color-primary-container: #0b3c24;
-  --color-on-primary-container: #77a788;
-  --color-surface-dim: #dcd9d9;
-  --color-on-secondary: #ffffff;
-  --color-primary: #002513;
-  --color-outline: #717972;
-  --color-on-tertiary-container: #ce8a90;
-  --color-on-secondary-fixed: #241a00;
-  --color-on-secondary-container: #745c00;
-  --color-secondary: #735c00;
-  --color-on-error-container: #93000a;
-  --color-on-tertiary-fixed-variant: #6b373d;
-  --color-inverse-on-surface: #f3f0ef;
-  --color-outline-variant: #c1c9c0;
-  --color-primary-fixed-dim: #a0d2b0;
-  --color-surface-container-high: #ebe7e7;
-  --color-tertiary-fixed: #ffdadb;
-  --color-on-primary-fixed: #002110;
-  --color-surface-variant: #e5e2e1;
-  --color-primary-fixed: #bceecb;
-  --color-on-surface: #1c1b1b;
-  --color-secondary-fixed-dim: #e9c349;
 
   /* Design System Spacing Tokens */
   --spacing-margin-desktop: 80px;
@@ -109,6 +111,9 @@
 }
 
 @layer base {
+  /* Alpine: sembunyikan elemen x-show sebelum Alpine boot (anti flash-of-open-dropdown) */
+  [x-cloak] { display: none !important; }
+
   .material-symbols-outlined {
     font-family: 'Material Symbols Outlined';
     font-weight: normal;
@@ -164,7 +169,7 @@
 
   .btn-premium:hover {
     @apply -translate-y-0.5;
-    box-shadow: 0 8px 20px -8px rgba(16, 185, 129, 0.12);
+    box-shadow: 0 8px 20px -8px rgba(16, 185, 81, 0.12);
   }
 
   .glass-card {
@@ -257,6 +262,225 @@
 .delay-300 { animation-delay: 0.3s; }
 .delay-500 { animation-delay: 0.5s; }
 
+/* Blok yang menembus padding induknya sampai tepi layar -- hanya di mobile.
+   Dipakai halaman detail tanpa form (/tour/detail): media yang menempel tepi
+   layar membuat halaman terbaca seperti poster, bukan seperti kartu di dalam
+   kotak. Di >=768px blok kembali normal mengikuti grid.
+
+   Pakai calc(50% - 50vw), bukan nilai margin tetap: dengan begitu ia tidak
+   perlu tahu berapa padding induknya, jadi mengubah --spacing-margin-mobile
+   tidak diam-diam merusak keselarasannya. */
+.bleed-mobile {
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  border-radius: 0;
+}
+.bleed-mobile img,
+.bleed-mobile iframe,
+.bleed-mobile video {
+  border-radius: 0;
+}
+@media (min-width: 768px) {
+  .bleed-mobile {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* ============================================================
+   IRAMA VERTIKAL DI PONSEL
+   ============================================================
+   Jarak antar-bagian di situs ini ditulis dengan ukuran desktop (py-24 = 96px,
+   py-36 = 144px) TANPA varian mobile, jadi angka yang sama ikut terpakai apa
+   adanya di layar 375px. Di sana ia bukan "napas" lagi, melainkan layar-layar
+   kosong yang harus digulir.
+
+   Dikoreksi di satu tempat, bukan dengan menyunting ~150 kelas di 10+ file:
+   perubahan sebesar itu mustahil ditinjau, dan satu kelas yang terlewat
+   langsung terlihat sebagai bagian yang jomplang.
+
+   HANYA berlaku < 768px. Utilitas ber-prefix (md:py-24) dibungkus media query
+   min-width oleh Tailwind, jadi tampilan desktop tidak tersentuh sama sekali.
+
+   Mau menyetel ulang? Ubah angkanya di sini. Mau satu bagian tetap lapang?
+   Beri kelas md:-nya, atau naikkan spesifisitasnya seperti .layout-rapat. */
+@media (max-width: 767px) {
+  .py-36 { padding-top: 2.25rem; padding-bottom: 2.25rem; }
+  .py-24 { padding-top: 1.75rem; padding-bottom: 1.75rem; }
+  .py-20 { padding-top: 1.625rem; padding-bottom: 1.625rem; }
+  .py-16 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+  .py-12 { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+
+  .pt-32 { padding-top: 1.75rem; }
+  .pt-20 { padding-top: 1.625rem; }
+  .pt-16 { padding-top: 1.5rem; }
+  .pb-32 { padding-bottom: 1.75rem; }
+  .pb-24 { padding-bottom: 1.75rem; }
+
+  .mb-16 { margin-bottom: 1.25rem; }
+  .mb-14 { margin-bottom: 1.125rem; }
+  .mb-12 { margin-bottom: 1rem; }
+  .mb-10 { margin-bottom: 0.875rem; }
+  .mt-16 { margin-top: 1.25rem; }
+  .mt-12 { margin-top: 1rem; }
+
+  .gap-16 { gap: 1.25rem; }
+  .gap-12 { gap: 1rem; }
+  .gap-10 { gap: 0.875rem; }
+
+  .space-y-16 > :not([hidden]) ~ :not([hidden]) { margin-top: 1.25rem; }
+  .space-y-12 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+  .space-y-10 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.875rem; }
+}
+
+/* ============================================================
+   KERAPATAN DALAM-BLOK DI PONSEL — SELURUH HALAMAN PUBLIK
+   ============================================================
+   Blok di atas merapatkan jarak ANTAR-BAGIAN (py-24, space-y-16). Yang tersisa
+   adalah jarak DI DALAM blok: padding kartu 32px, gap grid 32px, margin judul
+   24px. Ditulis dengan ukuran desktop, dipakai apa adanya di layar 375px --
+   di sana ia memakan lebar bacaan, bukan memberi napas.
+
+   Angka-angka ini awalnya hanya berlaku di /tour/detail lewat pembungkus
+   .layout-rapat. Sudah terbukti enak dibaca di ponsel, jadi dinaikkan ke
+   seluruh situs publik alih-alih disalin per halaman.
+
+   Kenapa disaring .situs-publik: panel admin memuat berkas CSS yang sama.
+   Tabel dan formulir di sana padat karena memang harus, dan tidak boleh ikut
+   berubah gara-gara halaman jualan minta lebih rapat.
+
+   Selector .situs-publik .x lebih spesifik (0,2,0) daripada utilitas Tailwind
+   (0,1,0), jadi menang tanpa perlu !important. Berlaku < 768px saja: utilitas
+   ber-prefix (md:p-8) dibungkus media query min-width oleh Tailwind, jadi
+   desktop tidak tersentuh.
+
+   Mau satu blok tetap lapang? Beri kelas md:-nya, atau naikkan spesifisitasnya
+   satu tingkat lagi. */
+@media (max-width: 767px) {
+  .situs-publik .space-y-8 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.875rem; }
+  .situs-publik .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; }
+
+  .situs-publik .pt-8 { padding-top: 0.875rem; }
+  .situs-publik .py-12 { padding-top: 1.125rem; padding-bottom: 1.125rem; }
+  .situs-publik .py-10 { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+  .situs-publik .py-7 { padding-top: 0.875rem; padding-bottom: 0.875rem; }
+
+  .situs-publik .p-8 { padding: 0.875rem; }
+  .situs-publik .p-6 { padding: 0.875rem; }
+  .situs-publik .p-5 { padding: 0.75rem; }
+  .situs-publik .p-4 { padding: 0.625rem; }
+
+  .situs-publik .gap-8 { gap: 1rem; }
+  .situs-publik .gap-5 { gap: 0.625rem; }
+  .situs-publik .gap-4 { gap: 0.5rem; }
+  .situs-publik .gap-y-5 { row-gap: 0.75rem; }
+
+  .situs-publik .mb-12 { margin-bottom: 0.875rem; }
+  .situs-publik .mb-8 { margin-bottom: 0.75rem; }
+  .situs-publik .mb-6 { margin-bottom: 0.625rem; }
+  .situs-publik .mb-5 { margin-bottom: 0.5rem; }
+  .situs-publik .mt-4 { margin-top: 0.5rem; }
+}
+
+/* Halaman detail tanpa form (/tour/detail) dibaca sambil menggulir cepat.
+   Angka dalam-bloknya kini sama dengan sisa situs (blok di atas); yang tersisa
+   khusus di sini hanya pembungkusnya sendiri. */
+@media (max-width: 767px) {
+  .layout-rapat {
+    padding-top: 1.25rem;
+    row-gap: 1.25rem;
+  }
+  /* space-y-16 memisahkan bagian-bagian besar: 64px per sekat, dan halaman
+     ini punya banyak sekat. Ini penyumbang ruang kosong terbesar setelah
+     padding pembungkus. */
+  .layout-rapat .space-y-16 > :not([hidden]) ~ :not([hidden]) { margin-top: 1.75rem; }
+}
+
+/* ============================================================
+   LANTAI UKURAN HURUF DI PONSEL — SELURUH HALAMAN PUBLIK
+   ============================================================
+   Situs ini banyak memakai 9-12px untuk label, keterangan, dan isi kartu.
+   Di monitor 27 inci ukuran itu terlihat rapi; di ponsel yang dipegang
+   sambil berjalan ia berhenti jadi tulisan dan berubah jadi tekstur abu-abu.
+   Isi paket -- daftar Termasuk/Tidak Termasuk yang justru menentukan orang
+   jadi memesan atau tidak -- termasuk yang tertulis 12px rapat.
+
+   Yang dinaikkan hanya ukuran terkecilnya, 1-2px, bukan seluruh skala:
+   tujuannya membuat yang tidak terbaca jadi terbaca, bukan menggeser
+   hierarki visual halaman. Tinggi barisnya ikut dinaikkan -- huruf besar
+   dengan baris rapat tetap sulit dibaca.
+
+   Nilai yang ditulis eksplisit di Blade (text-[13px], text-[15px]) tidak
+   tersentuh: kelasnya lain, jadi aturan di sini tidak mengenainya. */
+@media (max-width: 767px) {
+  .situs-publik .text-\[8\.5px\] { font-size: 11.5px; }
+  .situs-publik .text-\[9px\] { font-size: 12px; }
+  /* Dua ukuran ini dipakai label di dalam kartu paket. Terlewat di putaran
+     pertama, jadi kartunya masih menyisakan tulisan di bawah lantai. */
+  .situs-publik .text-\[9\.5px\] { font-size: 12px; }
+  .situs-publik .text-\[10\.5px\] { font-size: 12.5px; }
+  .situs-publik .text-\[10px\] { font-size: 12.5px; }
+  .situs-publik .text-\[11px\] { font-size: 13.5px; line-height: 1.2rem; }
+  .situs-publik .text-xs { font-size: 14px; line-height: 1.3rem; }
+  .situs-publik .text-sm { font-size: 16px; line-height: 1.5rem; }
+  .situs-publik .text-base { font-size: 17px; line-height: 1.6rem; }
+  .situs-publik .text-body-md { font-size: 17px; line-height: 1.65rem; }
+
+  /* Ketebalan.
+
+     Font situs ini hanya memuat tiga berat: 400, 600, dan 800. Tailwind
+     menulis font-medium sebagai 500 -- berat yang TIDAK ADA berkasnya, jadi
+     mesin pencocokan font menjatuhkannya ke 400. Artinya setiap teks
+     font-medium di situs ini selama ini tampil persis sama dengan teks biasa;
+     kelasnya ada, efeknya nol. Dinaikkan ke 600 supaya ia benar-benar jadi
+     satu tingkat lebih tebal seperti yang dimaksud waktu kelas itu ditulis.
+
+     Label terkecil ikut ditebalkan: pada 12px, berat 400 di layar ponsel
+     terbaca sebagai abu-abu, bukan sebagai huruf.
+
+     font-bold (700) dibiarkan -- ia sudah jatuh ke 800, dan menaikkannya lagi
+     tidak ada tujuannya. */
+  .situs-publik .font-medium { font-weight: 600; }
+  .situs-publik .text-\[8\.5px\],
+  .situs-publik .text-\[9px\],
+  .situs-publik .text-\[10px\] { font-weight: 600; }
+
+  /* Tiga baris di bawah ini WAJIB berada sesudah aturan di atas dan tidak
+     boleh dipindah ke atasnya. Sebagian besar label 9-10px di situs ini sudah
+     ditulis font-black; aturan ukuran di atas punya spesifisitas yang sama
+     (0,2,0), jadi tanpa penegasan ini ia justru MENURUNKAN label-label itu
+     dari 800 ke 600 -- kebalikan dari yang diminta. Pada spesifisitas sama,
+     yang menang adalah yang ditulis belakangan. */
+  .situs-publik .font-bold,
+  .situs-publik .font-extrabold,
+  .situs-publik .font-black { font-weight: 800; }
+}
+
 /* Hide scrollbar but keep scrolling */
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* iOS home-indicator clearance for fixed bottom bars. Requires viewport-fit=cover. */
+.safe-area-bottom { padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)); }
+
+/* iOS Safari zooms the viewport when a focused field is under 16px and never zooms back out.
+   Keyed on pointer:coarse so phones and tablets are covered but desktop keeps its type scale. */
+@media (pointer: coarse) and (max-width: 1024px) {
+  input, select, textarea { font-size: 16px; }
+}
+
+/* Sembunyikan spin button / panah input angka */
+.hide-arrows::-webkit-outer-spin-button,
+.hide-arrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.hide-arrows {
+  -moz-appearance: textfield;
+}
+
+/* Scrollbar halus untuk sidebar / dropdown */
+.custom-scroll::-webkit-scrollbar { width: 6px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+.custom-scroll::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }

@@ -57,6 +57,14 @@ class CMSController extends Controller
 
     public function save(Request $request, $key)
     {
+        // SECURITY: {key} comes from the URL, so restrict it to the CMS/page settings this
+        // controller owns. Without this, a low-privilege admin could POST to any key
+        // (e.g. 'general', 'company') and overwrite global/company/SMTP settings.
+        $allowedKeys = ['cms_landing', 'cms_tour', 'page_about', 'page_terms', 'page_privacy'];
+        if (! in_array($key, $allowedKeys, true)) {
+            abort(404);
+        }
+
         try {
             DB::beginTransaction();
 
@@ -65,7 +73,16 @@ class CMSController extends Controller
             $existing = $setting ? ($setting->value ?? []) : [];
 
             // 2. Ambil data input baru (kecuali token)
-            $data = $request->except(['_token']);
+            $data = $request->except(['_token', '_clear_if_empty']);
+
+            // 2b. Daftar yang dikosongkan total tidak dikirim browser sama sekali.
+            // Tanpa ini, menghapus semua slide/testimoni/pin akan terlihat "tidak tersimpan".
+            foreach (explode(',', (string) $request->input('_clear_if_empty', '')) as $clearable) {
+                $clearable = trim($clearable);
+                if ($clearable !== '' && ! $request->has($clearable)) {
+                    $data[$clearable] = [];
+                }
+            }
 
             // 3. Handle recursive file uploads (including nested arrays like slides)
             $processFiles = function ($files, &$targetData) use (&$processFiles) {
@@ -134,9 +151,22 @@ class CMSController extends Controller
 
             DB::commit();
 
-            // Clear related caches so frontend updates immediately
-            Cache::forget('cms_tour_settings');
-            Cache::forget('site_settings_all');
+            // Clear related caches so frontend updates immediately.
+            // CATATAN: SettingObserver::saved() juga dipanggil secara otomatis ketika
+            // $setting->save() di atas dieksekusi, tapi kita tetap eksplisit di sini
+            // supaya kode ini bisa dibaca tanpa harus tahu detail observer.
+            // 'cms_tour_settings' sudah tidak dipakai — key yang benar adalah di bawah.
+            foreach ([
+                'site_settings_global', 'site_settings_all', 'tour_homepage_data',
+                'contact_whatsapp_digits', 'contact_whatsapp_digits_2',
+                'site_settings_structured_cms_tour_general',
+                'site_settings_structured_cms_landing_cms_tour_general',
+                'site_settings_structured_cms_landing_general',
+                'site_settings_structured_general',
+                'featured_packages', 'tour_packages_all', 'tour_packages_nav',
+            ] as $cacheKey) {
+                Cache::forget($cacheKey);
+            }
 
             Log::alert("CMS SUCCESS: Saved '{$key}' with fields: ".implode(', ', array_keys($data)));
 

@@ -24,6 +24,24 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
+# Kompresi teks.
+#
+# Halaman paket dan halaman detail dicetak di sisi server, jadi markup kartunya
+# berulang. Itu bentuk terbaik yang bisa diterima gzip: /tour/packages menyusut
+# dari 192 KB jadi ~22 KB, sementara versi lamanya yang menyalin data ke JSON
+# justru berhenti di ~24 KB -- JSON hampir tidak punya pengulangan untuk
+# dimampatkan.
+#
+# Ditulis di sini, bukan diandalkan ke setelan bawaan hosting: kalau kompresinya
+# ternyata mati, halaman-halaman itu terkirim mentah dan pilihan mencetak di
+# server berubah dari penghematan jadi pemborosan. Dibungkus IfModule, jadi
+# server tanpa mod_deflate mengabaikannya, bukan menolak seluruh berkas.
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE application/javascript application/json
+    AddOutputFilterByType DEFLATE application/xml application/rss+xml image/svg+xml
+</IfModule>
+
 # Cache Control
 <IfModule mod_expires.c>
     ExpiresActive On

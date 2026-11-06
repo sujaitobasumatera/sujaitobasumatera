@@ -7,24 +7,24 @@
         @page { margin: 0; }
         * { box-sizing: border-box; }
         body { font-family: 'Helvetica', sans-serif; color: #2d3748; margin: 0; padding: 0; font-size: 12px; line-height: 1.5; }
-        .accent-bar { height: 8px; background-color: #006B54; }
+        .accent-bar { height: 8px; background-color: #006b29; }
         .accent-bar td { padding: 0; height: 8px; }
         .gold { background-color: #d4af37; }
-        .mid  { background-color: #006B54; }
-        .dark { background-color: #004d40; }
+        .mid  { background-color: #006b29; }
+        .dark { background-color: #004d1e; }
         .container { padding: 36px 44px; }
 
-        h1.brand { font-family: 'Times', serif; font-size: 26px; color: #004d40; font-weight: bold; margin: 0 0 2px 0; letter-spacing: -0.5px; }
+        h1.brand { font-family: 'Times', serif; font-size: 26px; color: #004d1e; font-weight: bold; margin: 0 0 2px 0; letter-spacing: -0.5px; }
         .legal { color: #718096; font-size: 11px; }
         .invoice-word { font-size: 20px; font-weight: bold; color: #2d3748; letter-spacing: 2px; text-align: right; }
         .invoice-no { color: #718096; font-size: 12px; text-align: right; margin-top: 2px; }
 
-        .divider { border-bottom: 2px solid #e0f2f1; margin: 18px 0 22px 0; }
+        .divider { border-bottom: 2px solid #e0f2e7; margin: 18px 0 22px 0; }
 
         .box { border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; }
         .box-billed { background-color: #f7fafc; }
-        .box-detail { background-color: #effaf7; border-color: #cdeee7; }
-        .box-label { font-size: 10px; font-weight: bold; color: #006B54; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .box-detail { background-color: #effaf3; border-color: #cdeeda; }
+        .box-label { font-size: 10px; font-weight: bold; color: #006b29; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
         .cust-name { font-size: 15px; font-weight: bold; color: #1a202c; margin-bottom: 4px; }
         .cust-line { font-size: 12px; color: #718096; margin-bottom: 2px; }
         .detail-row td { padding: 3px 0; font-size: 12px; }
@@ -40,43 +40,53 @@
         .item-desc { color: #718096; font-size: 11px; }
         .item-tag { display: inline-block; margin-top: 4px; background-color: #f7fafc; border-radius: 4px; padding: 2px 6px; font-size: 10px; color: #718096; }
 
-        .pay-box { background-color: #004d40; border-radius: 10px; padding: 16px 18px; color: #e0f2f1; }
+        .pay-box { background-color: #004d1e; border-radius: 10px; padding: 16px 18px; color: #e0f2e7; }
         .pay-label { font-size: 10px; font-weight: bold; color: #d4af37; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-        .pay-text { font-size: 11px; color: #e0f2f1; line-height: 1.6; }
-        .pay-acc { margin-top: 12px; padding-top: 12px; border-top: 1px solid #2c6b5e; }
-        .pay-acc .name { font-size: 10px; color: #b2dfd6; }
+        .pay-text { font-size: 11px; color: #e0f2e7; line-height: 1.6; }
+        .pay-acc { margin-top: 12px; padding-top: 12px; border-top: 1px solid #2c6b44; }
+        .pay-acc .name { font-size: 10px; color: #b2dfc3; }
         .pay-acc .num { font-size: 14px; font-weight: bold; letter-spacing: 1px; color: #ffffff; }
 
         .calc { background-color: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px 18px; }
         .calc td { padding: 5px 0; font-size: 12px; }
         .calc .k { color: #718096; }
         .calc .v { text-align: right; font-weight: bold; color: #2d3748; }
-        .calc .total-k { color: #004d40; font-weight: bold; text-transform: uppercase; font-size: 11px; padding-top: 12px; }
-        .calc .total-v { text-align: right; color: #004d40; font-weight: bold; font-size: 20px; padding-top: 12px; }
+        .calc .total-k { color: #004d1e; font-weight: bold; text-transform: uppercase; font-size: 11px; padding-top: 12px; }
+        .calc .total-v { text-align: right; color: #004d1e; font-weight: bold; font-size: 20px; padding-top: 12px; }
         .calc .sep td { border-top: 1px dashed #cbd5e1; padding-top: 0; }
 
         .footer { margin-top: 32px; padding-top: 18px; border-top: 1px solid #e2e8f0; text-align: center; }
-        .quote { font-family: 'Times', serif; font-style: italic; font-size: 14px; color: #004d40; margin-bottom: 8px; }
+        .quote { font-family: 'Times', serif; font-style: italic; font-size: 14px; color: #004d1e; margin-bottom: 8px; }
         .footer-meta { font-size: 10px; color: #94a3b8; }
     </style>
 </head>
 <body>
     @php
-        $companyName     = $siteSettings['general']['site_name'] ?? 'Sujai Laketoba';
-        $legalName       = $siteSettings['company']['legal_name'] ?? 'PT Sujai Laketoba Experience';
+        $companyName     = $siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera';
+        $legalName       = $siteSettings['company']['legal_name'] ?? 'PT Sujai Toba Sumatera Experience';
         $bankAccount     = $siteSettings['company']['bank_account'] ?? null;
         $bankAccountName = $siteSettings['company']['bank_account_name'] ?? $legalName;
         $taxId           = $siteSettings['company']['tax_id'] ?? null;
         $address         = $siteSettings['general']['office_address'] ?? 'Sumatera Utara';
         $email           = $siteSettings['general']['contact_email'] ?? '';
 
-        $pax       = max((int) ($booking->metadata['pax'] ?? 1), 1);
-        $unitPrice = $booking->totalPrice / $pax;
+        $pax           = max((int) ($booking->metadata['pax'] ?? 1), 1);
+        $pb            = $booking->metadata['price_breakdown'] ?? null;
+        $subtotalBase  = $pb['subtotal_base'] ?? null;
+        $surchargeRows = $pb['surcharges'] ?? [];
+        $taxAmount     = $pb['tax'] ?? 0;
+
+        $unitPrice     = ($subtotalBase !== null && $subtotalBase > 0)
+            ? ($subtotalBase / $pax)
+            : ($booking->totalPrice / $pax);
+        $itemLineTotal = ($subtotalBase !== null && $subtotalBase > 0)
+            ? $subtotalBase
+            : $booking->totalPrice;
 
         $statusMap = [
             'pending'   => ['label' => 'MENUNGGU PEMBAYARAN',     'bg' => '#fef3c7', 'fg' => '#b45309'],
-            'confirmed' => ['label' => 'PEMBAYARAN DIKONFIRMASI', 'bg' => '#d1fae5', 'fg' => '#047857'],
-            'completed' => ['label' => 'SELESAI',                 'bg' => '#d1fae5', 'fg' => '#047857'],
+            'confirmed' => ['label' => 'PEMBAYARAN DIKONFIRMASI', 'bg' => '#d1fae1', 'fg' => '#047830'],
+            'completed' => ['label' => 'SELESAI',                 'bg' => '#d1fae1', 'fg' => '#047830'],
             'cancelled' => ['label' => 'DIBATALKAN',              'bg' => '#ffe4e6', 'fg' => '#be123c'],
         ];
         $st = $statusMap[$booking->status] ?? $statusMap['pending'];
@@ -153,7 +163,7 @@
                     <th width="50%">Deskripsi Layanan</th>
                     <th style="text-align: center;">Kuantitas</th>
                     <th style="text-align: right;">Harga Satuan</th>
-                    <th style="text-align: right; color: #006B54;">Total</th>
+                    <th style="text-align: right; color: #006b29;">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -169,8 +179,8 @@
                         @endif
                     </td>
                     <td style="text-align: center;">{{ $pax }} Pax</td>
-                    <td style="text-align: right;">Rp {{ number_format($unitPrice, 0, ',', '.') }}</td>
-                    <td style="text-align: right; font-weight: bold; color: #1a202c;">Rp {{ number_format($booking->totalPrice, 0, ',', '.') }}</td>
+                    <td style="text-align: right;">{{ \App\Helpers\CurrencyHelper::formatRecord($unitPrice, $booking->currency) }}</td>
+                    <td style="text-align: right; font-weight: bold; color: #1a202c;">{{ \App\Helpers\CurrencyHelper::formatRecord($itemLineTotal, $booking->currency) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -194,10 +204,17 @@
                 <td width="44%" style="vertical-align: top;">
                     <div class="calc">
                         <table width="100%" cellpadding="0" cellspacing="0">
-                            <tr><td class="k">Subtotal</td><td class="v">Rp {{ number_format($booking->totalPrice, 0, ',', '.') }}</td></tr>
-                            <tr><td class="k">Pajak (0%)</td><td class="v">Rp 0</td></tr>
-                            <tr><td class="k">Diskon</td><td class="v">- Rp 0</td></tr>
-                            <tr class="sep"><td class="total-k">Total Tagihan (IDR)</td><td class="total-v">Rp {{ number_format($booking->totalPrice, 0, ',', '.') }}</td></tr>
+                            <tr><td class="k">Subtotal</td><td class="v">{{ \App\Helpers\CurrencyHelper::formatRecord($itemLineTotal, $booking->currency) }}</td></tr>
+                            @if(!empty($surchargeRows))
+                                @foreach($surchargeRows as $surcharge)
+                                <tr><td class="k">{{ $surcharge['name'] ?? 'Biaya Tambahan' }}</td><td class="v">{{ \App\Helpers\CurrencyHelper::formatRecord($surcharge['amount'] ?? 0, $booking->currency) }}</td></tr>
+                                @endforeach
+                            @endif
+                            @if($taxAmount > 0)
+                            <tr><td class="k">Pajak</td><td class="v">{{ \App\Helpers\CurrencyHelper::formatRecord($taxAmount, $booking->currency) }}</td></tr>
+                            @endif
+                            <tr><td class="k">Diskon</td><td class="v">- {{ \App\Helpers\CurrencyHelper::formatRecord(0, $booking->currency) }}</td></tr>
+                            <tr class="sep"><td class="total-k">Total Tagihan ({{ $booking->currency }})</td><td class="total-v">{{ \App\Helpers\CurrencyHelper::formatRecord($booking->totalPrice, $booking->currency) }}</td></tr>
                         </table>
                     </div>
                 </td>

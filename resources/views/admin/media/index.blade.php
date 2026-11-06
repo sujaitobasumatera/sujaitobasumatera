@@ -16,7 +16,7 @@
     
     <!-- Drag & Drop Blur Overlay -->
     <div x-show="isDragging" 
-         class="absolute inset-0 bg-indigo-600/80 backdrop-blur-md z-[300] rounded-[3.5rem] flex flex-col items-center justify-center text-white p-8 transition duration-300"
+         class="absolute inset-0 bg-green-800/80 backdrop-blur-md z-[300] rounded-[3.5rem] flex flex-col items-center justify-center text-white p-8 transition duration-300"
          @dragover.prevent=""
          @drop.prevent="handleDrop($event); isDragging = false"
          @dragleave.prevent="isDragging = false"
@@ -25,17 +25,36 @@
             <i class="fas fa-cloud-arrow-up text-5xl"></i>
         </div>
         <h3 class="text-3xl font-black tracking-tight">Lepaskan File Anda Di Sini</h3>
-        <p class="text-xs font-bold uppercase tracking-widest text-indigo-200 mt-2">Unggah otomatis ke folder <span class="text-white" x-text="filters.category || 'uploads'"></span></p>
+        <p class="text-xs font-bold uppercase tracking-widest text-green-300 mt-2">Unggah otomatis ke folder <span class="text-white" x-text="filters.category || 'uploads'"></span></p>
     </div>
     <!-- Left Sidebar: Folder Navigation -->
     <aside class="w-full lg:w-80 shrink-0 space-y-6">
         <!-- Quick Stats -->
-        <div class="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-indigo-100 relative overflow-hidden group">
+        <div class="bg-green-800 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-green-200 relative overflow-hidden group">
             <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
             <div class="relative z-10">
-                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-200">Library Health</p>
+                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-green-300">Library Health</p>
                 <h4 class="text-3xl font-black mt-2" x-text="stats.orphans">0</h4>
-                <p class="text-[9px] font-bold text-indigo-100/60 uppercase tracking-widest mt-1">Unused Assets found</p>
+                <p class="text-[9px] font-bold text-green-200/60 uppercase tracking-widest mt-1">Unused Assets found</p>
+            </div>
+        </div>
+
+        <!-- Image Guidelines Quick Card -->
+        <div class="bg-gradient-to-br from-green-800 to-green-950 rounded-[2.5rem] p-6 text-white shadow-xl relative overflow-hidden group">
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-green-300">
+                    <i class="fas fa-ruler-combined"></i>
+                    <span>Ukuran &amp; Rasio</span>
+                </div>
+                <h4 class="text-base font-black mt-2 leading-tight">Standar Desain Aset</h4>
+                <p class="text-[10px] font-medium text-green-100/70 mt-1 leading-relaxed">
+                    Galeri 4:3 (1600&times;1200), Brosur (1200&times;900), Hero 16:9 (1920&times;1080).
+                </p>
+                <button type="button" @click="$dispatch('open-image-guide')"
+                        class="mt-4 w-full py-2.5 px-4 bg-green-600 hover:bg-green-500 text-white rounded-xl font-black text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2">
+                    <i class="fas fa-table-list text-xs"></i>
+                    <span>Buka Panduan Lengkap</span>
+                </button>
             </div>
         </div>
 
@@ -43,13 +62,13 @@
         <nav class="bg-white rounded-[2.5rem] p-6 border border-slate-100 shadow-sm space-y-2">
             <div class="flex items-center justify-between px-4 mb-4">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Master Folders</p>
-                <button @click="createNewFolder()" class="w-6 h-6 rounded-lg bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition flex items-center justify-center">
+                <button @click="createNewFolder()" class="w-6 h-6 rounded-lg bg-slate-50 text-slate-400 hover:bg-green-800 hover:text-white transition flex items-center justify-center">
                     <i class="fas fa-plus text-[10px]"></i>
                 </button>
             </div>
             
             <button @click="setCategory('')" 
-                    :class="filters.category === '' && activeTab === 'library' ? 'bg-indigo-50 text-indigo-600 shadow-sm' : 'text-slate-600 hover:bg-slate-50'"
+                    :class="filters.category === '' && activeTab === 'library' ? 'bg-green-100 text-green-800 shadow-sm' : 'text-slate-600 hover:bg-slate-50'"
                     class="w-full flex items-center justify-between px-6 py-4 rounded-2xl transition group">
                 <div class="flex items-center gap-4">
                     <i class="fas fa-layer-group text-sm group-hover:scale-110 transition-transform"></i>
@@ -61,7 +80,7 @@
             <template x-for="cat in categories" :key="cat.name">
                 <div class="group/folder relative">
                     <button @click="setCategory(cat.name)" 
-                            :class="filters.category === cat.name && activeTab === 'library' ? 'bg-indigo-50 text-indigo-600 shadow-sm' : 'text-slate-600 hover:bg-slate-50'"
+                            :class="filters.category === cat.name && activeTab === 'library' ? 'bg-green-100 text-green-800 shadow-sm' : 'text-slate-600 hover:bg-slate-50'"
                             class="w-full flex items-center justify-between px-6 py-4 rounded-2xl transition group">
                         <div class="flex items-center gap-4">
                             <i class="fas text-sm group-hover:scale-110 transition-transform" :class="cat.icon"></i>
@@ -70,7 +89,7 @@
                         <span class="text-[9px] font-bold opacity-40 group-hover:hidden" x-text="cat.count"></span>
                         
                         <!-- Rename Folder Trigger -->
-                        <div @click.stop="openRenameFolder(cat.name)" class="hidden group-hover:flex w-6 h-6 bg-white rounded-lg shadow-sm items-center justify-center text-slate-400 hover:text-indigo-600 transition-colors">
+                        <div @click.stop="openRenameFolder(cat.name)" class="hidden group-hover:flex w-6 h-6 bg-white rounded-lg shadow-sm items-center justify-center text-slate-400 hover:text-green-800 transition-colors">
                             <i class="fas fa-pen text-[9px]"></i>
                         </div>
                     </button>
@@ -100,7 +119,7 @@
 
             <!-- Storage Health Audit Tab Trigger -->
             <button @click="openAuditPanel()" 
-                    :class="activeTab === 'audit' ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-950/20' : 'text-white/40 hover:text-white'"
+                    :class="activeTab === 'audit' ? 'bg-green-800 text-white shadow-xl shadow-green-950/20' : 'text-white/40 hover:text-white'"
                     class="w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition group border border-white/5 mt-4">
                 <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <i class="fas fa-chart-pie text-[10px]"></i>
@@ -117,11 +136,11 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="space-y-2">
                 <div class="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
-                    <a href="#" @click.prevent="activeTab = 'library'" class="hover:text-indigo-600">Library</a>
+                    <a href="#" @click.prevent="activeTab = 'library'" class="hover:text-green-800">Library</a>
                     <i class="fas fa-chevron-right text-[8px] opacity-30"></i>
-                    <span class="text-indigo-600" x-text="activeTab === 'audit' ? 'Storage Health' : (filters.category || 'Home')"></span>
+                    <span class="text-green-800" x-text="activeTab === 'audit' ? 'Storage Health' : (filters.category || 'Home')"></span>
                 </div>
-                <h2 class="text-5xl font-black text-slate-900 tracking-tighter leading-none">
+                <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter leading-none">
                     <span x-text="activeTab === 'audit' ? 'STORAGE HEALTH' : (filters.category ? filters.category.toUpperCase() : 'GALLERY HUB')"></span>
                 </h2>
             </div>
@@ -129,7 +148,7 @@
             <!-- Library View Actions -->
             <div class="flex flex-wrap items-center gap-3 w-full md:w-auto" x-show="activeTab === 'library'">
                 <input type="file" id="mediaUpload" multiple class="hidden" @change="uploadFiles($event)">
-                <label for="mediaUpload" class="w-full sm:w-auto px-10 py-5 bg-indigo-600 text-white rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest shadow-2xl shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-1 transition cursor-pointer flex items-center justify-center gap-3 group">
+                <label for="mediaUpload" class="w-full sm:w-auto px-10 py-5 bg-green-800 text-white rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest shadow-2xl shadow-green-300 hover:bg-green-900 hover:-translate-y-1 transition cursor-pointer flex items-center justify-center gap-3 group">
                     <i class="fas fa-upload group-hover:-translate-y-1 transition-transform"></i> Upload Foto
                 </label>
 
@@ -141,7 +160,7 @@
                     <div x-show="advOpen" x-transition class="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50 flex flex-col origin-top-right">
                         <!-- Watermark Checkbox Toggle -->
                         <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-50">
-                            <input type="checkbox" id="uploadWatermark" x-model="useWatermark" class="w-5 h-5 rounded-md text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer">
+                            <input type="checkbox" id="uploadWatermark" x-model="useWatermark" class="w-5 h-5 rounded-md text-green-800 border-slate-300 focus:ring-green-700 cursor-pointer">
                             <label for="uploadWatermark" class="text-[10px] font-black text-slate-500 uppercase tracking-widest cursor-pointer flex-1">Beri Watermark Otomatis</label>
                         </div>
                         
@@ -162,7 +181,7 @@
             </div>
 
             <!-- Audit View Actions -->
-            <div class="flex items-center gap-3" x-show="activeTab === 'audit'" x-cloak>
+            <div class="flex flex-wrap items-center gap-3" x-show="activeTab === 'audit'" x-cloak>
                 <button @click="fetchAuditData()" class="px-8 py-5 bg-white border border-slate-200 text-slate-900 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition shadow-sm flex items-center gap-3">
                     <i class="fas fa-rotate" :class="auditLoading ? 'animate-spin' : ''"></i> Rescan Storage
                 </button>
@@ -176,9 +195,9 @@
         <div x-show="activeTab === 'library'" class="space-y-8">
             <!-- Search Bar -->
             <div class="relative group">
-                <i class="fas fa-search absolute left-7 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors"></i>
+                <i class="fas fa-search absolute left-7 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-green-800 transition-colors"></i>
                 <input type="text" x-model="filters.search" @input.debounce.500ms="fetchMedia()" placeholder="Cari aset dalam folder ini..." 
-                       class="w-full pl-16 pr-8 py-6 bg-white border border-slate-100 rounded-[2rem] font-bold text-sm text-slate-900 shadow-sm focus:ring-[1rem] focus:ring-indigo-600/5 transition outline-none">
+                       class="w-full pl-16 pr-8 py-6 bg-white border border-slate-100 rounded-[2rem] font-bold text-sm text-slate-900 shadow-sm focus:ring-[1rem] focus:ring-green-800/5 transition outline-none">
             </div>
 
             <!-- Bulk Actions Floating Bar -->
@@ -186,7 +205,7 @@
                 <div class="fixed bottom-6 lg:bottom-12 left-4 right-4 lg:left-[calc(50%+160px)] lg:right-auto lg:-translate-x-1/2 z-[100] bg-slate-900 text-white p-5 lg:px-10 lg:py-6 rounded-3xl lg:rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row items-center gap-4 lg:gap-10 animate-in slide-in-from-bottom duration-500 backdrop-blur-xl bg-opacity-95 border border-white/5">
                     <div class="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-start">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-lg font-black shadow-lg" x-text="selectedIds.length"></div>
+                            <div class="w-12 h-12 bg-green-800 rounded-2xl flex items-center justify-center text-lg font-black shadow-lg" x-text="selectedIds.length"></div>
                             <div>
                                 <p class="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 leading-none">Items Selected</p>
                                 <p class="text-[12px] font-bold mt-1.5 uppercase tracking-widest">Ready to Manage</p>
@@ -196,10 +215,10 @@
                     </div>
                     <div class="flex flex-wrap items-center gap-3 border-t lg:border-t-0 lg:border-l border-white/10 pt-4 lg:pt-0 lg:pl-10 w-full lg:w-auto justify-center">
                         <button @click="openMoveModal()" class="flex-1 lg:flex-none px-4 lg:px-7 py-4 bg-white/5 border border-white/10 rounded-2xl text-[9px] font-black uppercase tracking-widest hover:bg-white/10 transition flex items-center justify-center gap-2">
-                            <i class="fas fa-up-down-left-right text-indigo-400"></i> Move
+                            <i class="fas fa-up-down-left-right text-green-600"></i> Move
                         </button>
                         <button @click="bulkDownload()" class="flex-1 lg:flex-none px-4 lg:px-7 py-4 bg-white/5 border border-white/10 rounded-2xl text-[9px] font-black uppercase tracking-widest hover:bg-white/10 transition flex items-center justify-center gap-2">
-                            <i class="fas fa-download text-emerald-400"></i> <span class="hidden sm:inline">Download</span><span class="sm:hidden">DL</span>
+                            <i class="fas fa-download text-green-400"></i> <span class="hidden sm:inline">Download</span><span class="sm:hidden">DL</span>
                         </button>
                         <button @click="bulkDelete()" class="w-full lg:w-auto px-4 lg:px-7 py-4 bg-rose-500 rounded-2xl text-[9px] font-black uppercase tracking-widest hover:bg-rose-600 transition flex items-center justify-center gap-2 shadow-xl shadow-rose-950/40">
                             <i class="fas fa-trash"></i> <span class="hidden sm:inline">Delete Permanent</span><span class="sm:hidden">Delete</span>
@@ -212,8 +231,8 @@
             <!-- The Grid -->
             <div x-show="!loading" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
                 <template x-for="item in media" :key="item.id">
-                    <div class="group relative aspect-square rounded-[3.5rem] bg-white border border-slate-50 overflow-hidden hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] transition duration-700 transform hover:-translate-y-2"
-                         :class="selectedIds.includes(item.id) ? 'ring-[0.5rem] ring-indigo-600 ring-offset-4' : ''"
+                    <div class="group relative aspect-square rounded-3xl md:rounded-[3.5rem] bg-white border border-slate-50 overflow-hidden hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] transition duration-700 transform hover:-translate-y-2"
+                         :class="selectedIds.includes(item.id) ? 'ring-[0.5rem] ring-green-800 ring-offset-4' : ''"
                          :style="item.dominant_color ? 'background-color: ' + item.dominant_color : 'background-color: #f8fafc'">
                         
                         <img :src="item.thumbnail_url" class="w-full h-full object-cover transition-transform duration-[2.5s] group-hover:scale-110">
@@ -225,19 +244,19 @@
 
                         <!-- Selection Indicator -->
                         <div class="absolute top-6 right-6 z-20">
-                            <input type="checkbox" :value="item.id" x-model="selectedIds" class="w-7 h-7 rounded-xl border-2 border-white/20 bg-black/40 text-indigo-600 focus:ring-0 cursor-pointer shadow-2xl transition">
+                            <input type="checkbox" :value="item.id" x-model="selectedIds" class="w-7 h-7 rounded-xl border-2 border-white/20 bg-black/40 text-green-800 focus:ring-0 cursor-pointer shadow-2xl transition">
                         </div>
 
                         <!-- Smart Overlay -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 p-8 flex flex-col justify-end">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/10 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition duration-500 p-4 md:p-8 flex flex-col justify-end">
                             <div class="space-y-5">
                                 <div class="flex flex-wrap gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                                     <div class="px-3 py-1.5 bg-white/20 backdrop-blur-md rounded-xl text-[7px] font-black uppercase tracking-widest text-white border border-white/20" x-text="item.category"></div>
-                                    <div class="px-3 py-1.5 bg-indigo-600 rounded-xl text-[7px] font-black uppercase tracking-widest text-white" x-show="item.usage_count > 0" x-text="item.usage_count + ' Links'"></div>
+                                    <div class="px-3 py-1.5 bg-green-800 rounded-xl text-[7px] font-black uppercase tracking-widest text-white" x-show="item.usage_count > 0" x-text="item.usage_count + ' Links'"></div>
                                 </div>
                                 
                                 <div class="flex gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-75">
-                                    <button @click="openEditModal(item)" class="flex-1 py-3.5 bg-white text-slate-900 rounded-[1.25rem] font-black text-[9px] uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition shadow-xl">
+                                    <button @click="openEditModal(item)" class="flex-1 py-3.5 bg-white text-slate-900 rounded-[1.25rem] font-black text-[9px] uppercase tracking-widest hover:bg-green-800 hover:text-white transition shadow-xl">
                                         Manage
                                     </button>
                                     <button @click="copyUrl(item.url)" class="w-11 h-11 bg-white/10 backdrop-blur-md text-white rounded-[1.25rem] flex items-center justify-center hover:bg-white hover:text-slate-900 transition border border-white/20">
@@ -258,7 +277,7 @@
             </div>
 
             <!-- Empty State -->
-            <div x-show="!loading && media.length === 0" class="py-40 text-center bg-white rounded-[4rem] border border-dashed border-slate-200">
+            <div x-show="!loading && media.length === 0" class="py-20 text-center bg-white rounded-[4rem] border border-dashed border-slate-200">
                 <div class="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 text-slate-200">
                     <i class="fas fa-folder-open text-4xl"></i>
                 </div>
@@ -274,18 +293,18 @@
             </div>
 
             <!-- Pagination -->
-            <div x-show="last_page > 1" class="flex flex-col sm:flex-row items-center justify-between gap-8 pt-12 border-t border-slate-100">
+            <div x-show="last_page > 1" class="flex flex-col sm:flex-row items-center justify-between gap-8 pt-6 border-t border-slate-100">
                 <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">
                     Showing <span class="text-slate-900" x-text="media.length"></span> of <span class="text-slate-900" x-text="stats.total"></span> Assets
                 </p>
                 <div class="flex items-center gap-3">
-                    <button @click="changePage(current_page - 1)" :disabled="current_page === 1" class="w-14 h-14 bg-white border border-slate-200 rounded-2xl text-slate-400 hover:text-indigo-600 disabled:opacity-20 transition flex items-center justify-center">
+                    <button @click="changePage(current_page - 1)" :disabled="current_page === 1" class="w-14 h-14 bg-white border border-slate-200 rounded-2xl text-slate-400 hover:text-green-800 disabled:opacity-20 transition flex items-center justify-center">
                         <i class="fas fa-arrow-left"></i>
                     </button>
                     <div class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl">
                         Page <span x-text="current_page"></span> / <span x-text="last_page"></span>
                     </div>
-                    <button @click="changePage(current_page + 1)" :disabled="current_page === last_page" class="w-14 h-14 bg-white border border-slate-200 rounded-2xl text-slate-400 hover:text-indigo-600 disabled:opacity-20 transition flex items-center justify-center">
+                    <button @click="changePage(current_page + 1)" :disabled="current_page === last_page" class="w-14 h-14 bg-white border border-slate-200 rounded-2xl text-slate-400 hover:text-green-800 disabled:opacity-20 transition flex items-center justify-center">
                         <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
@@ -311,7 +330,7 @@
                 <!-- DB Orphans count -->
                 <div class="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm">
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Unused DB Records</p>
-                    <h4 class="text-3xl font-black mt-2 text-indigo-600" x-text="stats.orphans"></h4>
+                    <h4 class="text-3xl font-black mt-2 text-green-800" x-text="stats.orphans"></h4>
                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Filter in library to delete</p>
                 </div>
             </div>
@@ -337,7 +356,7 @@
                         <thead>
                             <tr class="bg-slate-50 border-b border-slate-100">
                                 <th class="p-6 text-[9px] font-black uppercase tracking-widest text-slate-400 w-16">
-                                    <input type="checkbox" @change="selectedAuditPaths = $event.target.checked ? auditData.orphans.map(o => o.path) : []" :checked="selectedAuditPaths.length === auditData.orphans.length && auditData.orphans.length > 0" class="w-5 h-5 rounded-md text-indigo-600 border-slate-300">
+                                    <input type="checkbox" @change="selectedAuditPaths = $event.target.checked ? auditData.orphans.map(o => o.path) : []" :checked="selectedAuditPaths.length === auditData.orphans.length && auditData.orphans.length > 0" class="w-5 h-5 rounded-md text-green-800 border-slate-300">
                                 </th>
                                 <th class="p-6 text-[9px] font-black uppercase tracking-widest text-slate-400 w-32">Preview</th>
                                 <th class="p-6 text-[9px] font-black uppercase tracking-widest text-slate-400">File Path</th>
@@ -349,7 +368,7 @@
                             <template x-for="file in auditData.orphans" :key="file.path">
                                 <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
                                     <td class="p-6">
-                                        <input type="checkbox" :value="file.path" x-model="selectedAuditPaths" class="w-5 h-5 rounded-md text-indigo-600 border-slate-300">
+                                        <input type="checkbox" :value="file.path" x-model="selectedAuditPaths" class="w-5 h-5 rounded-md text-green-800 border-slate-300">
                                     </td>
                                     <td class="p-6">
                                         <div class="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
@@ -366,16 +385,16 @@
                             </template>
                             <template x-if="!auditLoading && (!auditData.orphans || auditData.orphans.length === 0)">
                                 <tr>
-                                    <td colspan="5" class="py-20 text-center text-slate-400 font-bold text-sm">
-                                        <i class="fas fa-circle-check text-emerald-400 text-3xl mb-4"></i>
+                                    <td colspan="5" class="py-10 text-center text-slate-400 font-bold text-sm">
+                                        <i class="fas fa-circle-check text-green-400 text-3xl mb-4"></i>
                                         <p>Hebat! Tidak ditemukan file yatim (orphan) fisik di disk. Penyimpanan Anda 100% sehat.</p>
                                     </td>
                                 </tr>
                             </template>
                             <template x-if="auditLoading">
                                 <tr>
-                                    <td colspan="5" class="py-20 text-center text-slate-400 font-bold text-sm">
-                                        <i class="fas fa-spinner animate-spin text-indigo-600 text-3xl mb-4"></i>
+                                    <td colspan="5" class="py-10 text-center text-slate-400 font-bold text-sm">
+                                        <i class="fas fa-spinner animate-spin text-green-800 text-3xl mb-4"></i>
                                         <p>Memindai seluruh penyimpanan disk server...</p>
                                     </td>
                                 </tr>
@@ -390,27 +409,27 @@
     <!-- Modal: Upload from URL -->
     <div x-show="uploadingUrlModal" class="fixed inset-0 z-[210] flex items-center justify-center p-6" x-cloak>
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="uploadingUrlModal = false"></div>
-        <div class="relative bg-white w-full max-w-lg rounded-[3.5rem] p-12 shadow-2xl" x-transition>
+        <div class="relative bg-white w-full max-w-lg rounded-3xl md:rounded-[3.5rem] p-6 md:p-12 shadow-2xl max-h-[90dvh] overflow-y-auto" x-transition>
             <h3 class="text-3xl font-black text-slate-900 tracking-tighter leading-none mb-4">Upload from URL</h3>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-10">Unduh & konversi otomatis ke WebP</p>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6">Unduh & konversi otomatis ke WebP</p>
             
             <div class="space-y-8">
                 <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-4">Image Source URL</label>
-                    <input type="url" x-model="urlUploadData.url" placeholder="https://example.com/image.jpg" class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-bold text-sm focus:ring-8 focus:ring-indigo-600/5 transition outline-none">
+                    <input type="url" x-model="urlUploadData.url" placeholder="https://example.com/image.jpg" class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-bold text-sm focus:ring-8 focus:ring-green-800/5 transition outline-none">
                 </div>
                 <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-4">SEO Alternative Text (Optional)</label>
-                    <input type="text" x-model="urlUploadData.alt_text" placeholder="Deskripsi gambar..." class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-bold text-sm focus:ring-8 focus:ring-indigo-600/5 transition outline-none">
+                    <input type="text" x-model="urlUploadData.alt_text" placeholder="Deskripsi gambar..." class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-bold text-sm focus:ring-8 focus:ring-green-800/5 transition outline-none">
                 </div>
                 
                 <!-- Watermark URL checkbox -->
                 <div class="flex items-center gap-3 bg-slate-50 px-6 py-4 rounded-2xl">
-                    <input type="checkbox" id="urlWatermark" x-model="urlUploadData.watermark" class="w-5 h-5 rounded-md text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer">
+                    <input type="checkbox" id="urlWatermark" x-model="urlUploadData.watermark" class="w-5 h-5 rounded-md text-green-800 border-slate-300 focus:ring-green-700 cursor-pointer">
                     <label for="urlWatermark" class="text-[10px] font-black text-slate-500 uppercase tracking-widest cursor-pointer select-none">Watermark Brand</label>
                 </div>
 
-                <button @click="submitUrlUpload()" class="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-indigo-600 transition disabled:opacity-50" :disabled="!urlUploadData.url || urlUploading">
+                <button @click="submitUrlUpload()" class="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-green-800 transition disabled:opacity-50" :disabled="!urlUploadData.url || urlUploading">
                     <span x-show="!urlUploading">Download & Convert</span>
                     <span x-show="urlUploading">Downloading...</span>
                 </button>
@@ -421,16 +440,16 @@
     <!-- Modal: Rename Folder -->
     <div x-show="renamingFolder" class="fixed inset-0 z-[210] flex items-center justify-center p-6" x-cloak>
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="renamingFolder = null"></div>
-        <div class="relative bg-white w-full max-w-md rounded-[3.5rem] p-12 shadow-2xl" x-transition>
+        <div class="relative bg-white w-full max-w-md rounded-3xl md:rounded-[3.5rem] p-6 md:p-12 shadow-2xl max-h-[90dvh] overflow-y-auto" x-transition>
             <h3 class="text-3xl font-black text-slate-900 tracking-tighter leading-none mb-4">Rename Folder</h3>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-10">Folder: <span x-text="renamingFolderData.old_name" class="text-indigo-600"></span></p>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6">Folder: <span x-text="renamingFolderData.old_name" class="text-green-800"></span></p>
             
             <div class="space-y-8">
                 <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-4">New Folder Name</label>
-                    <input type="text" x-model="renamingFolderData.new_name" class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-bold text-sm focus:ring-8 focus:ring-indigo-600/5 transition outline-none">
+                    <input type="text" x-model="renamingFolderData.new_name" class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-bold text-sm focus:ring-8 focus:ring-green-800/5 transition outline-none">
                 </div>
-                <button @click="saveRenameFolder()" class="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-indigo-600 transition">
+                <button @click="saveRenameFolder()" class="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-green-800 transition">
                     Update Folder Name
                 </button>
             </div>
@@ -440,9 +459,9 @@
     <!-- Modal: Move Assets -->
     <div x-show="movingAssets" class="fixed inset-0 z-[210] flex items-center justify-center p-6" x-cloak>
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="movingAssets = null"></div>
-        <div class="relative bg-white w-full max-w-md rounded-[3.5rem] p-12 shadow-2xl" x-transition>
+        <div class="relative bg-white w-full max-w-md rounded-3xl md:rounded-[3.5rem] p-6 md:p-12 shadow-2xl max-h-[90dvh] overflow-y-auto" x-transition>
             <h3 class="text-3xl font-black text-slate-900 tracking-tighter leading-none mb-4">Move Items</h3>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-10">Relocate <span x-text="selectedIds.length" class="text-indigo-600"></span> selected items</p>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6">Relocate <span x-text="selectedIds.length" class="text-green-800"></span> selected items</p>
             
             <div class="space-y-8">
                 <div>
@@ -450,7 +469,7 @@
                     <div class="grid grid-cols-1 gap-2">
                         <template x-for="cat in categories" :key="cat.name">
                             <button @click="moveTarget = cat.name" 
-                                    :class="moveTarget === cat.name ? 'bg-indigo-600 text-white shadow-xl scale-105' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'"
+                                    :class="moveTarget === cat.name ? 'bg-green-800 text-white shadow-xl scale-105' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'"
                                     class="w-full flex items-center justify-between px-6 py-4 rounded-2xl transition">
                                 <div class="flex items-center gap-4">
                                     <i class="fas text-xs" :class="cat.icon"></i>
@@ -458,12 +477,12 @@
                                 </div>
                             </button>
                         </template>
-                        <button @click="moveTarget = prompt('New Folder Name?')" class="w-full px-6 py-4 bg-slate-50 text-slate-400 border border-dashed border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-indigo-400 hover:text-indigo-600 transition">
+                        <button @click="moveTarget = prompt('New Folder Name?')" class="w-full px-6 py-4 bg-slate-50 text-slate-400 border border-dashed border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-green-600 hover:text-green-800 transition">
                             + Create & Move to New
                         </button>
                     </div>
                 </div>
-                <button @click="saveMove()" class="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-indigo-600 transition disabled:opacity-30" :disabled="!moveTarget">
+                <button @click="saveMove()" class="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-green-800 transition disabled:opacity-30" :disabled="!moveTarget">
                     Confirm Move
                 </button>
             </div>
@@ -473,7 +492,7 @@
     <!-- Modal: Edit File / Rename & Crop -->
     <div x-show="editingItem" class="fixed inset-0 z-[210] flex items-center justify-center p-6" x-cloak>
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="if (!isCropping) editingItem = null"></div>
-        <div class="relative bg-white w-full max-w-xl rounded-[4rem] p-12 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col" x-transition>
+        <div class="relative bg-white w-full max-w-xl rounded-[4rem] p-6 md:p-12 shadow-2xl overflow-hidden max-h-[90dvh] flex flex-col" x-transition>
             <div class="flex justify-between items-start mb-6 shrink-0">
                 <div>
                     <h3 class="text-3xl font-black text-slate-900 tracking-tighter leading-none">File Properties</h3>
@@ -491,7 +510,7 @@
                     <img :src="editingItem?.url" id="cropperSourceImage" x-ref="cropperImage" class="max-h-full max-w-full object-contain">
                     
                     <!-- Crop Trigger Overlay Button -->
-                    <button @click="initCropper()" x-show="!isCropping" class="absolute bottom-4 left-4 px-5 py-2.5 bg-slate-900/80 backdrop-blur text-white hover:bg-indigo-600 rounded-xl text-[9px] font-black uppercase tracking-widest transition">
+                    <button @click="initCropper()" x-show="!isCropping" class="absolute bottom-4 left-4 px-5 py-2.5 bg-slate-900/80 backdrop-blur text-white hover:bg-green-800 rounded-xl text-[9px] font-black uppercase tracking-widest transition">
                         <i class="fas fa-crop-alt mr-2"></i> Crop Image
                     </button>
                     
@@ -508,11 +527,11 @@
                 <div class="grid grid-cols-1 gap-6" x-show="!isCropping">
                     <div>
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-4">Original Filename</label>
-                        <input type="text" x-model="editingItemData.filename" class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-bold text-sm focus:ring-8 focus:ring-indigo-600/5 transition outline-none">
+                        <input type="text" x-model="editingItemData.filename" class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-bold text-sm focus:ring-8 focus:ring-green-800/5 transition outline-none">
                     </div>
                     <div>
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-4">SEO Alternative Text</label>
-                        <input type="text" x-model="editingItemData.alt_text" class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-bold text-sm focus:ring-8 focus:ring-indigo-600/5 transition outline-none" placeholder="Deskripsi untuk Google Image...">
+                        <input type="text" x-model="editingItemData.alt_text" class="w-full px-8 py-5 bg-slate-50 border-none rounded-3xl font-bold text-sm focus:ring-8 focus:ring-green-800/5 transition outline-none" placeholder="Deskripsi untuk Google Image...">
                     </div>
                 </div>
 
@@ -535,7 +554,7 @@
                         <div class="bg-slate-50 rounded-3xl p-5 border border-slate-100 flex items-center justify-between">
                             <div class="flex-1 pr-3">
                                 <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Loading Placeholder</p>
-                                <p class="text-[10px] font-bold text-emerald-600 mt-2 flex items-center gap-1.5">
+                                <p class="text-[10px] font-bold text-green-600 mt-2 flex items-center gap-1.5">
                                     <i class="fas fa-circle-check"></i> Active WebP Base64
                                 </p>
                             </div>
@@ -547,29 +566,29 @@
                     </div>
 
                     <!-- Responsive Variants Status -->
-                    <div class="bg-indigo-50/50 rounded-3xl p-6 border border-indigo-100/50 space-y-4">
+                    <div class="bg-green-100/50 rounded-3xl p-6 border border-green-200/50 space-y-4">
                         <div class="flex items-center justify-between">
-                            <p class="text-[9px] font-black text-indigo-700 uppercase tracking-widest leading-none">Status Ukuran Responsif (WebP Srcset)</p>
-                            <span class="px-2.5 py-1 bg-indigo-600 text-white text-[7px] font-black uppercase tracking-widest rounded-lg">PageSpeed Hijau</span>
+                            <p class="text-[9px] font-black text-green-900 uppercase tracking-widest leading-none">Status Ukuran Responsif (WebP Srcset)</p>
+                            <span class="px-2.5 py-1 bg-green-800 text-white text-[7px] font-black uppercase tracking-widest rounded-lg">PageSpeed Hijau</span>
                         </div>
                         <div class="grid grid-cols-3 gap-3 pt-1">
-                            <div class="bg-white border border-indigo-100/30 rounded-2xl p-3 text-center">
-                                <i class="fas fa-circle-check text-emerald-500 text-xs"></i>
+                            <div class="bg-white border border-green-200/30 rounded-2xl p-3 text-center">
+                                <i class="fas fa-circle-check text-green-500 text-xs"></i>
                                 <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1.5">Large</p>
                                 <p class="text-[9px] font-bold text-slate-700 mt-0.5">1200px</p>
                             </div>
-                            <div class="bg-white border border-indigo-100/30 rounded-2xl p-3 text-center">
-                                <i class="fas fa-circle-check text-emerald-500 text-xs"></i>
+                            <div class="bg-white border border-green-200/30 rounded-2xl p-3 text-center">
+                                <i class="fas fa-circle-check text-green-500 text-xs"></i>
                                 <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1.5">Medium</p>
                                 <p class="text-[9px] font-bold text-slate-700 mt-0.5">800px</p>
                             </div>
-                            <div class="bg-white border border-indigo-100/30 rounded-2xl p-3 text-center">
-                                <i class="fas fa-circle-check text-emerald-500 text-xs"></i>
+                            <div class="bg-white border border-green-200/30 rounded-2xl p-3 text-center">
+                                <i class="fas fa-circle-check text-green-500 text-xs"></i>
                                 <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1.5">Mobile</p>
                                 <p class="text-[9px] font-bold text-slate-700 mt-0.5">480px</p>
                             </div>
                         </div>
-                        <p class="text-[8px] font-semibold text-indigo-600/70 italic text-center mt-1">
+                        <p class="text-[8px] font-semibold text-green-800/70 italic text-center mt-1">
                             * Varian mobile, medium, dan large otomatis diunggah untuk mengoptimalkan bandwidth pengunjung sesuai resolusi perangkat.
                         </p>
                     </div>
@@ -578,10 +597,10 @@
                     <div class="bg-slate-900 text-white rounded-3xl p-6 border border-slate-800 space-y-4" x-show="editingItem?.exif_data">
                         <div class="flex items-center justify-between border-b border-white/10 pb-3">
                             <div class="flex items-center gap-2">
-                                <i class="fas fa-camera text-indigo-400 text-xs"></i>
-                                <span class="text-[9px] font-black uppercase tracking-widest text-indigo-300">Camera Specs (EXIF)</span>
+                                <i class="fas fa-camera text-green-600 text-xs"></i>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-green-400">Camera Specs (EXIF)</span>
                             </div>
-                            <span class="px-2 py-0.5 bg-indigo-600/30 border border-indigo-500/20 text-indigo-300 text-[6px] font-black uppercase tracking-widest rounded-md">Auto Extracted</span>
+                            <span class="px-2 py-0.5 bg-green-800/30 border border-green-700/20 text-green-400 text-[6px] font-black uppercase tracking-widest rounded-md">Auto Extracted</span>
                         </div>
                         
                         <div class="grid grid-cols-2 gap-4 text-xs font-bold">
@@ -603,31 +622,31 @@
                             </div>
                             <a :href="'https://www.google.com/maps/search/?api=1&query=' + editingItem?.exif_data?.gps?.lat + ',' + editingItem?.exif_data?.gps?.lng" 
                                target="_blank" 
-                               class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-[8px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-indigo-950/50 flex items-center gap-1.5 transition">
+                               class="px-4 py-2.5 bg-green-800 hover:bg-green-900 text-white text-[8px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-green-950/50 flex items-center gap-1.5 transition">
                                 <i class="fas fa-map-location-dot"></i> Buka Google Maps
                             </a>
                         </div>
                     </div>
 
                     <!-- Bi-directional Integration Panel: Usage Details -->
-                    <div class="bg-indigo-50/30 rounded-3xl p-6 border border-indigo-100/50 space-y-4" x-show="editingItem?.usage_details && editingItem?.usage_details.length > 0">
-                        <div class="flex items-center justify-between border-b border-indigo-100 pb-3">
+                    <div class="bg-green-100/30 rounded-3xl p-6 border border-green-200/50 space-y-4" x-show="editingItem?.usage_details && editingItem?.usage_details.length > 0">
+                        <div class="flex items-center justify-between border-b border-green-200 pb-3">
                             <div class="flex items-center gap-2">
-                                <i class="fas fa-circle-nodes text-indigo-600 text-xs"></i>
-                                <span class="text-[9px] font-black uppercase tracking-widest text-indigo-800">Bi-directional Links & Integration</span>
+                                <i class="fas fa-circle-nodes text-green-800 text-xs"></i>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-green-900">Bi-directional Links & Integration</span>
                             </div>
-                            <span class="px-2.5 py-1 bg-indigo-600 text-white text-[7px] font-black uppercase tracking-widest rounded-lg">Connected</span>
+                            <span class="px-2.5 py-1 bg-green-800 text-white text-[7px] font-black uppercase tracking-widest rounded-lg">Connected</span>
                         </div>
                         
                         <div class="space-y-2">
                             <template x-for="link in editingItem?.usage_details" :key="link.name">
-                                <div class="bg-white border border-indigo-100/50 rounded-2xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+                                <div class="bg-white border border-green-200/50 rounded-2xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
                                     <div class="space-y-1">
-                                        <span class="px-2 py-0.5 bg-indigo-50 border border-indigo-100 text-indigo-700 text-[6px] font-black uppercase tracking-widest rounded-md" x-text="link.type"></span>
+                                        <span class="px-2 py-0.5 bg-green-100 border border-green-200 text-green-900 text-[6px] font-black uppercase tracking-widest rounded-md" x-text="link.type"></span>
                                         <p class="text-xs font-black text-slate-800 tracking-tight" x-text="link.name"></p>
                                     </div>
                                     <a :href="link.edit_url" 
-                                       class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[8px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-indigo-100 flex items-center gap-1.5 transition">
+                                       class="px-4 py-2 bg-green-800 hover:bg-green-900 text-white text-[8px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-green-200 flex items-center gap-1.5 transition">
                                         <i class="fas fa-pen-to-square"></i> Edit
                                     </a>
                                 </div>
@@ -651,12 +670,12 @@
             <!-- Footer Actions -->
             <div class="pt-6 border-t border-slate-100 mt-6 shrink-0">
                 <!-- Update Properties (Normal View) -->
-                <button @click="saveEdit()" x-show="!isCropping" class="w-full py-6 bg-slate-900 text-white rounded-[2.5rem] font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-indigo-600 transition">
+                <button @click="saveEdit()" x-show="!isCropping" class="w-full py-6 bg-slate-900 text-white rounded-[2.5rem] font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-green-800 transition">
                     Update All Properties
                 </button>
 
                 <!-- Crop Actions (Cropping View) -->
-                <button @click="saveCroppedImage()" x-show="isCropping" class="w-full py-6 bg-indigo-600 text-white rounded-[2.5rem] font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-indigo-700 transition flex items-center justify-center gap-3">
+                <button @click="saveCroppedImage()" x-show="isCropping" class="w-full py-6 bg-green-800 text-white rounded-[2.5rem] font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-green-900 transition flex items-center justify-center gap-3">
                     <i class="fas fa-check"></i> <span x-text="cropSaving ? 'Saving Crop...' : 'Save Cropped Image'"></span>
                 </button>
             </div>

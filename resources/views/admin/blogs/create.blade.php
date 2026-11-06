@@ -1,13 +1,13 @@
 @extends('admin.layout')
 
-@section('title', 'Editor Artikel Mandiri - Sujai Laketoba')
+@section('title', 'Editor Artikel Mandiri - Sujai Toba Sumatera')
 
 @section('content')
 <div class="w-full max-w-full">
     <!-- Header -->
-    <div class="flex items-center justify-between mb-8 bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-white p-5 md:p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
         <div class="flex items-center gap-5">
-            <div class="w-14 h-14 rounded-[1.25rem] bg-emerald-600 flex items-center justify-center text-white shadow-xl shadow-emerald-100">
+            <div class="w-14 h-14 rounded-[1.25rem] bg-green-600 flex items-center justify-center text-white shadow-xl shadow-green-100">
                 <i class="fas fa-feather-pointed text-2xl"></i>
             </div>
             <div>
@@ -32,15 +32,15 @@
                 <div class="bg-white rounded-[3rem] p-12 shadow-sm border border-slate-100 mb-8">
                     <label class="block text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mb-4 text-center">Judul Utama</label>
                     <input type="text" name="title" id="title" value="{{ old('title') }}" required placeholder="Tuliskan Judul Yang Menarik..."
-                        class="w-full text-4xl font-black text-slate-900 placeholder:text-slate-100 border-none focus:ring-0 p-0 text-center mb-4">
+                        class="w-full text-2xl md:text-4xl font-black text-slate-900 placeholder:text-slate-100 border-none focus:ring-0 p-0 text-center mb-4">
                     <div class="flex justify-center">
-                        <div class="h-1.5 w-24 bg-emerald-500 rounded-full"></div>
+                        <div class="h-1.5 w-24 bg-green-500 rounded-full"></div>
                     </div>
                 </div>
 
                 <!-- The "Paper" Editor -->
-                <div class="bg-slate-50 p-3 sm:p-8 md:p-16 rounded-2xl md:rounded-[3.5rem] border border-slate-100 min-h-[900px] flex justify-center relative">
-                    <div class="w-full max-w-[800px] bg-white shadow-2xl rounded-sm p-5 sm:p-10 md:p-24 min-h-[1000px] relative">
+                <div class="bg-slate-50 p-3 sm:p-8 md:p-16 rounded-2xl md:rounded-[3.5rem] border border-slate-100 min-h-[400px] md:min-h-[900px] flex justify-center relative">
+                    <div class="w-full max-w-[800px] bg-white shadow-2xl rounded-sm p-5 sm:p-10 md:p-24 min-h-[400px] md:min-h-[1000px] relative">
                         <!-- CKEditor Container -->
                         <div id="editor-container" class="prose prose-slate max-w-none">
                             <textarea name="content" id="editor" rows="20" class="w-full px-6 py-4 bg-slate-50 border-none rounded-[2rem] font-medium text-sm leading-relaxed focus:ring-2 focus:ring-toba-green transition">{{ old('content') }}</textarea>
@@ -55,25 +55,25 @@
                 <!-- Classification -->
                 <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
                     <h3 class="text-slate-900 font-black text-[11px] uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
-                        <span class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                        <span class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
                             <i class="fas fa-folder-open text-[12px]"></i>
                         </span>
                         Kategori & Penulis
                     </h3>
                     <div class="space-y-4">
-                        <select name="category" required class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-emerald-500/20 text-xs font-bold text-slate-600">
+                        <select name="category" required class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-green-500/20 text-xs font-bold text-slate-600">
                             <option value="tour">Tour & Travel</option>
                             <option value="news">Berita</option>
                             <option value="event">Event</option>
                             <option value="tips">Tips</option>
                         </select>
-                        <input type="text" name="author" value="{{ auth()->user()->name }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-emerald-500/20 text-xs font-bold text-slate-600">
+                        <input type="text" name="author" value="{{ auth()->user()->name }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-green-500/20 text-xs font-bold text-slate-600">
                     </div>
                 </div>
                 <!-- Cover Image -->
                 <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
                     <h3 class="text-slate-900 font-black text-[11px] uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
-                        <span class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                        <span class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
                             <i class="fas fa-camera text-[12px]"></i>
                         </span>
                         Foto Sampul
@@ -96,23 +96,23 @@
                 <!-- Teaser -->
                 <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
                     <h3 class="text-slate-900 font-black text-[11px] uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
-                        <span class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                        <span class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
                             <i class="fas fa-paragraph text-[12px]"></i>
                         </span>
                         Ringkasan Singkat
                     </h3>
                     <textarea name="excerpt" rows="4" placeholder="Tuliskan teaser artikel..."
-                        class="w-full px-6 py-5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-emerald-500/20 text-xs font-medium text-slate-500 leading-relaxed">{{ old('excerpt') }}</textarea>
+                        class="w-full px-6 py-5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-green-500/20 text-xs font-medium text-slate-500 leading-relaxed">{{ old('excerpt') }}</textarea>
                 </div>
 
                 <!-- Publish Hub -->
                 <div class="bg-slate-900 rounded-[3rem] p-10 shadow-2xl relative overflow-hidden">
-                    <div class="absolute -top-10 -left-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl"></div>
+                    <div class="absolute -top-10 -left-10 w-40 h-40 bg-green-500/10 rounded-full blur-3xl"></div>
                     <div class="relative space-y-6">
                         <div>
                             <label class="block text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Jadwal Tayang</label>
                             <input type="datetime-local" name="published_at" value="{{ now()->format('Y-m-d\TH:i') }}"
-                                class="w-full bg-slate-800 border-none rounded-2xl text-white text-[11px] font-bold px-6 py-4 focus:ring-2 focus:ring-emerald-500">
+                                class="w-full bg-slate-800 border-none rounded-2xl text-white text-[11px] font-bold px-6 py-4 focus:ring-2 focus:ring-green-500">
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="flex-1">

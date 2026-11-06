@@ -25,7 +25,7 @@
 <script>
 document.addEventListener('alpine:init', () => {
     Alpine.data('cmsTourHandler', () => ({
-        activeTab: 'hero',
+        activeTab: 'slider',
         heroTitle: @json($settings['hero_title'] ?? 'Liburan Sempurna di Sumatera Utara.'),
         heroSubtitle: @json($settings['hero_subtitle'] ?? 'Kami mengatur seluruh perjalanan Anda. Nikmati udara pagi Berastagi dan keindahan Samosir tanpa perlu pusing menyusun itinerary.'),
         heroImage: @json($resolve($settings['hero_image_url'] ?? '', 'sumatra-panorama')),
@@ -94,7 +94,7 @@ document.addEventListener('alpine:init', () => {
                 ...this.slides[this.activeSlideIdx],
                 type: 'gallery',
                 id: img.id,
-                title: img.title || 'Sujai Laketoba Gallery',
+                title: img.title || 'Sujai Toba Sumatera Gallery',
                 subtitle: img.description || '',
                 image_url: img.image_path,
                 cta_link: '#',
@@ -194,7 +194,7 @@ document.addEventListener('alpine:init', () => {
         @php
             $defaultTestimonials = [
                 ['name' => 'Andini Wijaya', 'location' => 'Jakarta, Indonesia', 'text' => 'Pelayanan sangat profesional. Tour guide ramah dan sangat menguasai medan. Itinerary juga tidak terlalu padat sehingga kami bisa benar-benar menikmati waktu.', 'image' => 'user1'],
-                ['name' => 'Budi Santoso', 'location' => 'Surabaya, Indonesia', 'text' => 'Sangat puas dengan pilihan hotel dan restorannya. Sujai Laketoba benar-benar kurasi yang terbaik untuk tamunya. Highly recommended!', 'image' => 'user2']
+                ['name' => 'Budi Santoso', 'location' => 'Surabaya, Indonesia', 'text' => 'Sangat puas dengan pilihan hotel dan restorannya. Sujai Toba Sumatera benar-benar kurasi yang terbaik untuk tamunya. Highly recommended!', 'image' => 'user2']
             ];
         @endphp
         testimonials: (() => {
@@ -255,21 +255,95 @@ document.addEventListener('alpine:init', () => {
     
     <!-- LEFT: CONTROL PANEL -->
     <div class="w-full xl:w-[450px] flex-shrink-0 space-y-6">
-        <!-- Tab Navigation -->
-        <div class="bg-white p-2 rounded-[2rem] shadow-sm border border-slate-100 flex items-center space-x-1 overflow-x-auto no-scrollbar">
-            <button type="button" @click="activeTab = 'hero'" :class="activeTab === 'hero' ? 'bg-toba-green text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 px-4 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition whitespace-nowrap">Hero</button>
-            <button type="button" @click="activeTab = 'slider'" :class="activeTab === 'slider' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 px-4 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition whitespace-nowrap">📸 Slider</button>
-            <button type="button" @click="activeTab = 'featured'" :class="activeTab === 'featured' ? 'bg-amber-500 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 px-4 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition whitespace-nowrap">⭐ Featured</button>
-            <button type="button" @click="activeTab = 'about'" :class="activeTab === 'about' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 px-4 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition whitespace-nowrap">Mengapa Kami</button>
-            <button type="button" @click="activeTab = 'specialist'" :class="activeTab === 'specialist' ? 'bg-emerald-500 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 px-4 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition whitespace-nowrap">👩‍💼 Specialist</button>
-            <button type="button" @click="activeTab = 'testimonials'" :class="activeTab === 'testimonials' ? 'bg-amber-400 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 px-4 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition whitespace-nowrap">💬 Ulasan</button>
-            <button @click="activeTab = 'stats'" :class="activeTab === 'stats' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 px-4 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition whitespace-nowrap">Statistik</button>
-            <button @click="activeTab = 'seo'" :class="activeTab === 'seo' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 px-4 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition whitespace-nowrap">SEO</button>
+        <!-- Tab Navigation — scrollable, responsive, tidak tabrakan -->
+        <div class="bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-1 overflow-x-auto no-scrollbar" style="scrollbar-width:none;">
+            <button type="button" @click="activeTab = 'hero'" :class="activeTab === 'hero' ? 'bg-green-800 text-white shadow' : 'text-slate-500 hover:bg-slate-100'" class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[10px] uppercase tracking-wide transition whitespace-nowrap">
+                🖼️ <span>Hero</span>
+            </button>
+            <button type="button" @click="activeTab = 'slider'" :class="activeTab === 'slider' ? 'bg-green-800 text-white shadow' : 'text-slate-500 hover:bg-slate-100'" class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[10px] uppercase tracking-wide transition whitespace-nowrap">
+                📸 <span>Slider</span>
+            </button>
+            <button type="button" @click="activeTab = 'featured'" :class="activeTab === 'featured' ? 'bg-amber-500 text-white shadow' : 'text-slate-500 hover:bg-slate-100'" class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[10px] uppercase tracking-wide transition whitespace-nowrap">
+                ⭐ <span>Featured</span>
+            </button>
+            <button type="button" @click="activeTab = 'about'" :class="activeTab === 'about' ? 'bg-slate-800 text-white shadow' : 'text-slate-500 hover:bg-slate-100'" class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[10px] uppercase tracking-wide transition whitespace-nowrap">
+                ❓ <span>Mengapa</span>
+            </button>
+            <button type="button" @click="activeTab = 'specialist'" :class="activeTab === 'specialist' ? 'bg-green-500 text-white shadow' : 'text-slate-500 hover:bg-slate-100'" class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[10px] uppercase tracking-wide transition whitespace-nowrap">
+                👩‍💼 <span>Specialist</span>
+            </button>
+            <button type="button" @click="activeTab = 'testimonials'" :class="activeTab === 'testimonials' ? 'bg-amber-400 text-white shadow' : 'text-slate-500 hover:bg-slate-100'" class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[10px] uppercase tracking-wide transition whitespace-nowrap">
+                💬 <span>Ulasan</span>
+            </button>
+            <button type="button" @click="activeTab = 'stats'" :class="activeTab === 'stats' ? 'bg-slate-800 text-white shadow' : 'text-slate-500 hover:bg-slate-100'" class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[10px] uppercase tracking-wide transition whitespace-nowrap">
+                📊 <span>Statistik</span>
+            </button>
+            <button type="button" @click="activeTab = 'seo'" :class="activeTab === 'seo' ? 'bg-green-800 text-white shadow' : 'text-slate-500 hover:bg-slate-100'" class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[10px] uppercase tracking-wide transition whitespace-nowrap">
+                🔍 <span>SEO</span>
+            </button>
+            <button type="button" @click="activeTab = 'detailpage'" :class="activeTab === 'detailpage' ? 'bg-slate-900 text-white shadow' : 'text-slate-500 hover:bg-slate-100'" class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-[10px] uppercase tracking-wide transition whitespace-nowrap">
+                📄 <span>Halaman Detail</span>
+            </button>
         </div>
 
         <form action="{{ route('admin.cms.save', 'cms_tour') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
-            
+            {{-- Daftar yang boleh dikosongkan total. Kalau semua itemnya dihapus,
+                 browser tidak mengirim key-nya sama sekali; tanpa ini data lama akan bertahan. --}}
+            <input type="hidden" name="_clear_if_empty" value="homepage_slides,testimonials,featured_package_ids,detail_usp">
+
+            {{-- Blok khusus halaman detail tanpa form (/tour/detail).
+                 Isinya global: sekali ditulis, berlaku untuk semua paket --
+                 admin tidak perlu mengetik ulang kalimat pembeda yang sama di
+                 delapan paket, lalu lupa memperbaruinya di tujuh di antaranya. --}}
+            <div x-show="activeTab === 'detailpage'" x-transition
+                 x-data="{ usp: {{ \Illuminate\Support\Js::from(array_values($settings['detail_usp'] ?? [])) }} }"
+                 class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm space-y-8">
+
+                <div>
+                    <h4 class="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2 mb-1">
+                        <span class="w-2 h-2 rounded-full bg-slate-900"></span> Keterangan Keaslian Video
+                    </h4>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-3">Muncul di bawah galeri video</p>
+                    <input type="text" name="video_credit_note"
+                           value="{{ $settings['video_credit_note'] ?? '' }}"
+                           placeholder="Semua video di atas rekaman tim kami sendiri, bukan stok."
+                           class="w-full px-4 py-3 bg-slate-50 rounded-2xl border-none font-bold text-xs text-slate-900">
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h4 class="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2 mb-1">
+                                <span class="w-2 h-2 rounded-full bg-slate-900"></span> Kenapa Kami Berbeda
+                            </h4>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">3-4 poin pembeda</p>
+                        </div>
+                        <button type="button" @click="usp.push({ title: '', text: '' })"
+                                class="px-4 py-2 bg-slate-900 text-white rounded-xl font-black text-[9px] uppercase tracking-widest shadow-lg">
+                            + Tambah Poin
+                        </button>
+                    </div>
+
+                    <div class="space-y-3">
+                        <template x-for="(item, idx) in usp" :key="'usp' + idx">
+                            <div class="p-5 bg-slate-50 rounded-3xl space-y-3 relative group">
+                                <button type="button" @click="usp.splice(idx, 1)"
+                                        class="absolute top-4 right-4 w-6 h-6 rounded-full bg-white text-rose-500 shadow-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <i class="fas fa-times text-[10px]"></i>
+                                </button>
+                                <input type="text" x-model="item.title" placeholder="Judul poin"
+                                       :name="'detail_usp[' + idx + '][title]'"
+                                       class="w-full px-3 py-2 bg-white rounded-xl border-none font-black text-[11px] text-slate-900">
+                                <textarea x-model="item.text" rows="2" placeholder="Penjelasan singkat"
+                                          :name="'detail_usp[' + idx + '][text]'"
+                                          class="w-full px-3 py-2 bg-white rounded-xl border-none font-bold text-[10px] text-slate-600"></textarea>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm overflow-hidden">
                 <!-- Hero Tab -->
                 <div x-show="activeTab === 'hero'" x-transition class="space-y-6">
@@ -280,6 +354,7 @@ document.addEventListener('alpine:init', () => {
                         <label class="flex items-center cursor-pointer gap-2">
                             <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Tampilkan</span>
                             <div class="relative inline-block w-8 h-4">
+                                <input type="hidden" name="show_hero" value="0">
                                 <input type="checkbox" name="show_hero" value="1" {{ ($settings['show_hero'] ?? true) ? 'checked' : '' }} class="sr-only peer">
                                 <div class="w-full h-full bg-slate-200 rounded-full peer peer-checked:bg-toba-green transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition peer-checked:after:translate-x-4"></div>
                             </div>
@@ -345,7 +420,7 @@ document.addEventListener('alpine:init', () => {
 
                             <div class="flex-1 min-w-0">
                                 <p class="font-black text-slate-900 text-xs truncate">{{ $ap->name }}</p>
-                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{{ $ap->locationTag ?? 'Sumatera Utara' }} · Rp {{ number_format($ap->price, 0, ',', '.') }}</p>
+                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{{ $ap->locationTag ?? 'Sumatera Utara' }} · {{ \App\Helpers\CurrencyHelper::formatIn($ap->price, 'MYR') }}</p>
                             </div>
                             @if($ap->isFeatured)
                                 <span class="text-amber-400 text-xs">⭐</span>
@@ -363,7 +438,7 @@ document.addEventListener('alpine:init', () => {
                 <!-- Why Us Tab -->
                 <div x-show="activeTab === 'about'" x-transition class="space-y-6">
                     <h4 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-slate-900"></span> Kelebihan Sujai Laketoba
+                        <span class="w-2 h-2 rounded-full bg-slate-900"></span> Kelebihan Sujai Toba Sumatera
                     </h4>
                     <div class="space-y-6 max-h-[500px] overflow-y-auto pr-2 no-scrollbar">
                         @for($i = 1; $i <= 3; $i++)
@@ -408,11 +483,12 @@ document.addEventListener('alpine:init', () => {
                 <div x-show="activeTab === 'stats'" x-transition class="space-y-6">
                     <div class="flex items-center justify-between mb-4">
                         <h4 class="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-slate-900"></span> Statistik Sujai Laketoba
+                            <span class="w-2 h-2 rounded-full bg-slate-900"></span> Statistik Sujai Toba Sumatera
                         </h4>
                         <label class="flex items-center cursor-pointer gap-2">
                             <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Tampilkan</span>
                             <div class="relative inline-block w-8 h-4">
+                                <input type="hidden" name="show_stats" value="0">
                                 <input type="checkbox" name="show_stats" value="1" {{ ($settings['show_stats'] ?? true) ? 'checked' : '' }} class="sr-only peer">
                                 <div class="w-full h-full bg-slate-200 rounded-full peer peer-checked:bg-slate-900 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition peer-checked:after:translate-x-4"></div>
                             </div>
@@ -437,15 +513,15 @@ document.addEventListener('alpine:init', () => {
                 <!-- Specialist Tab -->
                 <div x-show="activeTab === 'specialist'" x-transition class="space-y-6">
                     <div class="flex items-center justify-between mb-4">
-                        <h4 class="text-sm font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Travel Specialist
+                        <h4 class="text-sm font-black text-green-500 uppercase tracking-widest flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span> Travel Specialist
                         </h4>
                         <label class="flex items-center cursor-pointer gap-2">
                             <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Tampilkan</span>
                             <div class="relative inline-block w-8 h-4">
                                 <input type="hidden" name="show_specialist" value="0">
                                 <input type="checkbox" name="show_specialist" value="1" {{ ($settings['show_specialist'] ?? true) ? 'checked' : '' }} class="sr-only peer">
-                                <div class="w-full h-full bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition peer-checked:after:translate-x-4"></div>
+                                <div class="w-full h-full bg-slate-200 rounded-full peer peer-checked:bg-green-500 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition peer-checked:after:translate-x-4"></div>
                             </div>
                         </label>
                     </div>
@@ -475,7 +551,7 @@ document.addEventListener('alpine:init', () => {
                         </div>
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Pesan Sapaan (Deskripsi)</label>
-                            <textarea name="specialist_desc" x-model="specialist_desc" rows="4" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-emerald-500 font-medium text-slate-600 text-xs leading-relaxed"></textarea>
+                            <textarea name="specialist_desc" x-model="specialist_desc" rows="4" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-green-500 font-medium text-slate-600 text-xs leading-relaxed"></textarea>
                         </div>
                     </div>
                 </div>
@@ -495,6 +571,29 @@ document.addEventListener('alpine:init', () => {
                             </div>
                         </label>
                     </div>
+                    {{-- Judul bagian ini dulu tertanam di kode. Sekarang diatur
+                         di sini supaya bisa diubah tanpa menyentuh Blade. --}}
+                    <div class="p-5 bg-slate-50 rounded-3xl space-y-4">
+                        <div class="space-y-1">
+                            <label class="text-[7px] font-black text-slate-400 uppercase tracking-widest">Label Kecil (di atas judul)</label>
+                            <input type="text" name="testimonials_eyebrow" value="{{ $settings['testimonials_eyebrow'] ?? '' }}"
+                                   placeholder="Testimoni Wisatawan"
+                                   class="w-full px-3 py-1.5 bg-white border-none rounded-lg font-bold text-[10px]">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[7px] font-black text-slate-400 uppercase tracking-widest">Judul Bagian</label>
+                            <input type="text" name="testimonials_title" value="{{ $settings['testimonials_title'] ?? '' }}"
+                                   placeholder="Apa Kata Mereka Tentang Sujai Toba Sumatera?"
+                                   class="w-full px-3 py-1.5 bg-white border-none rounded-lg font-black text-[11px]">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[7px] font-black text-slate-400 uppercase tracking-widest">Deskripsi (opsional)</label>
+                            <textarea name="testimonials_subtitle" rows="2"
+                                      placeholder="Kosongkan kalau tidak perlu. Hindari klaim angka yang belum bisa dibuktikan."
+                                      class="w-full px-3 py-2 bg-white border-none rounded-xl font-medium text-[9px] leading-relaxed">{{ $settings['testimonials_subtitle'] ?? '' }}</textarea>
+                        </div>
+                    </div>
+
                     <div class="flex justify-end">
                         <button type="button" @click="addTestimonial()" class="px-4 py-2 bg-amber-500 text-white rounded-xl font-black text-[9px] uppercase tracking-widest shadow-lg shadow-amber-200">
                             + Tambah Ulasan
@@ -537,7 +636,7 @@ document.addEventListener('alpine:init', () => {
                 <!-- SEO Tab -->
                 <div x-show="activeTab === 'seo'" x-transition class="space-y-6">
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                        <div class="w-10 h-10 rounded-2xl bg-green-100 text-green-800 flex items-center justify-center">
                             <i class="fas fa-search"></i>
                         </div>
                         <h4 class="text-sm font-black text-slate-900 uppercase tracking-widest">Optimasi SEO Halaman</h4>
@@ -546,15 +645,15 @@ document.addEventListener('alpine:init', () => {
                     <div class="space-y-6">
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">SEO Meta Title</label>
-                            <input type="text" name="meta_title" value="{{ $settings['meta_title'] ?? '' }}" placeholder="Sujai Laketoba | Paket Wisata Terbaik" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-600 font-bold text-slate-900 text-xs shadow-inner">
+                            <input type="text" name="meta_title" value="{{ $settings['meta_title'] ?? '' }}" placeholder="Sujai Toba Sumatera | Paket Wisata Terbaik" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-green-800 font-bold text-slate-900 text-xs shadow-inner">
                         </div>
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">SEO Meta Description</label>
-                            <textarea name="meta_description" rows="4" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-600 font-bold text-slate-600 text-xs leading-relaxed shadow-inner" placeholder="Jelajahi keindahan Danau Toba dengan paket wisata premium kami...">{{ $settings['meta_description'] ?? '' }}</textarea>
+                            <textarea name="meta_description" rows="4" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-green-800 font-bold text-slate-600 text-xs leading-relaxed shadow-inner" placeholder="Jelajahi keindahan Danau Toba dengan paket wisata premium kami...">{{ $settings['meta_description'] ?? '' }}</textarea>
                         </div>
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">SEO Meta Keywords</label>
-                            <input type="text" name="meta_keywords" value="{{ $settings['meta_keywords'] ?? '' }}" placeholder="wisata toba, tour samosir, travel medan" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-600 font-bold text-slate-900 text-xs shadow-inner">
+                            <input type="text" name="meta_keywords" value="{{ $settings['meta_keywords'] ?? '' }}" placeholder="wisata toba, tour samosir, travel medan" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-green-800 font-bold text-slate-900 text-xs shadow-inner">
                         </div>
                     </div>
                 </div>
@@ -562,20 +661,41 @@ document.addEventListener('alpine:init', () => {
                 <!-- Slider Tab (Now as the Editor) -->
                 <div x-show="activeTab === 'slider'" x-transition class="space-y-6">
                     <div class="flex items-center justify-between mb-4">
-                        <h4 class="text-sm font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-indigo-600"></span> NIF Dynamic Slider
+                        <h4 class="text-sm font-black text-green-800 uppercase tracking-widest flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-green-800"></span> 📸 Dynamic Hero Slider
                         </h4>
                         <label class="flex items-center cursor-pointer gap-2">
                             <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Tampilkan</span>
                             <div class="relative inline-block w-8 h-4">
                                 <input type="hidden" name="show_slider" value="0">
                                 <input type="checkbox" name="show_slider" value="1" {{ ($settings['show_slider'] ?? true) ? 'checked' : '' }} class="sr-only peer">
-                                <div class="w-full h-full bg-slate-200 rounded-full peer peer-checked:bg-indigo-600 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition peer-checked:after:translate-x-4"></div>
+                                <div class="w-full h-full bg-slate-200 rounded-full peer peer-checked:bg-green-800 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition peer-checked:after:translate-x-4"></div>
                             </div>
                         </label>
                     </div>
+
+                    <!-- Panduan Ukuran Hero Slider -->
+                    <div class="p-4 rounded-2xl bg-green-50 border border-green-200 text-xs text-slate-700 space-y-2 shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2 font-black text-slate-900 text-xs uppercase tracking-wider">
+                                <i class="fas fa-ruler-combined text-toba-green"></i>
+                                <span>Standar Ukuran Hero Slider</span>
+                            </div>
+                            <button type="button" @click="$dispatch('open-image-guide')"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-green-700 hover:bg-green-800 text-white font-bold text-[10px] transition shadow-sm">
+                                <i class="fas fa-table-list text-[9px]"></i>
+                                <span>Lihat Semua Ukuran</span>
+                            </button>
+                        </div>
+                        <p class="text-xs leading-relaxed text-slate-600">
+                            • <strong>Desktop (16:9):</strong> <span class="font-bold text-slate-900">1920 &times; 1080 px</span> (minimal 1600 &times; 900 px). Safe zone 15% dari tepi.<br>
+                            • <strong>Mobile (4:5 / 1:1):</strong> <span class="font-bold text-slate-900">1080 &times; 1350 px</span> atau 800 &times; 800 px untuk layar smartphone.<br>
+                            • <strong>Catatan:</strong> Lanskap luas Danau Toba. Area tengah bawah sedikit digelapkan agar teks judul putih terbaca jelas.
+                        </p>
+                    </div>
+
                     <div class="flex justify-end">
-                        <button type="button" @click="addSlide()" class="px-4 py-2 bg-indigo-600 text-white rounded-xl font-black text-[9px] uppercase tracking-widest shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition flex items-center gap-2">
+                        <button type="button" @click="addSlide()" class="px-4 py-2 bg-green-800 text-white rounded-xl font-black text-[9px] uppercase tracking-widest shadow-lg shadow-green-300 hover:bg-green-900 transition flex items-center gap-2">
                             <i class="fas fa-plus"></i> Tambah Slide
                         </button>
                     </div>
@@ -601,7 +721,7 @@ document.addEventListener('alpine:init', () => {
 
                                     <!-- Package Picker -->
                                     <div x-show="slide.type === 'package'" class="space-y-2">
-                                        <p class="text-[8px] font-black text-indigo-600 uppercase tracking-widest">Pilih Paket Tour</p>
+                                        <p class="text-[8px] font-black text-green-800 uppercase tracking-widest">Pilih Paket Tour</p>
                                         <div class="grid grid-cols-1 gap-2 max-h-[150px] overflow-y-auto no-scrollbar bg-white p-2 rounded-2xl border border-slate-100">
                                             @foreach($packages as $p)
                                             <button type="button" 
@@ -615,13 +735,13 @@ document.addEventListener('alpine:init', () => {
                                                         duration: '{{ addslashes($p->duration) }}',
                                                         image_path: '{{ imageUrl($p->packageImages->first()?->image_path ?? ($p->images[0] ?? '')) }}'
                                                     })"
-                                                    class="flex items-center gap-2 p-2 rounded-xl hover:bg-indigo-50 transition text-left group/pkg">
+                                                    class="flex items-center gap-2 p-2 rounded-xl hover:bg-green-100 transition text-left group/pkg">
                                                 <div class="w-8 h-8 rounded-lg bg-slate-100 overflow-hidden shrink-0">
                                                     <img src="{{ imageUrl($p->packageImages->first()?->image_path ?? ($p->images[0] ?? '')) }}" class="w-full h-full object-cover">
                                                 </div>
                                                 <div class="flex-1 min-w-0">
                                                     <p class="text-[9px] font-black text-slate-900 truncate">{{ $p->name }}</p>
-                                                    <p class="text-[7px] font-bold text-slate-400 uppercase tracking-widest">Rp {{ number_format($p->price, 0, ',', '.') }}</p>
+                                                    <p class="text-[7px] font-bold text-slate-400 uppercase tracking-widest">{{ \App\Helpers\CurrencyHelper::formatIn($p->price, 'MYR') }}</p>
                                                 </div>
                                             </button>
                                             @endforeach
@@ -656,7 +776,7 @@ document.addEventListener('alpine:init', () => {
 
                                     <!-- Gallery Picker -->
                                     <div x-show="slide.type === 'gallery'" class="space-y-2">
-                                        <p class="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Pilih Foto Galeri</p>
+                                        <p class="text-[8px] font-black text-green-600 uppercase tracking-widest">Pilih Foto Galeri</p>
                                         <div class="grid grid-cols-2 gap-2 max-h-[150px] overflow-y-auto no-scrollbar bg-white p-2 rounded-2xl border border-slate-100">
                                             @foreach($gallery as $g)
                                             <button type="button" 
@@ -666,7 +786,7 @@ document.addEventListener('alpine:init', () => {
                                                         description: '{{ addslashes($g->description) }}',
                                                         image_path: '{{ imageUrl($g->image_path) }}'
                                                     })"
-                                                    class="flex flex-col gap-2 p-1 rounded-xl hover:bg-emerald-50 transition text-left group/gallery">
+                                                    class="flex flex-col gap-2 p-1 rounded-xl hover:bg-green-50 transition text-left group/gallery">
                                                 <div class="w-full aspect-video rounded-lg bg-slate-100 overflow-hidden">
                                                     <img src="{{ imageUrl($g->image_path) }}" class="w-full h-full object-cover">
                                                 </div>
@@ -722,6 +842,18 @@ document.addEventListener('alpine:init', () => {
                                         </div>
                                     </div>
 
+                                    <!-- CTA Fields — Tombol & Link per slide -->
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="space-y-1">
+                                            <label class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Teks Tombol</label>
+                                            <input type="text" x-model="slide.cta_text" placeholder="Book Now!" class="w-full px-3 py-2 bg-white rounded-xl border-none font-bold text-[10px] text-slate-900">
+                                        </div>
+                                        <div class="space-y-1">
+                                            <label class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Target Link</label>
+                                            <input type="text" x-model="slide.cta_link" placeholder="/tour/packages" class="w-full px-3 py-2 bg-white rounded-xl border-none font-bold text-[10px] text-slate-900">
+                                        </div>
+                                    </div>
+
                                     <!-- Hidden Inputs for Form Submission -->
                                     <input type="hidden" :name="'homepage_slides['+index+'][title]'" :value="slide.title">
                                     <input type="hidden" :name="'homepage_slides['+index+'][subtitle]'" :value="slide.subtitle">
@@ -748,82 +880,99 @@ document.addEventListener('alpine:init', () => {
     <!-- RIGHT: LIVE PREVIEW & SLIDER MANAGEMENT -->
     <div class="flex-1 bg-white rounded-[3.5rem] overflow-hidden relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] border-8 border-slate-900/50 min-h-[600px] xl:h-[85vh] sticky top-8 overflow-y-auto no-scrollbar">
         
-        <!-- Tab: SLIDER PREVIEW (Snippet B) -->
-        <div x-show="activeTab === 'slider'" x-transition class="h-full bg-slate-900 relative overflow-hidden">
-            <!-- Backgrounds -->
+        <!-- Tab: SLIDER PREVIEW — 1:1 dengan tampilan homepage sesungguhnya -->
+        <div x-show="activeTab === 'slider'" x-transition class="relative overflow-hidden bg-black" style="height:100%;">
+
+            <!-- Slide Backgrounds -->
             <template x-for="(slide, index) in slides" :key="index">
-                <div x-show="activeSlideIdx === index" x-transition.opacity.duration.1000ms class="absolute inset-0">
-                    <img :src="fixPath(slide.image_url) || fixPath('tour')" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/40 to-transparent"></div>
+                <div x-show="activeSlideIdx === index"
+                     style="position:absolute;inset:0;transition:opacity 0.9s ease-in-out;"
+                     :style="activeSlideIdx === index ? 'opacity:1;z-index:2;' : 'opacity:0;z-index:1;'">
+                    <img :src="fixPath(slide.image_url) || '/images/sumut/toba_hero.webp'"
+                         class="w-full h-full object-cover object-center"
+                         style="display:block;">
+                    <!-- Gradient overlay bawah — persis homepage -->
+                    <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.10) 55%, rgba(0,0,0,0.55) 100%);z-index:2;"></div>
                 </div>
             </template>
 
-            <!-- Slider Content UI -->
-            <div class="relative z-10 h-full flex items-center p-12">
-                <div class="w-full flex flex-col lg:flex-row items-center gap-8">
-                    <!-- Left: Text -->
-                    <div class="w-full lg:w-1/2 text-white">
-                        <template x-for="(slide, index) in slides" :key="index">
-                            <div x-show="activeSlideIdx === index" x-transition class="space-y-6">
-                                <span class="inline-flex items-center gap-1.5 text-[8px] font-black uppercase tracking-[0.3em] text-toba-accent" x-text="slide.location"></span>
-                                <h2 class="text-4xl font-black leading-tight tracking-tighter" x-text="slide.title"></h2>
-                                <p class="text-slate-300 text-[10px] leading-relaxed max-w-xs opacity-90" x-text="slide.subtitle"></p>
-                                <div class="flex items-center gap-4 pt-4">
-                                    <div class="px-6 py-3 bg-toba-green text-white rounded-2xl font-black text-[9px] uppercase tracking-widest shadow-xl" x-text="slide.cta_text"></div>
-                                    <div x-show="slide.price > 0" class="flex flex-col">
-                                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Mulai Dari</span>
-                                        <span class="text-lg font-black text-toba-accent" x-text="'Rp ' + parseInt(slide.price).toLocaleString('id-ID')"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
+            <!-- BOOK NOW Button — tengah bawah, persis homepage -->
+            <div style="position:absolute;bottom:72px;left:0;right:0;display:flex;justify-content:center;z-index:20;">
+                <template x-for="(slide, index) in slides" :key="'btn-'+index">
+                    <a x-show="activeSlideIdx === index"
+                       :href="slide.cta_link || '#'"
+                       style="display:inline-flex;align-items:center;gap:8px;background:#E67E22;color:#fff;font-weight:800;padding:12px 44px;border-radius:9999px;letter-spacing:0.12em;text-transform:uppercase;font-size:13px;border:2px solid rgba(255,255,255,0.35);box-shadow:0 6px 28px rgba(230,126,34,0.65);white-space:nowrap;text-decoration:none;animation:pulse-glow 2.5s infinite;">
+                        <span x-text="slide.cta_text || 'Book Now!'"></span>
+                    </a>
+                </template>
+            </div>
 
-                    <!-- Right: Thumbnails -->
-                    <div class="w-full lg:w-1/2 flex justify-end gap-3 overflow-x-auto no-scrollbar pb-4">
-                        <template x-for="(slide, index) in slides" :key="index">
-                            <button type="button" @click="activeSlideIdx = index" 
-                                    :class="activeSlideIdx === index ? 'ring-2 ring-toba-accent ring-offset-2 ring-offset-slate-900 scale-105 opacity-100' : 'opacity-40 hover:opacity-100'"
-                                    class="relative shrink-0 w-24 h-32 rounded-2xl overflow-hidden transition duration-500">
-                                <img :src="fixPath(slide.image_url) || fixPath('tour')" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-black/40"></div>
-                                <div class="absolute bottom-2 left-2 right-2 text-left">
-                                    <p class="text-[6px] font-black text-white truncate uppercase" x-text="slide.title"></p>
-                                </div>
-                            </button>
-                        </template>
+            <!-- Dot Indicators -->
+            <div style="position:absolute;bottom:56px;left:50%;transform:translateX(-50%);z-index:25;display:flex;gap:7px;align-items:center;">
+                <template x-for="(slide, index) in slides" :key="'dot-'+index">
+                    <button type="button" @click="activeSlideIdx = index"
+                            style="height:5px;border-radius:9999px;border:none;cursor:pointer;transition:all 0.35s;padding:0;"
+                            :style="activeSlideIdx === index ? 'width:20px;background:white;' : 'width:5px;background:rgba(255,255,255,0.45);'">
+                    </button>
+                </template>
+            </div>
+
+            <!-- Arrow Prev/Next -->
+            <button type="button" @click="activeSlideIdx = (activeSlideIdx - 1 + slides.length) % slides.length"
+                    style="position:absolute;top:50%;left:12px;transform:translateY(-50%);z-index:25;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.38);color:white;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,0.25);cursor:pointer;backdrop-filter:blur(4px);margin-top:-25px;">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button type="button" @click="activeSlideIdx = (activeSlideIdx + 1) % slides.length"
+                    style="position:absolute;top:50%;right:12px;transform:translateY(-50%);z-index:25;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.38);color:white;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,0.25);cursor:pointer;backdrop-filter:blur(4px);margin-top:-25px;">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+
+            <!-- Features Bar — overlay bawah, persis homepage -->
+            <div style="position:absolute;bottom:0;left:0;right:0;z-index:20;background:rgba(15,15,15,0.88);backdrop-filter:blur(8px);display:flex;align-items:stretch;justify-content:center;">
+                <div style="display:flex;align-items:center;gap:9px;padding:11px 16px;color:white;flex:1;justify-content:center;border-right:1px solid rgba(255,255,255,0.10);">
+                    <div style="width:30px;height:30px;border-radius:50%;background:#E67E22;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg width="14" height="14" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                     </div>
+                    <div><p style="font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:0.06em;">Booking Mudah</p><p style="font-size:8px;color:#999;">Tanpa Ribet</p></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:9px;padding:11px 16px;color:white;flex:1;justify-content:center;border-right:1px solid rgba(255,255,255,0.10);">
+                    <div style="width:30px;height:30px;border-radius:50%;background:#E67E22;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg width="14" height="14" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <div><p style="font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:0.06em;">Proses Cepat</p><p style="font-size:8px;color:#999;">CS 24/7 Fast Respon</p></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:9px;padding:11px 16px;color:white;flex:1;justify-content:center;border-right:1px solid rgba(255,255,255,0.10);">
+                    <div style="width:30px;height:30px;border-radius:50%;background:#E67E22;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg width="14" height="14" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    </div>
+                    <div><p style="font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:0.06em;">Banyak Pilihan</p><p style="font-size:8px;color:#999;">Paket Fleksibel</p></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:9px;padding:11px 16px;color:white;flex:1;justify-content:center;">
+                    <div style="width:30px;height:30px;border-radius:50%;background:#E67E22;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg width="14" height="14" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div><p style="font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:0.06em;">Harga Terbaik</p><p style="font-size:8px;color:#999;">Terjangkau & Premium</p></div>
                 </div>
             </div>
 
-            <!-- Navigation Controls -->
-            <div class="absolute bottom-10 left-12 z-20 flex items-center gap-4">
-                <div class="flex gap-1">
-                    <template x-for="(slide, index) in slides" :key="index">
-                        <button type="button" @click="activeSlideIdx = index" 
-                                :class="activeSlideIdx === index ? 'w-6 bg-toba-accent' : 'w-2 bg-white/40'"
-                                class="h-1.5 rounded-full transition"></button>
-                    </template>
-                </div>
-            </div>
         </div>
 
         <!-- Tab: LIVE PREVIEW (Original Content) -->
         <div x-show="activeTab !== 'slider'" x-transition>
             <!-- Live Hero Section -->
-            <section class="relative h-[500px] flex items-center px-12 md:px-20 overflow-hidden">
+            <section class="relative h-[500px] flex items-center px-5 md:px-12 lg:px-20 overflow-hidden">
                 <div class="absolute inset-0 bg-cover bg-center transition duration-700" :style="`background-image: url('${heroImage}')`"></div>
                 <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
                 
                 <div class="relative z-10 max-w-2xl space-y-8">
                     <div class="flex items-center gap-3">
-                        <span class="w-8 h-px bg-emerald-500"></span>
-                        <span class="text-emerald-400 text-[10px] font-black uppercase tracking-[0.3em]">Sujai Laketoba Tour</span>
+                        <span class="w-8 h-px bg-green-500"></span>
+                        <span class="text-green-400 text-[10px] font-black uppercase tracking-[0.3em]">Sujai Toba Sumatera Tour</span>
                     </div>
                     <h1 class="text-4xl md:text-6xl font-black text-white leading-[0.9] tracking-tighter" x-text="heroTitle"></h1>
                     <p class="text-slate-200 text-sm font-medium leading-relaxed max-w-lg opacity-80" x-text="heroSubtitle"></p>
                     <div class="pt-4">
-                        <button type="button" class="px-8 py-4 bg-emerald-500 text-white rounded-full font-black text-[10px] uppercase tracking-widest shadow-xl shadow-emerald-500/20" x-text="ctaText"></button>
+                        <button type="button" class="px-8 py-4 bg-green-500 text-white rounded-full font-black text-[10px] uppercase tracking-widest shadow-xl shadow-green-500/20" x-text="ctaText"></button>
                     </div>
                 </div>
 
@@ -837,7 +986,7 @@ document.addEventListener('alpine:init', () => {
             </section>
 
             <!-- Live Stats Section -->
-            <section class="py-12 px-12 md:px-20 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <section class="py-6 px-5 md:px-12 lg:px-20 grid grid-cols-2 md:grid-cols-4 gap-8">
                 <template x-for="i in [0,1,2,3]">
                     <div class="space-y-1">
                         <div class="text-3xl font-black text-slate-900 tracking-tighter" x-text="$data['stat'+i]"></div>
@@ -851,7 +1000,7 @@ document.addEventListener('alpine:init', () => {
             </section>
 
             <!-- Dummy Gallery Section -->
-            <section class="px-12 md:px-20 pb-20">
+            <section class="px-5 md:px-12 lg:px-20 pb-10">
                 <div class="flex items-center justify-between mb-8">
                     <h3 class="text-xl font-black text-slate-900 tracking-tight">Galeri Perjalanan</h3>
                     <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">View All</span>
@@ -866,7 +1015,7 @@ document.addEventListener('alpine:init', () => {
 
         <!-- Overlay Status -->
         <div class="absolute top-6 right-6 z-50 flex items-center gap-3">
-            <div class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 text-white text-[8px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-emerald-500/20">
+            <div class="flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white text-[8px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-green-500/20">
                 <span class="w-1 h-1 rounded-full bg-white animate-pulse"></span> Tour Sync
             </div>
             <div class="px-3 py-1.5 bg-slate-900 text-white text-[8px] font-black uppercase tracking-widest rounded-lg">Live Preview</div>
@@ -882,180 +1031,3 @@ document.addEventListener('alpine:init', () => {
     .no-scrollbar::-webkit-scrollbar { display: none; }
 </style>
 
-@push('scripts')
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('cmsHandler', () => ({
-            activeTab: 'hero',
-            activeSlideIdx: 0,
-            
-            // Hero
-            heroTitle: @json($settings['hero_title'] ?? 'Eksplorasi Keajaiban Danau Toba Bersama Kami.'),
-            heroSubtitle: @json($settings['hero_subtitle'] ?? 'Nikmati perjalanan tak terlupakan dengan paket tour terbaik, akomodasi premium, dan pemandu lokal berpengalaman.'),
-            heroImage: @json(imageUrl($settings['hero_image_url'] ?? '')),
-            ctaText: @json($settings['cta_text'] ?? 'Mulai Petualangan'),
-
-            // Stats
-            @foreach(range(0, 3) as $i)
-            stat{{ $i }}: @json($settings['stat_value_'.$i] ?? '0'),
-            label{{ $i }}: @json($settings['stat_label_'.$i] ?? 'Keterangan'),
-            @endforeach
-
-            // Specialist
-            specialist_name: @json($settings['specialist_name'] ?? 'Sarah Anggraini'),
-            specialist_title: @json($settings['specialist_title'] ?? 'Travel Specialist'),
-            specialist_desc: @json($settings['specialist_desc'] ?? ''),
-            specialist_image: @json($settings['specialist_image_url'] ?? ''),
-
-            // Why Us
-            about_title_1: @json($settings['about_title_1'] ?? 'Mengapa Memilih Kami?'),
-            about_desc_1: @json($settings['about_desc_1'] ?? ''),
-
-            // Slider Management
-            slides: @json($settings['homepage_slides'] ?? []),
-
-            init() {
-                if (this.slides.length === 0) {
-                    this.addSlide();
-                }
-            },
-
-            addSlide() {
-                this.slides.push({
-                    title: 'Destinasi Baru',
-                    subtitle: 'Deskripsi perjalanan menarik di sini...',
-                    image_url: '',
-                    location: 'Sumatera Utara',
-                    duration: '3 Hari 2 Malam',
-                    price: '1.500.000',
-                    cta_text: 'Lihat Detail',
-                    cta_link: '#',
-                    type: 'manual'
-                });
-                this.activeSlideIdx = this.slides.length - 1;
-            },
-
-            removeSlide(index) {
-                if (confirm('Hapus slide ini?')) {
-                    this.slides.splice(index, 1);
-                    if (this.activeSlideIdx >= this.slides.length) {
-                        this.activeSlideIdx = Math.max(0, this.slides.length - 1);
-                    }
-                }
-            },
-
-            importFromPackage(pkg) {
-                const slide = this.slides[this.activeSlideIdx];
-                slide.title = pkg.name;
-                slide.subtitle = pkg.shortDescription;
-                slide.location = pkg.locationTag;
-                slide.price = pkg.price;
-                slide.duration = pkg.duration;
-                slide.image_url = pkg.image_path;
-                slide.cta_link = '/tour/package/' + pkg.slug;
-                slide.cta_text = 'Booking Sekarang';
-            },
-
-            importFromBlog(post) {
-                const slide = this.slides[this.activeSlideIdx];
-                slide.title = post.title;
-                slide.subtitle = post.shortDescription;
-                slide.image_url = post.thumbnail;
-                slide.cta_link = '/tour/blog/' + post.slug;
-                slide.cta_text = 'Baca Artikel';
-            },
-
-            importFromGallery(img) {
-                const slide = this.slides[this.activeSlideIdx];
-                slide.title = img.title || 'Sujai Laketoba';
-                slide.subtitle = img.description;
-                slide.image_url = img.image_path;
-            },
-
-            openMediaPicker(target, index = null) {
-                window.dispatchEvent(new CustomEvent('open-media-picker', {
-                    detail: {
-                        callback: (item) => {
-                            const path = item.path;
-                            if (target === 'hero') {
-                                this.heroImage = '/storage/' + path;
-                                document.getElementById('input_hero_image_url').value = path;
-                            } else if (target === 'specialist') {
-                                this.specialist_image = path;
-                            } else if (target === 'slide' && index !== null) {
-                                this.slides[index].image_url = path;
-                            } else if (target.startsWith('why_image_')) {
-                                // For Why Us images which are individual fields
-                                const preview = document.getElementById('preview_' + target);
-                                const empty = document.getElementById('empty_' + target);
-                                const input = document.getElementById('input_' + target);
-                                if (preview) {
-                                    preview.src = '/storage/' + path;
-                                    preview.classList.remove('hidden');
-                                }
-                                if (empty) empty.classList.add('hidden');
-                                if (input) input.value = path;
-                            }
-                        }
-                    }
-                }));
-            },
-
-            fixPath(path) {
-                if (!path) return '';
-                let lower = path.toLowerCase();
-                
-                // Map keywords to local paths
-                if (lower.includes('staff1')) return '/images/sumut/specialist_avatar.webp';
-                if (lower.includes('user1')) return '/images/sumut/avatar_user_1.webp';
-                if (lower.includes('user2')) return '/images/sumut/avatar_user_2.webp';
-                if (lower.includes('user3')) return '/images/sumut/avatar_user_3.webp';
-                if (lower.includes('user4')) return '/images/sumut/avatar_user_4.webp';
-                if (lower.includes('outbound')) return '/images/home/outbound.webp';
-                if (lower.includes('tour')) return '/images/home/tour.webp';
-                
-                // Legacy DB paths
-                if (lower.includes('2023/10/')) {
-                    if (lower.includes('001-1.jpg')) return '/images/sumut/toba_hero.webp';
-                    if (lower.includes('002-1.jpg')) return '/images/sumut/toba_landscape.webp';
-                    if (lower.includes('003-1.jpg')) return '/images/sumut/batak_house.webp';
-                    if (lower.includes('004.jpg')) return '/images/sumut/sipiso_piso.webp';
-                    if (lower.includes('005.jpg')) return '/images/sumut/berastagi.webp';
-                    if (lower.includes('006.jpg')) return '/images/sumut/lumbini.webp';
-                    if (lower.includes('008.jpg')) return '/images/sumut/hotel_room.webp';
-                    if (lower.includes('009-1.jpg')) return '/images/sumut/maimun_palace.webp';
-                    if (lower.includes('0010.jpg') || lower.includes('010.jpg')) return '/images/sumut/masjid_raya.webp';
-                    if (lower.includes('team-building') || lower.includes('fun-games') || lower.includes('gathering') || lower.includes('outbound-kids')) {
-                        return '/images/home/outbound.webp';
-                    }
-                }
-
-                // Remote URLs
-                if (lower.includes('unsplash.com') || lower.includes('placeholder') || lower.includes('pravatar.cc') || lower.includes('googleusercontent.com')) {
-                    if (lower.includes('photo-1580489944761') || lower.includes('staff1')) return '/images/sumut/specialist_avatar.webp';
-                    if (lower.includes('photo-1507003211169') || lower.includes('user1') || lower.includes('ab6axubc2hfgasrsa7a85bf12siuk3')) return '/images/sumut/avatar_user_1.webp';
-                    if (lower.includes('photo-1534528741775') || lower.includes('user2') || lower.includes('ab6axuafawoa9yazv80gupi35ev08b')) return '/images/sumut/avatar_user_2.webp';
-                    if (lower.includes('photo-1500648767791') || lower.includes('user3')) return '/images/sumut/avatar_user_3.webp';
-                    if (lower.includes('photo-1494790108377') || lower.includes('user4')) return '/images/sumut/avatar_user_4.webp';
-                    if (lower.includes('photo-1472099645785')) return '/images/sumut/avatar_user_1.webp';
-                    if (lower.includes('photo-1596402184320') || lower.includes('photo-1544735049') || lower.includes('photo-1511632765')) return '/images/sumut/sumatra_panorama.webp';
-                    if (lower.includes('googleusercontent.com')) return '/images/sumut/avatar_user_3.webp';
-                    return '/images/home/tour.webp';
-                }
-
-                if (path.startsWith('http') || path.startsWith('blob:') || path.startsWith('data:')) return path;
-                
-                let clean = path.replace(/^\/?storage\//, '').replace(/^\//, '');
-                return '/storage/' + clean;
-            },
-
-            handleSlideImage(e, index) {
-                const file = e.target.files[0];
-                if (file) {
-                    this.slides[index].image_url = URL.createObjectURL(file);
-                }
-            }
-        }));
-    });
-</script>
-@endpush

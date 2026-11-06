@@ -50,16 +50,16 @@
     }
 }">
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
         <div>
             <h1 class="text-3xl font-black text-slate-900 tracking-tight">Database Pelanggan</h1>
             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Manajemen profil dan histori transaksi wisatawan</p>
         </div>
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-            <a href="{{ route('admin.customers.export', request()->all()) }}" class="flex-1 sm:flex-none bg-white border border-slate-200 text-slate-600 px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition text-center">
-                <i class="fas fa-file-excel mr-2 text-emerald-500"></i> Export Excel
+        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+            <a href="{{ route('admin.customers.export', request()->all()) }}" class="flex-1 lg:flex-none bg-white border border-slate-200 text-slate-600 px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition text-center">
+                <i class="fas fa-file-excel mr-2 text-green-500"></i> Export Excel
             </a>
-            <a href="{{ route('admin.customers.create') }}" class="flex-1 sm:flex-none bg-slate-900 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-toba-green transition shadow-xl shadow-slate-200 text-center">
+            <a href="{{ route('admin.customers.create') }}" class="flex-1 lg:flex-none bg-slate-900 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-toba-green transition shadow-xl shadow-slate-200 text-center">
                 <i class="fas fa-user-plus mr-2"></i> Tambah Pelanggan
             </a>
         </div>
@@ -123,7 +123,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     @forelse($customers as $customer)
-                        <tr class="group hover:bg-slate-50/30 transition-colors" :class="selected.includes({{ $customer->id }}) ? 'bg-indigo-50/50' : ''">
+                        <tr class="group hover:bg-slate-50/30 transition-colors" :class="selected.includes({{ $customer->id }}) ? 'bg-green-100/50' : ''">
                             <td class="pl-8 py-5">
                                 <input type="checkbox" 
                                     value="{{ $customer->id }}" 
@@ -132,7 +132,7 @@
                             </td>
                             <td class="px-8 py-5">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center font-black text-xs uppercase group-hover:bg-slate-900 group-hover:text-white transition shrink-0">
+                                    <div class="w-10 h-10 rounded-2xl bg-green-100 text-green-700 flex items-center justify-center font-black text-xs uppercase group-hover:bg-slate-900 group-hover:text-white transition shrink-0">
                                         {{ substr($customer->name, 0, 1) }}
                                     </div>
                                     <div class="min-w-0">
@@ -141,7 +141,7 @@
                                         {{-- Condensed stats for mobile (columns hidden) --}}
                                         <div class="md:hidden flex flex-wrap items-center gap-x-2 gap-y-1 mt-1.5">
                                             <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[9px] font-black">{{ $customer->total_bookings }} Trip</span>
-                                            <span class="text-[10px] font-black text-slate-900">Rp {{ number_format($customer->total_spent / 1000, 0) }}K</span>
+                                            <span class="text-[10px] font-black text-slate-900">{{ \App\Helpers\CurrencyHelper::formatIn($customer->total_spent, 'IDR') }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@
                                 <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black">{{ $customer->total_bookings }} Trip</span>
                             </td>
                             <td class="px-8 py-5 text-center hidden md:table-cell">
-                                <span class="text-xs font-black text-slate-900">Rp {{ number_format($customer->total_spent / 1000, 0) }}K</span>
+                                <span class="text-xs font-black text-slate-900">{{ \App\Helpers\CurrencyHelper::formatIn($customer->total_spent, 'IDR') }}</span>
                             </td>
                             <td class="px-8 py-5 hidden lg:table-cell">
                                 @if($customer->last_booking_at)
@@ -179,7 +179,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-8 py-32 text-center">
+                            <td colspan="6" class="px-8 py-14 text-center">
                                 <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Belum ada data pelanggan</p>
                             </td>
                         </tr>
@@ -206,7 +206,7 @@
          x-cloak>
         <div class="bg-slate-900 text-white rounded-[2.5rem] p-5 shadow-2xl flex items-center justify-between border border-white/10 backdrop-blur-xl bg-opacity-90">
             <div class="flex items-center gap-4 pl-4">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center text-white text-sm font-black shadow-lg">
+                <div class="w-10 h-10 rounded-2xl bg-green-700 flex items-center justify-center text-white text-sm font-black shadow-lg">
                     <span x-text="selected.length"></span>
                 </div>
                 <div>

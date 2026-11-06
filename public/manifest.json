@@ -1,11 +1,11 @@
 {
-    "name": "Sujai Laketoba – Tour & Travel",
+    "name": "Sujai Toba Sumatera – Tour & Travel",
     "short_name": "SujaiToba",
     "description": "Paket wisata premium Danau Toba, Samosir, dan Sumatera Utara. Pesan sekarang dan dapatkan pengalaman terbaik!",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#1a6b4a",
+    "theme_color": "#166534",
     "orientation": "portrait-primary",
     "lang": "id",
     "scope": "/",

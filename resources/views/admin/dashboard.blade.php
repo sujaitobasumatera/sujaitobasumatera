@@ -4,7 +4,7 @@
 @section('page-title', 'Pusat Kontrol & Analitik')
 
 @section('content')
-<div x-data="dashboardHandler()" x-init="initDashboard()" class="space-y-10">
+<div x-data="dashboardHandler()" x-init="initDashboard()" class="space-y-6">
     
     <!-- 1. TOP CARDS & ANALYTICS -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -20,16 +20,16 @@
                 </div>
                 <div class="flex items-baseline gap-2">
                     <span class="text-xl font-black text-white/70">Rp</span>
-                    <h3 class="text-4xl font-black tracking-tight" x-text="(data.revenue.total / 1000).toLocaleString() + 'K'"></h3>
+                    <h3 class="text-4xl font-black tracking-tight" x-text="Number(data.revenue.total).toLocaleString('id-ID')"></h3>
                 </div>
                 <div class="mt-8 flex items-center gap-4">
                     <div class="px-4 py-2 bg-white/10 rounded-2xl backdrop-blur-md">
                         <p class="text-[8px] font-black uppercase text-white/50 mb-0.5">Bulan Ini</p>
-                        <p class="text-xs font-black" x-text="'Rp ' + (data.revenue.monthly / 1000).toLocaleString() + 'K'"></p>
+                        <p class="text-xs font-black" x-text="'Rp ' + Number(data.revenue.monthly).toLocaleString('id-ID')"></p>
                     </div>
-                    <div class="px-4 py-2 bg-emerald-500/20 rounded-2xl border border-emerald-500/20 backdrop-blur-md">
-                        <p class="text-[8px] font-black uppercase text-emerald-400 mb-0.5">Growth</p>
-                        <p class="text-xs font-black text-emerald-400" x-text="'+' + (data.revenue.growth || 0) + '%'"></p>
+                    <div class="px-4 py-2 bg-green-500/20 rounded-2xl border border-green-500/20 backdrop-blur-md">
+                        <p class="text-[8px] font-black uppercase text-green-400 mb-0.5">Growth</p>
+                        <p class="text-xs font-black text-green-400" x-text="'+' + (data.revenue.growth || 0) + '%'"></p>
                     </div>
                 </div>
             </div>
@@ -54,8 +54,8 @@
     </div>
 
     <!-- 2. QUICK STATS ROW -->
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        <div class="bg-white p-6 rounded-[2.5rem] border border-slate-50 shadow-sm flex items-center gap-5">
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+        <div class="bg-white p-4 md:p-6 rounded-3xl md:rounded-[2.5rem] border border-slate-50 shadow-sm flex flex-col sm:flex-row sm:items-center gap-3 md:gap-5">
             <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center text-lg">
                 <i class="fas fa-calendar-check"></i>
             </div>
@@ -64,7 +64,7 @@
                 <h4 class="text-xl font-black text-slate-900" x-text="data.bookings.active"></h4>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-[2.5rem] border border-slate-50 shadow-sm flex items-center gap-5">
+        <div class="bg-white p-4 md:p-6 rounded-3xl md:rounded-[2.5rem] border border-slate-50 shadow-sm flex flex-col sm:flex-row sm:items-center gap-3 md:gap-5">
             <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-lg">
                 <i class="fas fa-clock"></i>
             </div>
@@ -73,8 +73,8 @@
                 <h4 class="text-xl font-black text-slate-900" x-text="data.bookings.pending"></h4>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-[2.5rem] border border-slate-50 shadow-sm flex items-center gap-5">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-lg">
+        <div class="bg-white p-4 md:p-6 rounded-3xl md:rounded-[2.5rem] border border-slate-50 shadow-sm flex flex-col sm:flex-row sm:items-center gap-3 md:gap-5">
+            <div class="w-12 h-12 rounded-2xl bg-green-50 text-green-500 flex items-center justify-center text-lg">
                 <i class="fas fa-check-double"></i>
             </div>
             <div>
@@ -82,8 +82,8 @@
                 <h4 class="text-xl font-black text-slate-900" x-text="data.bookings.confirmed"></h4>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-[2.5rem] border border-slate-50 shadow-sm flex items-center gap-5">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center text-lg">
+        <div class="bg-white p-4 md:p-6 rounded-3xl md:rounded-[2.5rem] border border-slate-50 shadow-sm flex flex-col sm:flex-row sm:items-center gap-3 md:gap-5">
+            <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-700 flex items-center justify-center text-lg">
                 <i class="fas fa-users"></i>
             </div>
             <div>
@@ -98,7 +98,7 @@
     <!-- 3. MAIN TRANSACTIONS -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Recent Bookings -->
-        <div class="lg:col-span-2 bg-white p-10 rounded-[3.5rem] border border-slate-100 shadow-sm flex flex-col">
+        <div class="lg:col-span-2 bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3.5rem] border border-slate-100 shadow-sm flex flex-col">
             <div class="flex items-center justify-between mb-8">
                 <h3 class="text-lg font-black text-slate-900 tracking-tight flex items-center gap-3">
                     <div class="w-2 h-8 bg-toba-green rounded-full"></div>
@@ -125,11 +125,12 @@
                         </div>
                         <div class="flex items-center gap-6">
                             <div class="text-right">
-                                <p class="text-sm font-black text-slate-900" x-text="'Rp ' + (booking.totalPrice / 1000).toLocaleString() + 'K'"></p>
+                                {{-- Nominal pesanan dirender dalam mata uang yang dibekukan saat dipesan, bukan dikonversi ulang. --}}
+                                <p class="text-sm font-black text-slate-900" x-text="new Intl.NumberFormat(booking.currency === 'IDR' ? 'id-ID' : 'en-MY', { style: 'currency', currency: booking.currency || 'IDR' }).format(booking.totalPrice)"></p>
                                 <span class="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest mt-1 inline-block" 
                                       :class="{
                                           'bg-amber-50 text-amber-600': booking.status === 'pending',
-                                          'bg-emerald-50 text-emerald-600': booking.status === 'confirmed',
+                                          'bg-green-50 text-green-600': booking.status === 'confirmed',
                                           'bg-blue-50 text-blue-600': booking.status === 'completed',
                                           'bg-rose-50 text-rose-600': booking.status === 'cancelled'
                                       }"
@@ -147,7 +148,7 @@
         <!-- Sidebar Activity -->
         <div class="space-y-8">
             <!-- Top Packages -->
-            <div class="bg-slate-900 p-10 rounded-[3.5rem] shadow-2xl text-white">
+            <div class="bg-slate-900 p-6 md:p-10 rounded-[2rem] md:rounded-[3.5rem] shadow-2xl text-white">
                 <h3 class="text-sm font-black uppercase tracking-widest mb-8 text-white/50">Top Booked Packages</h3>
                 <div class="space-y-6">
                     <template x-for="(count, name) in data.top_packages" :key="name">
@@ -165,7 +166,7 @@
             </div>
 
             <!-- Top Viewed Content -->
-            <div class="bg-white p-10 rounded-[3.5rem] border border-slate-100 shadow-sm">
+            <div class="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3.5rem] border border-slate-100 shadow-sm">
                 <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-8">Populer (Banyak Dilihat)</h3>
                 <div class="space-y-6">
                     <template x-for="pkg in data.top_views.packages" :key="pkg.id">
@@ -175,7 +176,7 @@
                                 <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Tour Package</p>
                             </div>
                             <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl">
-                                <i class="fas fa-eye text-indigo-500 text-[10px]"></i>
+                                <i class="fas fa-eye text-green-700 text-[10px]"></i>
                                 <span class="text-[10px] font-black text-slate-900" x-text="pkg.views_count"></span>
                             </div>
                         </div>
@@ -188,7 +189,7 @@
                                 <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Blog Post</p>
                             </div>
                             <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl">
-                                <i class="fas fa-eye text-emerald-500 text-[10px]"></i>
+                                <i class="fas fa-eye text-green-500 text-[10px]"></i>
                                 <span class="text-[10px] font-black text-slate-900" x-text="blog.views_count"></span>
                             </div>
                         </div>
@@ -197,7 +198,7 @@
             </div>
 
             <!-- Recent Customers -->
-            <div class="bg-white p-10 rounded-[3.5rem] border border-slate-100 shadow-sm">
+            <div class="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3.5rem] border border-slate-100 shadow-sm">
                 <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-8">Pelanggan Baru</h3>
                 <div class="space-y-6">
                     <template x-for="customer in data.recent_customers" :key="customer.id">
@@ -207,7 +208,7 @@
                                 <p class="text-xs font-black text-slate-900 truncate" x-text="customer.name"></p>
                                 <p class="text-[10px] font-bold text-slate-400 truncate" x-text="customer.phone"></p>
                             </div>
-                            <a :href="`https://wa.me/${customer.phone.replace(/[^0-9]/g, '')}`" target="_blank" class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center ml-auto shadow-lg shadow-emerald-500/20">
+                            <a :href="`https://wa.me/${customer.phone.replace(/[^0-9]/g, '')}`" target="_blank" class="w-8 h-8 rounded-xl bg-green-500 text-white flex items-center justify-center ml-auto shadow-lg shadow-green-500/20">
                                 <i class="fab fa-whatsapp text-xs"></i>
                             </a>
                         </div>
@@ -256,7 +257,7 @@
                         },
                         elements: {
                             line: { tension: 0.4 },
-                            point: { radius: 4, hoverRadius: 6, backgroundColor: '#10b981', borderColor: '#fff', borderWidth: 2 }
+                            point: { radius: 4, hoverRadius: 6, backgroundColor: '#10b951', borderColor: '#fff', borderWidth: 2 }
                         }
                     }
                 });
@@ -270,13 +271,13 @@
                     labels: source.map(d => d.label),
                     datasets: [{
                         data: source.map(d => d.total),
-                        borderColor: isRevenue ? '#10b981' : '#6366f1',
+                        borderColor: isRevenue ? '#10b951' : '#6366f1',
                         borderWidth: 3,
                         fill: true,
                         backgroundColor: (context) => {
                             const ctx = context.chart.ctx;
                             const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-                            gradient.addColorStop(0, isRevenue ? 'rgba(16, 185, 129, 0.15)' : 'rgba(99, 102, 241, 0.15)');
+                            gradient.addColorStop(0, isRevenue ? 'rgba(16, 185, 81, 0.15)' : 'rgba(99, 102, 241, 0.15)');
                             gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
                             return gradient;
                         }

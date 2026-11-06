@@ -4,7 +4,7 @@
 @section('page-title', 'Location & Categories')
 
 @section('content')
-<div class="space-y-10">
+<div class="space-y-6">
     <!-- Header with Tabs -->
     <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-50">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -30,7 +30,7 @@
     </div>
 
     <!-- TAB 1: DAFTAR DESTINASI -->
-    <div id="tab-destinasi" class="space-y-10 tab-content active">
+    <div id="tab-destinasi" class="space-y-6 tab-content active">
         <!-- Multi-Level Filters -->
         <div class="bg-white p-8 rounded-[2.5rem] border border-slate-50 shadow-sm">
             <form action="{{ route('admin.cities.index') }}" method="GET" id="filter-form" class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -105,7 +105,7 @@
                     </div>
                     <div class="p-8">
                         <div class="flex items-center gap-2 mb-3">
-                            <div class="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-500 text-[10px]">
+                            <div class="w-6 h-6 rounded-lg bg-green-50 flex items-center justify-center text-green-500 text-[10px]">
                                 <i class="fas fa-location-dot"></i>
                             </div>
                             <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $city->regency->name ?? 'Umum' }}</span>
@@ -123,7 +123,7 @@
                     </div>
                 </div>
             @empty
-                <div class="col-span-full py-32 text-center bg-white rounded-[2.5rem] border border-dashed border-slate-200">
+                <div class="col-span-full py-14 text-center bg-white rounded-[2.5rem] border border-dashed border-slate-200">
                     <i class="fas fa-map-location-dot text-4xl text-slate-100 mb-4"></i>
                     <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Tidak ada destinasi yang cocok</p>
                 </div>
@@ -179,7 +179,7 @@
                         </td>
                         <td class="px-8 py-6">
                             @if($reg->category)
-                                <span class="px-3 py-1.5 rounded-xl bg-emerald-50 text-[9px] font-black text-emerald-600 uppercase tracking-widest border border-emerald-100">
+                                <span class="px-3 py-1.5 rounded-xl bg-green-50 text-[9px] font-black text-green-600 uppercase tracking-widest border border-green-100">
                                     {{ $reg->category }}
                                 </span>
                             @else

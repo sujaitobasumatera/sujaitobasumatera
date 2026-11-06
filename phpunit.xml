@@ -26,6 +26,13 @@
         <env name="DB_CONNECTION" value="sqlite"/>
         <env name="DB_DATABASE" value=":memory:"/>
         <env name="DB_URL" value=""/>
+        <!-- Nilai boneka, tidak dipakai menyambung ke mana pun (tes memakai
+             sqlite in-memory). Ada di sini supaya AppConfigTest bisa benar-benar
+             membuktikan kredensial tidak bocor ke halaman: tanpa nilai, ia
+             membandingkan halaman dengan string kosong dan tidak membuktikan
+             apa-apa — tes keamanan yang tak bisa gagal lebih buruk daripada
+             tidak ada tes, karena terbaca seolah sudah terlindungi. -->
+        <env name="DB_PASSWORD" value="kata-sandi-boneka-untuk-tes"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>

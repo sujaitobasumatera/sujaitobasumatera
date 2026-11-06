@@ -1,480 +1,418 @@
 @props(['settings' => [], 'packages' => []])
 
 @php
+    // ========================================================
+    // RESOLVE SLIDES FROM ADMIN CMS
+    // Struktur slide dari admin: title, subtitle, image_url,
+    // cta_text, cta_link, location, price, duration, type
+    // ========================================================
     $slides = $settings['homepage_slides'] ?? [];
 
-    // If no explicit slides, but Hero settings exist, use them as the only slide
+    // Fallback: jika pakai format hero lama (single hero)
     if (empty($slides) && !empty($settings['hero_title'])) {
         $slides[] = [
-            'title' => $settings['hero_title'],
-            'subtitle' => $settings['hero_subtitle'] ?? '',
+            'type'      => 'manual',
+            'title'     => $settings['hero_title'],
+            'subtitle'  => $settings['hero_subtitle'] ?? '',
             'image_url' => $settings['hero_image_url'] ?? null,
-            'location' => 'Sujai Laketoba',
-            'price' => 0,
-            'cta_link' => $settings['hero_cta_link'] ?? '/tour/packages',
-            'cta_text' => $settings['hero_cta_text'] ?? 'Lihat Paket'
+            'cta_text'  => $settings['hero_cta_text'] ?? 'Book Now!',
+            'cta_link'  => $settings['hero_cta_link'] ?? '/tour/packages',
         ];
     }
 
-    // Fallback added back to prevent slider from disappearing when settings are empty
+    // Default slides jika belum ada setting sama sekali
     if (empty($slides)) {
-        $slides[] = [
-            'title' => 'Eksplorasi Keindahan',
-            'subtitle' => 'Danau Toba',
-            'image_url' => null,
-            'location' => 'Sujai Laketoba',
-            'price' => 0,
-            'cta_link' => '/tour/packages',
-            'cta_text' => 'Lihat Paket'
+        $slides = [
+            [
+                'type'      => 'manual',
+                'image_url' => asset('images/sumut/toba_hero.webp'),
+                'alt'       => 'Sujai Tour - Danau Toba',
+                'cta_text'  => 'Book Now!',
+                'cta_link'  => '/tour/packages',
+            ],
+            [
+                'type'      => 'manual',
+                'image_url' => asset('images/sumut/sumatra_panorama.webp'),
+                'alt'       => 'Sujai Tour - Wisata Toba',
+                'cta_text'  => 'Book Now!',
+                'cta_link'  => '/tour/packages',
+            ],
         ];
+    } else {
+        // Normalize: resolusi path gambar dari storage
+        $slides = array_map(function ($slide) {
+            $slide = (array) $slide;
+            $url = $slide['image_url'] ?? null;
+            if (is_string($url) && !str_starts_with($url, 'http') && !str_starts_with($url, 'blob')) {
+                $url = preg_replace('/^(\/?storage\/)+/', '', $url);
+                $url = imageUrl($url);
+            }
+            $slide['image_url']  = $url;
+            $slide['image_webp'] = is_string($url) ? str_replace(['.png', '.jpg', '.jpeg'], '.webp', $url) : $url;
+            $slide['alt']        = $slide['title'] ?? ($slide['alt'] ?? 'Sujai Tour');
+            $slide['cta_link']   = $slide['cta_link'] ?? '/tour/packages';
+            $slide['cta_text']   = $slide['cta_text'] ?? 'Book Now!';
+            return $slide;
+        }, $slides);
     }
 
-    // We now use the global imageUrl() helper defined in ImageHelper.php
-    $preparedSlides = array_values(array_map(function ($slide) {
-        $slide = (array) $slide;
-        $url = $slide['image_url'] ?? null;
-
-        // Ensure we don't have double storage/storage/
-        if (is_string($url)) {
-            $url = preg_replace('/^(\/?storage\/)+/', '', $url);
-        }
-
-        $slide['image_url'] = imageUrl($url);
-        $slide['image_url_400'] = str_replace('.webp', '-400.webp', $slide['image_url']);
-        $slide['image_url_800'] = str_replace('.webp', '-800.webp', $slide['image_url']);
-        return $slide;
-    }, $slides));
-
-    $totalOriginal = count($preparedSlides);
-
-    // We need enough clones to fill the 3-card preview container + buffer for fast clicking
-    $clonesNeeded = 6;
-
-    // Helper to generate repeated array elements to reach needed count
-    $generateClones = function ($array, $count, $fromEnd = false) {
-        if (empty($array))
-            return [];
-        $result = [];
-        while (count($result) < $count) {
-            $result = array_merge($result, $array);
-        }
-        if ($fromEnd) {
-            return array_slice($result, -$count);
-        }
-        return array_slice($result, 0, $count);
-    };
-
-    $startClones = $generateClones($preparedSlides, $clonesNeeded, true);
-    $endClones = $generateClones($preparedSlides, $clonesNeeded, false);
-
-    $infiniteSlides = array_merge($startClones, $preparedSlides, $endClones);
-    $clonesCount = $clonesNeeded;
-    $startIndex = $clonesCount;
-
-    // LCP image = first real slide (shown at $startIndex). Preload it in <head> so the
-    // browser fetches it in parallel with app.js instead of waiting for Alpine to render the <img>.
-    $lcpImage = $preparedSlides[0]['image_url'] ?? null;
+    // Pass slides as JSON for Alpine
+    $slidesJson = json_encode(array_values($slides), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 @endphp
 
-@if($lcpImage)
-    @push('head')
-        <link rel="preload" as="image" href="{{ $lcpImage }}" fetchpriority="high">
-    @endpush
-@endif
+<style>
+/* ==========================================
+   HERO SLIDER — SUJAI TOUR
+   ========================================== */
+.sujai-hero-section {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    /* Height = full viewport minus total header (~115px) */
+    height: calc(100vh - 115px);
+    min-height: 480px;
+    max-height: 880px;
+    background: #000;
+}
+@media (max-width: 768px) {
+    .sujai-hero-section {
+        /* svh (small viewport height) memperhitungkan address bar mobile, sehingga
+           dasar hero (features bar + tombol Book Now) tidak melorot menabrak
+           fixed CTA bar di bawah. vh dipertahankan sebagai fallback browser lama. */
+        height: 65vh;
+        height: 65svh;
+        min-height: 360px;
+        max-height: 650px;
+    }
+}
 
-<section id="home-hero-slider" class="relative w-full h-screen min-h-[600px] bg-slate-950 overflow-hidden"
-    @touchstart="handleTouchStart($event)" @touchend="handleTouchEnd($event)" x-data="{ 
-        activeIndex: {{ $startIndex }},
-        totalOriginal: {{ $totalOriginal }},
-        clonesCount: {{ $clonesCount }},
-        isTransitioning: true,
-        autoplayInterval: null,
+/* Tiap slide: absolute full */
+.sujai-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.9s ease-in-out;
+}
+.sujai-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+.sujai-slide-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+        rgba(0,0,0,0.1) 0%,
+        rgba(0,0,0,0.2) 40%,
+        rgba(0,0,0,0.7) 100%
+    );
+    z-index: 2;
+}
+
+/* BOOK NOW button wrapper — posisi absolut di dalam hero */
+.sujai-book-wrap {
+    position: absolute;
+    bottom: 78px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    z-index: 35;
+}
+
+/* BOOK NOW button */
+.sujai-book-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
+    color: #fff;
+    font-weight: 800;
+    padding: 15px 56px;
+    border-radius: 9999px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-size: 14px;
+    box-shadow: 0 10px 30px rgba(230,126,34,0.5);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    white-space: nowrap;
+    text-decoration: none;
+    animation: pulse-glow 3s infinite;
+}
+.sujai-book-btn:hover {
+    box-shadow: 0 15px 40px rgba(230,126,34,0.7);
+    transform: translateY(-2px) scale(1.05);
+    text-decoration: none;
+    color: #fff;
+}
+@keyframes pulse-glow {
+    0%   { box-shadow: 0 10px 30px rgba(230,126,34,0.5), 0 0 0 0 rgba(230,126,34,0.4); }
+    50%  { box-shadow: 0 10px 30px rgba(230,126,34,0.5), 0 0 0 15px rgba(230,126,34,0); }
+    100% { box-shadow: 0 10px 30px rgba(230,126,34,0.5), 0 0 0 0 rgba(230,126,34,0); }
+}
+@media (max-width: 640px) {
+    .sujai-book-btn { padding: 12px 36px; font-size: 12px; }
+}
+
+/* Arrow buttons */
+.sujai-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 40;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.40);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: background 0.2s, transform 0.2s;
+    margin-top: -30px; /* shift up from center to avoid features bar */
+}
+.sujai-arrow:hover { background: rgba(230,126,34,0.8); transform: translateY(-50%) scale(1.1); }
+.sujai-arrow-left  { left: 16px; }
+.sujai-arrow-right { right: 16px; }
+
+/* Dot indicators */
+.sujai-dots {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 40;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.sujai-dot {
+    height: 6px;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.35s;
+    background: rgba(255,255,255,0.45);
+    width: 6px;
+    padding: 0;
+}
+.sujai-dot.active { width: 24px; background: white; }
+
+/* Features bar — overlay bottom */
+.sujai-features-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+}
+.sujai-feat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 24px;
+    color: white;
+    flex: 1;
+    justify-content: center;
+    border-right: 1px solid rgba(255,255,255,0.10);
+    min-width: 0;
+}
+.sujai-feat-item:last-child { border-right: none; }
+.sujai-feat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
+    box-shadow: 0 4px 10px rgba(230,126,34,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.sujai-feat-title { font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.3; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+.sujai-feat-sub   { font-size: 10px; color: rgba(255,255,255,0.7); line-height: 1.3; }
+
+@media (max-width: 640px) {
+    .sujai-features-bar { flex-wrap: wrap; }
+    .sujai-feat-item {
+        /* tepat 50%, tidak melebar; teks boleh menyusut & wrap -> tak terpotong */
+        flex: 0 0 50%;
+        max-width: 50%;
+        min-width: 0;
+        justify-content: flex-start;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding: 10px 10px;
+        gap: 8px;
+    }
+    /* wadah teks harus boleh menyusut agar judul/subjudul wrap, bukan meluber */
+    .sujai-feat-item > div:last-child { min-width: 0; }
+    .sujai-feat-item:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.10); }
+    .sujai-feat-item:nth-last-child(-n+2) { border-bottom: none; }
+    .sujai-feat-icon { width: 30px; height: 30px; }
+    .sujai-feat-title { font-size: 10px; letter-spacing: 0.04em; }
+    .sujai-feat-sub { font-size: 9px; }
+    .sujai-dots { bottom: 82px; }
+    /* features bar 2 baris (~105px) menutupi tombol Book Now di bottom:78px.
+       Angkat tombol ke atas features bar agar tidak ketimpa. */
+    .sujai-book-wrap { bottom: 132px; }
+}
+</style>
+
+{{-- ============================================================
+     HERO SLIDER — dirender dari data admin CMS
+     Setiap slide memakai image_url + cta_link + cta_text
+     yang diatur melalui /admin/cms-beranda-tour
+     ============================================================ --}}
+<section
+    class="sujai-hero-section"
+    x-data="{
+        slides: {{ $slidesJson }},
+        active: 0,
+        total: {{ count($slides) }},
         touchStartX: 0,
-        isDraggingCards: false,
-        dragStartX: 0,
-        dragOffsetX: 0,
-        dragPointerId: null,
-        previewStep: 204,
-        slides: @js($infiniteSlides),
-        
+        timer: null,
         init() {
-            this.$nextTick(() => {
-                this.computePreviewStep();
-                window.addEventListener('resize', () => this.computePreviewStep());
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden) this.stopAutoplay();
-                    else if (this.totalOriginal > 1) this.startAutoplay();
-                });
-                window.addEventListener('keydown', (e) => {
-                    if (e.key === 'ArrowLeft') return this.prev();
-                    if (e.key === 'ArrowRight') return this.next();
-                    if (e.key === ' ' || e.key === 'Spacebar') {
-                        e.preventDefault();
-                        if (this.autoplayInterval) this.stopAutoplay(); else if (this.totalOriginal > 1) this.startAutoplay();
-                    }
-                });
-            });
-
-            if (this.totalOriginal > 1) {
-                this.startAutoplay();
+            if (this.total > 1) {
+                this.timer = setInterval(() => this.next(), 5500);
             }
         },
-
-        computePreviewStep() {
-            this.$nextTick(() => {
-                const preview = document.querySelector('#home-hero-slider .card-preview');
-                const container = document.querySelector('#home-hero-slider .card-container');
-                if (!preview) return;
-                const rect = preview.getBoundingClientRect();
-                let gap = 0;
-                if (container) {
-                    const style = getComputedStyle(container);
-                    gap = parseFloat(style.columnGap) || parseFloat(style.gap) || 0;
-                }
-                this.previewStep = Math.round(rect.width + gap);
-            });
+        goTo(i) {
+            this.active = i;
+            /* Reset auto-play timer on manual nav */
+            if (this.timer) { clearInterval(this.timer); this.timer = setInterval(() => this.next(), 5500); }
         },
-        
-        startAutoplay() {
-            this.stopAutoplay();
-            this.autoplayInterval = setInterval(() => {
-                this.next();
-            }, 8000); 
-        },
-        
-        stopAutoplay() {
-            if (this.autoplayInterval) {
-                clearInterval(this.autoplayInterval);
-                this.autoplayInterval = null;
-            }
-        },
-        
-        next() {
-            this.isTransitioning = true;
-            this.activeIndex++;
-            this.startAutoplay();
-        },
-        
-        prev() {
-            this.isTransitioning = true;
-            this.activeIndex--;
-            this.startAutoplay();
-        },
-        
-        goTo(index) {
-            this.isTransitioning = true;
-            this.activeIndex = index + this.clonesCount;
-            this.startAutoplay();
-        },
-
-        beginCardDrag(e) {
-            if (e.pointerType === 'mouse' && e.button !== 0) return;
-            try { e.target.setPointerCapture(e.pointerId); } catch (err) {}
-            this.isDraggingCards = true;
-            this.dragPointerId = e.pointerId;
-            this.dragStartX = e.clientX;
-            this.dragOffsetX = 0;
-            this.isTransitioning = false;
-            this.stopAutoplay();
-        },
-
-        moveCardDrag(e) {
-            if (!this.isDraggingCards) return;
-            this.dragOffsetX = e.clientX - this.dragStartX;
-        },
-
-        endCardDrag(e) {
-            if (!this.isDraggingCards) return;
-            try { if (this.dragPointerId != null) e.target.releasePointerCapture(this.dragPointerId); } catch (err) {}
-
-            const threshold = 60;
-            const delta = this.dragOffsetX;
-
-            this.isDraggingCards = false;
-            this.dragOffsetX = 0;
-            this.dragPointerId = null;
-
-            if (Math.abs(delta) > threshold) {
-                if (delta < 0) this.next(); else this.prev();
-                return;
-            }
-
-            // restore transition and resume autoplay
-            this.isTransitioning = true;
-            this.startAutoplay();
-        },
-
-        handleTouchStart(e) {
-            this.touchStartX = e.touches[0].clientX;
-        },
-
-        handleTouchEnd(e) {
-            let touchEndX = e.changedTouches[0].clientX;
-            if (this.touchStartX - touchEndX > 50) this.next();
-            if (this.touchStartX - touchEndX < -50) this.prev();
-        },
-
-        handleTransitionEnd() {
-            if (this.activeIndex >= this.totalOriginal + this.clonesCount || this.activeIndex < this.clonesCount) {
-                this.isTransitioning = false;
-                let offset = this.activeIndex - this.clonesCount;
-                let realIndex = ((offset % this.totalOriginal) + this.totalOriginal) % this.totalOriginal + this.clonesCount;
-                this.activeIndex = realIndex;
-                this.$nextTick(() => {
-                    // Force reflow to apply the transform without transition
-                    void document.querySelector('#home-hero-slider .carousel-strip').offsetHeight;
-                    this.isTransitioning = true;
-                });
-            }
-        },
-    }">
-
-    <style>
-        .hero-slide-bg {
-            position: absolute;
-            inset: 0;
-            z-index: 10;
+        prev() { this.goTo((this.active - 1 + this.total) % this.total); },
+        next() { this.goTo((this.active + 1) % this.total); },
+        onTouchStart(e) { this.touchStartX = e.changedTouches[0].clientX; },
+        onTouchEnd(e) {
+            const dx = this.touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(dx) > 50) { dx > 0 ? this.next() : this.prev(); }
         }
+    }"
+    x-init="init()"
+    @touchstart.passive="onTouchStart($event)"
+    @touchend.passive="onTouchEnd($event)"
+>
 
-        .hero-slide-bg img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 1.5s cubic-bezier(0.23, 1, 0.32, 1);
-        }
+    {{-- ===== SLIDES ===== --}}
+    @foreach($slides as $idx => $slide)
+    <div
+        class="sujai-slide"
+        x-bind:style="active === {{ $idx }} ? 'opacity:1;z-index:12;' : 'opacity:0;z-index:5;'"
+    >
+        {{-- Gambar slide (poster dari admin atau foto biasa) --}}
+        <picture>
+            @if(!empty($slide['image_webp']))
+            <source srcset="{{ $slide['image_webp'] }}" type="image/webp">
+            @endif
+            <img
+                src="{{ $slide['image_url'] }}"
+                alt="{{ $slide['alt'] ?? 'Sujai Tour' }}"
+                loading="{{ $idx === 0 ? 'eager' : 'lazy' }}"
+                fetchpriority="{{ $idx === 0 ? 'high' : 'auto' }}"
+            >
+        </picture>
 
-        .active-slide img {
-            transform: scale(1.1) translateX(20px);
-        }
+        {{-- Gradient overlay bawah --}}
+        <div class="sujai-slide-overlay"></div>
 
-        .card-preview {
-            width: 140px;
-            height: 220px;
-            border-radius: 16px;
-            transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-            cursor: pointer;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: #0f172a;
-        }
-
-        .card-preview:hover {
-            transform: translateY(-15px) scale(1.05);
-            border-color: rgba(255, 255, 255, 0.4);
-            z-index: 50;
-        }
-
-        .active-card {
-            border-color: #fbbf24 !important;
-            box-shadow: 0 0 40px rgba(251, 191, 36, 0.4);
-            transform: translateY(-10px);
-        }
-
-        @media (max-width: 768px) {
-            .card-container {
-                display: none !important;
-            }
-
-            .hero-content {
-                padding-top: 60px;
-                text-align: center;
-                left: 0 !important;
-                width: 100% !important;
-                padding-left: 20px;
-                padding-right: 20px;
-            }
-
-            .hero-content h1 {
-                font-size: 2.5rem !important;
-            }
-        }
-
-        /* Smooth Carousel Transition */
-        .carousel-strip {
-            transition-property: transform;
-            transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
-        }
-    </style>
-
-    {{-- Initial LCP Fallback (Removes itself once Alpine loads) --}}
-    @if(count($preparedSlides) > 0)
-        <div class="absolute inset-0 z-20" x-init="$el.remove()">
-            <img src="{{ $preparedSlides[0]['image_url'] }}" 
-                 srcset="{{ $preparedSlides[0]['image_url_400'] }} 400w, {{ $preparedSlides[0]['image_url_800'] }} 800w, {{ $preparedSlides[0]['image_url'] }} 1200w"
-                 sizes="(max-width: 768px) 100vw, 100vw"
-                 alt="{{ $preparedSlides[0]['title'] }}" fetchpriority="high"
-                loading="eager" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-black/40"></div>
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/20 to-transparent"></div>
-
-            <div class="absolute inset-0 z-30">
-                <div
-                    class="w-full h-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 pt-12 md:pt-20 px-6 md:px-16 lg:px-24">
-                    <div class="w-full lg:w-1/2 text-white">
-                        <span
-                            class="text-toba-accent uppercase tracking-[0.3em] font-black text-[10px] mb-4 block">{{ $preparedSlides[0]['location'] }}</span>
-                        <h1
-                            class="text-4xl md:text-6xl lg:text-7xl font-black mb-6 leading-none tracking-tighter uppercase">
-                            {{ $preparedSlides[0]['title'] }}</h1>
-                        <p
-                            class="text-slate-300 text-lg md:text-xl mb-10 max-w-xl opacity-80 font-medium line-clamp-2 md:line-clamp-3">
-                            {{ $preparedSlides[0]['subtitle'] }}</p>
-                    </div>
-                </div>
-            </div>
+        {{-- BOOK NOW button — tiap slide pakai link & teksnya sendiri --}}
+        <div class="sujai-book-wrap">
+            <a href="{{ $slide['cta_link'] }}" class="sujai-book-btn">
+                {{ !empty($slide['cta_text']) ? $slide['cta_text'] : 'Book Now!' }}
+            </a>
         </div>
+    </div>
+    @endforeach
+
+    {{-- ===== ARROW PREV / NEXT ===== --}}
+    @if(count($slides) > 1)
+    <button type="button" class="sujai-arrow sujai-arrow-left"
+            @click="prev()" aria-label="Slide sebelumnya">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+    </button>
+    <button type="button" class="sujai-arrow sujai-arrow-right"
+            @click="next()" aria-label="Slide berikutnya">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+    </button>
+
+    {{-- ===== DOT INDICATORS ===== --}}
+    <div class="sujai-dots">
+        @foreach($slides as $idx => $slide)
+        <button
+            class="sujai-dot"
+            :class="active === {{ $idx }} ? 'active' : ''"
+            @click="goTo({{ $idx }})"
+            aria-label="Slide {{ $idx + 1 }}"
+        ></button>
+        @endforeach
+    </div>
     @endif
 
-    {{-- Main Carousel Strip --}}
-    <div class="absolute inset-0 z-10">
-        <div class="flex h-full carousel-strip" @transitionend="handleTransitionEnd()"
-            :class="isTransitioning ? 'duration-[1000ms]' : 'duration-0'"
-            :style="'width: ' + (slides.length * 100) + '%; transform: translateX(-' + (activeIndex * (100 / slides.length)) + '%)'">
-
-            <template x-for="(slide, i) in slides" :key="'slide-' + i">
-                <div class="h-full relative shrink-0 flex items-center px-6 md:px-16 lg:px-24 overflow-hidden"
-                    :class="activeIndex == i ? 'active-slide' : ''" :style="'width: ' + (100 / slides.length) + '%'">
-                    {{-- Background --}}
-                    <div class="absolute inset-0 -z-10">
-                        <img :src="slide.image_url" :alt="slide.title"
-                            :srcset="`${slide.image_url_400} 400w, ${slide.image_url_800} 800w, ${slide.image_url} 1200w`"
-                            sizes="(max-width: 768px) 100vw, 100vw"
-                            :onerror="`this.onerror=null; this.src='${'{{ asset('images/home/tour.webp') }}'}'`"
-                            :fetchpriority="(activeIndex == i || slide.image_url == '{{ $lcpImage }}') ? 'high' : 'auto'"
-                            :loading="(activeIndex == i || slide.image_url == '{{ $lcpImage }}') ? 'eager' : 'lazy'"
-                            class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black/40"></div>
-                        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/20 to-transparent">
-                        </div>
-                    </div>
-
-                    {{-- Content --}}
-                    <div
-                        class="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 pt-12 md:pt-20">
-                        <div class="hero-content w-full lg:w-1/2 text-white">
-                            <div :class="activeIndex == i ? 'opacity-100 translate-x-0 scale-100' : 'opacity-0 -translate-x-12 scale-95'"
-                                class="transition duration-1000 delay-300 ease-out">
-                                <span
-                                    class="text-toba-accent uppercase tracking-[0.3em] font-black text-[10px] mb-4 block"
-                                    x-text="slide.location"></span>
-                                <h1 class="text-4xl md:text-6xl lg:text-7xl font-black mb-6 leading-none tracking-tighter uppercase"
-                                    x-text="slide.title"></h1>
-                                <p class="text-slate-300 text-lg md:text-xl mb-10 max-w-xl opacity-80 font-medium line-clamp-2 md:line-clamp-3"
-                                    x-text="slide.subtitle"></p>
-
-                                <div class="flex items-center gap-8 mb-12 lg:justify-start justify-center"
-                                    x-show="slide.type !== 'blog' && slide.price > 0">
-                                    <div class="flex flex-col text-left">
-                                        <span
-                                            class="text-[10px] text-toba-accent uppercase tracking-widest mb-1 font-bold">{{ __('Investasi Wisata') }}</span>
-                                        <div class="flex items-baseline gap-1">
-                                            <span class="text-2xl font-black"
-                                                x-text="AppCurrency.format(slide.price)"></span>
-                                        </div>
-                                    </div>
-                                    <a :href="slide.cta_link" class="cta-primary px-8 py-4 md:px-10 md:py-5">
-                                        <span>Explore Now</span>
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="3"
-                                            viewBox="0 0 24 24">
-                                            <path d="M5 12h14M12 5l7 7-7 7" />
-                                        </svg>
-                                    </a>
-                                </div>
-                                <div class="flex items-center gap-8 mb-12 lg:justify-start justify-center"
-                                    x-show="slide.type === 'blog' || !slide.price || slide.price == 0">
-                                    <a :href="slide.cta_link" class="cta-secondary px-8 py-4 md:px-10 md:py-5">
-                                        <span x-text="slide.cta_text || 'Baca Selengkapnya'"></span>
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="3"
-                                            viewBox="0 0 24 24">
-                                            <path d="M5 12h14M12 5l7 7-7 7" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- Placeholder for layout balance on large screens --}}
-                        <div class="hidden lg:block w-1/2"></div>
-                    </div>
-                </div>
-            </template>
-        </div>
-    </div>
-
-    {{-- Overlay Controls & Indicators --}}
-    <div class="absolute inset-0 z-30 pointer-events-none flex flex-col justify-end">
-        <div
-            class="w-full max-w-7xl mx-auto px-6 md:px-16 lg:px-24 pb-10 flex flex-col lg:flex-row items-end justify-between gap-8">
-
-            {{-- Left: Minimal Dot Indicators + Counter --}}
-            <div class="hidden lg:flex flex-col gap-4 pointer-events-auto">
-
-                {{-- Slide Counter --}}
-                <div class="flex items-baseline gap-1">
-                    <span class="text-white text-2xl font-black leading-none tabular-nums"
-                        x-text="String(((activeIndex - clonesCount) % totalOriginal + totalOriginal) % totalOriginal + 1).padStart(2,'0')"></span>
-                    <span class="text-white/30 text-sm font-medium">/</span>
-                    <span class="text-white/40 text-sm font-medium"
-                        x-text="String(totalOriginal).padStart(2,'0')"></span>
-                </div>
-
-                {{-- Thin progress line dots --}}
-                <div class="flex items-center gap-2">
-                    <template x-for="i in totalOriginal" :key="'dot-' + i">
-                        <div class="h-[3px] rounded-full transition duration-500 cursor-pointer" @click="goTo(i-1)"
-                            :class="((activeIndex - clonesCount) % totalOriginal + totalOriginal) % totalOriginal == (i-1) 
-                                ? 'w-8 bg-white' 
-                                : 'w-4 bg-white/30 hover:bg-white/60'"></div>
-                    </template>
-                </div>
-
-                {{-- Prev / Next ghost buttons --}}
-                <div class="flex items-center gap-3">
-                    <button @click="prev()" aria-label="Previous slide"
-                        class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-slate-900 hover:border-white transition duration-300 backdrop-blur-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <button @click="next()" aria-label="Next slide"
-                        class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-slate-900 hover:border-white transition duration-300 backdrop-blur-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </div>
+    {{-- ===== FEATURES BAR (tetap di bawah, di dalam hero) ===== --}}
+    <div class="sujai-features-bar">
+        <div class="sujai-feat-item">
+            <div class="sujai-feat-icon">
+                <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
             </div>
-
-            {{-- Card Preview Container Wrapper (Viewport for 3 cards) --}}
-            <div class="hidden lg:block w-[468px] overflow-hidden pointer-events-auto py-4">
-                <div class="card-container flex items-center gap-6 carousel-strip" @pointerdown="beginCardDrag($event)"
-                    @pointermove="moveCardDrag($event)" @pointerup="endCardDrag()" @pointerleave="endCardDrag()"
-                    @pointercancel="endCardDrag()" style="touch-action: pan-y; user-select: none;"
-                    :class="isTransitioning ? 'duration-[800ms]' : 'duration-0'"
-                    :style="'transform: translateX(calc(-' + (activeIndex * previewStep) + 'px + ' + dragOffsetX + 'px))'">
-                    <template x-for="(slide, i) in slides" :key="'card-' + i">
-                        <div class="card-preview shrink-0 relative group overflow-hidden"
-                            :class="activeIndex == i ? 'active-card' : 'opacity-40 scale-95 hover:opacity-70'"
-                            @click="isTransitioning = true; activeIndex = i; startAutoplay()">
-                               <img :src="slide.image_url_400" :alt="slide.title || 'Slide image'"
-                                   :srcset="`${slide.image_url_400} 400w`"
-                                   sizes="140px"
-                                   :onerror="`this.onerror=null; this.src='${'{{ asset('images/home/tour.webp') }}'}'`"
-                                   loading="lazy"
-                                   class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors">
-                            </div>
-                            <div
-                                class="absolute bottom-4 left-4 right-4 text-white translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition z-10">
-                                <p class="text-[9px] font-black uppercase tracking-widest mb-0.5 text-white/60"
-                                    x-text="slide.location"></p>
-                                <h3 class="text-[11px] font-black uppercase leading-tight line-clamp-2"
-                                    x-text="slide.title"></h3>
-                            </div>
-                        </div>
-                    </template>
-                </div>
+            <div>
+                <p class="sujai-feat-title">Booking Mudah</p>
+                <p class="sujai-feat-sub">Tanpa Ribet</p>
+            </div>
+        </div>
+        <div class="sujai-feat-item">
+            <div class="sujai-feat-icon">
+                <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+            </div>
+            <div>
+                <p class="sujai-feat-title">Proses Cepat</p>
+                <p class="sujai-feat-sub">CS 24/7 Fast Respon</p>
+            </div>
+        </div>
+        <div class="sujai-feat-item">
+            <div class="sujai-feat-icon">
+                <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+            <div>
+                <p class="sujai-feat-title">Banyak Pilihan</p>
+                <p class="sujai-feat-sub">Paket Fleksibel</p>
+            </div>
+        </div>
+        <div class="sujai-feat-item">
+            <div class="sujai-feat-icon">
+                <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div>
+                <p class="sujai-feat-title">Harga Terbaik</p>
+                <p class="sujai-feat-sub">Terjangkau &amp; Premium</p>
             </div>
         </div>
     </div>
+
 </section>

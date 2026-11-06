@@ -17,9 +17,16 @@ Route::middleware(['throttle:60,1'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
+    // Any authenticated token may read its own identity.
     Route::get('/auth/me', [PublicApiController::class, 'getMe']);
-    Route::get('/dashboard', [PublicApiController::class, 'getDashboard']);
-    // Moved behind auth: exposed customer PII (names, prices, dates) and SMTP credentials.
-    Route::get('/bookings', [PublicApiController::class, 'getBookings']);
-    Route::get('/settings', [PublicApiController::class, 'getSettings']);
+
+    // SECURITY: dashboard revenue, customer PII, and the settings blob are admin-only.
+    // auth:sanctum alone let any 'user'-role token read them — add the same role boundary
+    // the web admin panel uses so a non-admin token is rejected (403).
+    Route::middleware('role:superadmin,admin_umum,admin_tour')->group(function () {
+        Route::get('/dashboard', [PublicApiController::class, 'getDashboard']);
+        // Behind auth+role: customer PII (names, prices, dates).
+        Route::get('/bookings', [PublicApiController::class, 'getBookings']);
+        Route::get('/settings', [PublicApiController::class, 'getSettings']);
+    });
 });

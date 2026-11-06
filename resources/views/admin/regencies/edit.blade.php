@@ -23,7 +23,7 @@
             @csrf
             @method('PATCH')
             
-            <div class="space-y-10">
+            <div class="space-y-6">
                 <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Kategori Wilayah</label>
                     <input type="text" name="category" value="{{ old('category', $regency->category) }}" placeholder="Contoh: Wisata Alam, Wisata Budaya, Pusat Bisnis"
@@ -33,7 +33,7 @@
                     </p>
                 </div>
 
-                <div class="pt-10 border-t border-slate-50 flex items-center gap-6">
+                <div class="pt-6 border-t border-slate-50 flex items-center gap-6">
                     <button type="submit" class="flex-1 bg-slate-900 text-white py-5 rounded-[2rem] font-black uppercase tracking-widest hover:bg-black transition shadow-2xl shadow-slate-200">
                         Perbarui Kategori
                     </button>

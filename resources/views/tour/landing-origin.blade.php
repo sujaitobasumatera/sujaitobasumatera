@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Paket Wisata Danau Toba dari ' . $originName . ' – Harga Terbaik 2026')
-@section('description', 'Pilihan paket liburan premium ke Danau Toba, Samosir, dan sekitarnya keberangkatan dari ' . $originName . ' bersama Sujai Laketoba.')
+@section('title', 'Paket Wisata Danau Toba dari ' . $originName . ' – Harga Terbaik ' . date('Y') . ' | Sujai Toba Sumatera')
+@section('description', 'Paket wisata Danau Toba dari ' . $originName . ': rute penerbangan ke Kualanamu, penjemputan private, hotel & itinerary Samosir–Berastagi. Cek harga & pesan lewat WhatsApp.')
 @section('keywords', __('paket wisata danau toba dari ' . strtolower($originName) . ', travel danau toba dari ' . strtolower($originName) . ', tour samosir ' . strtolower($originName)))
 
 
@@ -20,9 +20,9 @@
     if (!empty($siteSettings['general']['social_youtube'])) {
         $sameAsLinks[] = 'https://www.youtube.com/' . $siteSettings['general']['social_youtube'];
     }
-    $schemaLogoUrl = imageUrl($siteSettings['general']['logo_light_url'] ?? null, asset('assets/img/logo.png'));
-    $schemaPhone   = '+' . preg_replace('/[^0-9]/', '', $siteSettings['general']['contact_whatsapp'] ?? '6282277848855');
-    $schemaEmail   = $siteSettings['general']['contact_email'] ?? 'hello@sujailaketoba.com';
+    $schemaLogoUrl = imageUrl($siteSettings['general']['logo_light_url'] ?? null, asset('images/logo_compressed.webp'));
+    $schemaPhone   = '+' . \App\Helpers\ContactHelper::whatsappDigits();
+    $schemaEmail   = \App\Helpers\ContactHelper::email();
     $schemaDesc    = $settings['meta_description'] ?? 'Agen perjalanan wisata Danau Toba terpercaya';
 
     $homepageSchema = [
@@ -31,7 +31,7 @@
             [
                 '@type'       => 'TravelAgency',
                 '@id'         => url('/') . '/#organization',
-                'name'        => 'Sujai Laketoba',
+                'name'        => 'Sujai Toba Sumatera',
                 'url'         => url('/'),
                 'logo'        => [
                     '@type' => 'ImageObject',
@@ -43,7 +43,8 @@
                 'email'       => $schemaEmail,
                 'address'     => [
                     '@type'           => 'PostalAddress',
-                    'addressLocality' => 'Balige',
+                    'streetAddress'   => $siteSettings['general']['office_address'] ?? 'Jl. Trimurti 109 Berastagi Kabupaten Karo',
+                    'addressLocality' => 'Berastagi',
                     'addressRegion'   => 'Sumatera Utara',
                     'addressCountry'  => 'ID',
                 ],
@@ -56,7 +57,7 @@
                 '@type'       => 'WebSite',
                 '@id'         => url('/') . '/#website',
                 'url'         => url('/'),
-                'name'        => 'Sujai Laketoba',
+                'name'        => 'Sujai Toba Sumatera',
                 'description' => $schemaDesc,
                 'publisher'   => ['@id' => url('/') . '/#organization'],
                 'potentialAction' => [
@@ -69,6 +70,14 @@
                 ],
                 'inLanguage' => ['id', 'en', 'ms'],
             ],
+            [
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => url('/')],
+                    ['@type' => 'ListItem', 'position' => 2, 'name' => 'Paket Wisata', 'item' => route('tour.packages')],
+                    ['@type' => 'ListItem', 'position' => 3, 'name' => 'Dari ' . $originName, 'item' => route('landing.origin', $kotaSlug)],
+                ],
+            ],
         ],
     ];
 @endphp
@@ -76,15 +85,28 @@
 @endpush
 
 @section('content')
-<div x-data="{ waNumber: '{{ preg_replace('/[^0-9]/', '', $settings['contact_wa_1'] ?? '6282277848855') }}' }">
+<div x-data="{ waNumber: @js(\App\Helpers\ContactHelper::whatsappDigits()) }">
     
     <!-- Programmatic SEO Hero Banner -->
-    <section class="relative pt-32 pb-16 md:pt-40 md:pb-24 overflow-hidden bg-primary px-5 md:px-8">
+    <section class="relative pt-14 pb-8 md:pt-20 md:pb-12 overflow-hidden bg-primary px-5 md:px-8">
         <div class="absolute inset-0 opacity-40">
-            <img src="{{ imageUrl($settings['hero_image_1_url'] ?? null, 'sumatra-panorama') }}" alt="Danau Toba" class="w-full h-full object-cover">
+            {{-- Halaman pSEO adalah jalur masuk utama dari Google, tapi selama ini
+                 gambarnya melewatkan semua optimasi yang sudah dipakai homepage.
+                 responsiveImage() memasang srcset 480/800/1200w. Hero tetap eager
+                 + fetchpriority high karena dialah elemen LCP-nya. --}}
+            {{-- Gambar kota asal dipakai lebih dulu bila ada (lihat
+                 PublicController::landingOrigin), baru jatuh ke hero umum
+                 dari Pengaturan. Alt-nya ikut berubah supaya tidak
+                 menjanjikan "Panorama Danau Toba" pada foto kota asal. --}}
+            @php $heroPath = ($originImage ?? null) ?: ($settings['hero_image_1_url'] ?? null); @endphp
+            {!! responsiveImage($heroPath, 'w-full h-full object-cover', ($originImage ?? null) ? __('Panorama :city', ['city' => $originName]) : __('Panorama Danau Toba'), 'fetchpriority="high" decoding="async"') !!}
         </div>
         <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/80 to-transparent"></div>
         <div class="max-w-5xl mx-auto relative z-10 text-center">
+            <x-breadcrumb :dark="true" class="mb-5 flex justify-center" :items="[
+                ['label' => __('Paket Wisata'), 'url' => route('tour.packages')],
+                ['label' => __('Dari :city', ['city' => $originName])],
+            ]" />
             <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/20 border border-secondary text-secondary font-bold text-xs uppercase tracking-widest mb-6 backdrop-blur-md">
                 <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
                 Keberangkatan dari {{ $originName }}
@@ -92,12 +114,43 @@
             <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.1] mb-6">
                 Paket Wisata Danau Toba dari <span class="text-secondary">{{ $originName }}</span>
             </h1>
-            <p class="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p class="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto mb-6 leading-relaxed">
                 Penerbangan dan perjalanan Anda dari {{ $originName }} kini lebih mudah. Nikmati penjemputan VIP dari bandara Kualanamu / Silangit, rute terkurasi, dan pengalaman premium di Danau Toba tanpa ribet.
             </p>
+
+            @if(in_array(strtolower($originSlug ?? ''), ['kuala-lumpur', 'penang', 'johor', 'selangor', 'singapura']))
+            {{-- Flight Schedule & Direct Arrival Information for Malaysian & Singaporean Guests --}}
+            <div class="max-w-2xl mx-auto mb-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 text-left text-white shadow-2xl">
+                <div class="flex items-center gap-2.5 mb-3">
+                    <span class="material-symbols-outlined text-secondary text-2xl">flight_takeoff</span>
+                    <h3 class="font-bold text-sm md:text-base text-white tracking-wide">Penerbangan Terus dari {{ $originName }} ke Medan (KNO)</h3>
+                </div>
+                <p class="text-xs text-slate-200 leading-relaxed mb-3">
+                    Tempoh penerbangan hanya <strong>~45 hingga 55 minit</strong> terus ke Lapangan Terbang Antarabangsa Kualanamu (KNO) melalui syarikat penerbangan pilihan:
+                </p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] mb-3">
+                    <div class="bg-black/30 px-3 py-2 rounded-lg border border-white/10">
+                        <span class="block text-secondary font-bold">AirAsia</span>
+                        <span class="text-slate-300">Harian (Daily Flight)</span>
+                    </div>
+                    <div class="bg-black/30 px-3 py-2 rounded-lg border border-white/10">
+                        <span class="block text-secondary font-bold">Batik Air / Lion</span>
+                        <span class="text-slate-300">Pilihan Pagi &amp; Petang</span>
+                    </div>
+                    <div class="bg-black/30 px-3 py-2 rounded-lg border border-white/10 col-span-2 sm:col-span-1">
+                        <span class="block text-secondary font-bold">Malaysia Airlines</span>
+                        <span class="text-slate-300">Penerbangan Terus</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-emerald-300 bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-500/30">
+                    <span class="material-symbols-outlined text-[16px] shrink-0">check_circle</span>
+                    <span>Pemandu kami siap menunggu di balai ketibaan dengan papan tanda nama anda tanpa caj tambahan delay!</span>
+                </div>
+            </div>
+            @endif
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $settings['contact_wa_1'] ?? '6282277848855') }}?text={{ urlencode('Halo Sujai Laketoba, saya tertarik paket wisata Danau Toba dari ' . $originName) }}" 
-                   class="w-full sm:w-auto bg-green-600 hover:bg-green-500 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition shadow-xl flex items-center justify-center gap-2">
+                <a href="https://wa.me/{{ \App\Helpers\ContactHelper::whatsappDigits() }}?text={{ urlencode('Halo Sujai Toba Sumatera, saya tertarik paket wisata Danau Toba dari ' . $originName) }}" 
+                   class="w-full sm:w-auto bg-toba-green hover:bg-primary-container text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest transition shadow-xl flex items-center justify-center gap-2">
                     <span class="material-symbols-outlined text-[20px]">chat</span>
                     Konsultasi Gratis
                 </a>
@@ -107,7 +160,7 @@
 
     <!-- Featured Packages -->
     @if($settings['show_featured'] ?? true)
-    <section class="py-16 md:py-24 bg-surface overflow-hidden"
+    <section class="py-8 md:py-12 bg-surface overflow-hidden"
              x-data="{
                  isDragging: false, startX: 0, scrollLeft: 0,
                  scrollPercent: 0,
@@ -119,7 +172,7 @@
                  scrollNext() { this.el.scrollBy({ left: 380, behavior: 'smooth' }); },
              }">
         <div class="max-w-7xl mx-auto px-5 md:px-8">
-            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-10 md:mb-14 gap-6">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 md:mb-8 gap-6">
                 <div class="max-w-xl">
                     <span class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-secondary mb-3">
                         <span class="w-6 h-px bg-secondary"></span>{{ __('Paket Pilihan') }}
@@ -143,54 +196,13 @@
         <div x-ref="pkgStrip"
              @mousedown="onDown($event)" @mousemove="onMove($event)" @mouseup="onUp()" @mouseleave="onUp()"
              @scroll="const max = el.scrollWidth - el.clientWidth; scrollPercent = max > 0 ? (el.scrollLeft / max) * 100 : 0"
-             class="flex gap-6 overflow-x-auto scroll-smooth px-6 md:px-[max(1.5rem,calc((100vw-80rem)/2+1.5rem))] pb-4 no-scrollbar select-none"
+             {{-- items-start: lihat catatan di tour/packages.blade.php. --}}
+             class="flex items-start gap-6 overflow-x-auto scroll-smooth px-6 md:px-[max(1.5rem,calc((100vw-80rem)/2+1.5rem))] pb-4 no-scrollbar select-none snap-x snap-mandatory overscroll-x-contain"
              :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'">
 
             @foreach($packages as $index => $pkg)
-            @php
-                $pkgImage = $pkg->resolveImageUrl($pkg->packageImages->first()?->image_path ?? ($pkg->images[0] ?? null));
-            @endphp
-            <div class="flex-shrink-0 w-[80vw] sm:w-[45vw] md:w-[31vw] lg:w-[28vw] xl:w-[25rem] group">
-                <div class="relative aspect-[3/4] overflow-hidden rounded-2xl cursor-pointer"
-                     onclick="window.location.href='/tour/package/{{ $pkg->slug ?: $pkg->id }}'">
-                    <img alt="{{ $pkg->translated_name }}"
-                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                         src="{{ $pkgImage }}" loading="lazy"/>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
-                    
-                    @if($loop->first || ($pkg->isFeatured ?? false))
-                    <div class="absolute top-5 left-5 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase shadow-lg flex items-center gap-1.5 z-10">
-                        <span class="text-xs">🔥</span> {{ __('Terpopuler') }}
-                    </div>
-                    @endif
-
-                    @php $__r = siteRating(); @endphp
-                    @if($__r)
-                    <div class="absolute top-5 right-5 bg-black/60 backdrop-blur-md px-3 py-1 border border-white/10 rounded-full flex items-center gap-1.5 shadow-lg">
-                        <span class="material-symbols-outlined text-secondary-fixed text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                        <span class="text-white font-label-caps text-[11px] font-bold">{{ number_format($__r['value'], 1) }}</span>
-                    </div>
-                    @endif
-
-                    <div class="absolute bottom-0 left-0 w-full p-6 text-white">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="material-symbols-outlined text-[16px]">location_on</span>
-                            <span class="font-label-caps text-[10px] tracking-wider">{{ strtoupper(__($pkg->locationTag ?? 'Sumatera Utara')) }}</span>
-                        </div>
-                        <h3 class="font-headline-md text-[22px] md:text-[26px] mb-3 line-clamp-2 leading-tight">{{ $pkg->translated_name }}</h3>
-                        <div class="flex justify-between items-center">
-                            <div class="bg-secondary-fixed px-4 py-2.5 rounded-2xl border border-white/25 shadow-lg flex flex-col justify-center">
-                                <p class="font-label-caps text-[9px] text-on-secondary-fixed-variant font-bold uppercase tracking-widest leading-none mb-1.5">{{ __('Mulai dari') }}</p>
-                                <p class="font-headline-md text-[18px] md:text-[20px] text-on-secondary-fixed font-black leading-none tracking-tight">
-                                    {{ \App\Helpers\CurrencyHelper::formatPrice($pkg->price) }}
-                                </p>
-                            </div>
-                            <div class="w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center group-hover:bg-secondary-fixed group-hover:border-secondary-fixed group-hover:text-on-secondary-fixed transition duration-300">
-                                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="flex-shrink-0 snap-start w-[260px] sm:w-[280px] md:w-[310px]">
+                <x-package-card :package="$pkg" />
             </div>
             @endforeach
 
@@ -227,7 +239,7 @@
         }
     @endphp
 
-    <section class="bg-primary py-16 md:py-24 overflow-hidden"
+    <section class="bg-primary py-8 md:py-12 overflow-hidden"
              x-data="{
                  slides: @js($slides),
                  scrollContainer: null,
@@ -290,7 +302,7 @@
              }">
 
         {{-- Header --}}
-        <div class="max-w-7xl mx-auto px-5 md:px-8 mb-8 md:mb-12 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
+        <div class="max-w-7xl mx-auto px-5 md:px-8 mb-6 md:mb-8 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
             <div class="max-w-xl">
                 <span class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-secondary-fixed mb-3">
                     <span class="w-6 h-px bg-secondary-fixed"></span>{{ __('Galeri Destinasi') }}
@@ -327,35 +339,47 @@
                  @mouseup="onMouseUp()"
                  @mouseleave="onMouseUp()"
                  @scroll="const max = scrollContainer.scrollWidth - scrollContainer.clientWidth; scrollPercent = max > 0 ? (scrollContainer.scrollLeft / max) * 100 : 0"
-                 class="flex gap-5 overflow-x-auto scroll-smooth px-6 md:px-8 pb-4 no-scrollbar select-none"
+                 class="flex gap-5 overflow-x-auto scroll-smooth px-6 md:px-8 pb-4 no-scrollbar select-none snap-x snap-mandatory overscroll-x-contain"
                  :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'">
 
-                <template x-for="(slide, i) in slides" :key="i">
-                    <div class="flex-shrink-0 w-[75vw] sm:w-[45vw] md:w-[30vw] lg:w-[23vw] group/card">
-                        <div class="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-xl border border-white/10 transition duration-500 hover:border-secondary/40 hover:-translate-y-1">
-                            <img :src="slide.url"
-                                 :alt="slide.caption || 'Sujai Laketoba'"
-                                 class="w-full h-full object-cover transition-transform duration-[2s] group-hover/card:scale-105"
-                                 loading="lazy"
+                {{-- Dicetak server. Isi <template x-for> tidak pernah ada di HTML,
+                     jadi empat foto terberat halaman ini -- termasuk batak_house
+                     165 KB -- tidak bisa ditemukan pemindai pramuat peramban
+                     maupun perayap. Alpine tetap mengurus geser-tarik dan
+                     gulir otomatisnya; yang berubah cuma siapa yang membuat
+                     elemennya. --}}
+                @foreach($slides as $i => $slide)
+                    @php
+                        $slideUrl = $slide['url'] ?? '';
+                        $slideCap = trim((string) ($slide['caption'] ?? ''));
+                        $slideCat = trim((string) ($slide['category'] ?? ''));
+                    @endphp
+                    <div class="flex-shrink-0 snap-start w-[220px] sm:w-[250px] md:w-[280px] group/card py-2">
+                        <div class="relative h-64 md:h-72 rounded-2xl overflow-hidden shadow-lg border border-white/10 transition-all duration-500 ease-out group-hover/card:shadow-2xl group-hover/card:shadow-black/50 group-hover/card:-translate-y-2">
+                            <img src="{{ $slideUrl }}"
+                                 @if($__ss = imageSrcset($slideUrl)) srcset="{{ $__ss }}" sizes="280px" @endif
+                                 alt="{{ $slideCap !== '' ? $slideCap : 'Sujai Toba Sumatera' }}"
+                                 class="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover/card:scale-105"
+                                 loading="lazy" decoding="async"
                                  onerror="this.src='{{ asset('images/home/tour.webp') }}'">
 
-                            {{-- Hover overlay --}}
-                            <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent opacity-0 group-hover/card:opacity-100 transition duration-500 flex flex-col justify-end p-5">
-                                <span x-show="slide.category"
-                                      class="inline-block px-3 py-1 bg-secondary text-on-secondary text-[9px] font-bold uppercase tracking-widest rounded-lg mb-2 w-fit shadow-sm"
-                                      x-text="slide.category"></span>
-                                <p x-show="slide.caption"
-                                   class="text-white text-sm font-bold leading-tight mb-1"
-                                   x-text="slide.caption"></p>
+                            {{-- Gradient overlay permanent --}}
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent flex flex-col justify-end p-4">
+                                @if($slideCat !== '')
+                                <span class="inline-block px-2.5 py-0.5 bg-toba-orange text-white text-[9px] font-bold uppercase tracking-wider rounded-full mb-1.5 w-fit shadow-sm">{{ $slideCat }}</span>
+                                @endif
+                                @if($slideCap !== '')
+                                <p class="text-white text-[13px] font-semibold leading-snug line-clamp-2">{{ $slideCap }}</p>
+                                @endif
                             </div>
 
                             {{-- Index badge --}}
-                            <div class="absolute top-3 left-3 z-10 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full border border-white/10 flex items-center justify-center">
-                                <span class="text-white text-[10px] font-bold" x-text="String(i + 1).padStart(2, '0')"></span>
+                            <div class="absolute top-3 left-3 z-10 w-7 h-7 bg-white/20 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center shadow-sm">
+                                <span class="text-white text-[10px] font-bold">{{ str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) }}</span>
                             </div>
                         </div>
                     </div>
-                </template>
+                @endforeach
 
             </div>
         </div>
@@ -373,88 +397,70 @@
 
 
     <!-- Testimonials — minimal -->
-    @if($settings['show_testimonials'] ?? true)
-    @php
-        $dynamicTestimonial = [
-            'name' => 'Wisatawan dari ' . $originName,
-            'location' => $originName,
-            'text' => 'Sangat praktis liburan keluarga dari ' . $originName . ' berkat Sujai Laketoba. Mulai dari penjemputan di bandara hingga hotel, semuanya diurus dengan sangat profesional dan ramah.',
-            'image' => 'user3'
-        ];
-
-        $testimonials = $settings['testimonials'] ?? [
-            [
-                'name' => 'Julian Thorne',
-                'location' => 'London, UK',
-                'text' => 'Perhatian terhadap detail sangat menakjubkan. Kami menjelajahi jantung Sumatera tanpa repot mengatur jadwal. Mulai dari penjemputan di Kualanamu hingga makan malam di tepi Samosir, semuanya dirancang sempurna.',
-                'image' => 'user1'
-            ],
-            [
-                'name' => 'Isabella Chen',
-                'location' => 'Singapura',
-                'text' => 'Sangat puas dengan pilihan hotel dan restorannya. Sujai Laketoba mengkurasi tempat-tempat otentik yang jarang diketahui turis biasa. Sangat direkomendasikan untuk liburan keluarga.',
-                'image' => 'user2'
-            ]
-        ];
-
-        // Insert the dynamic testimonial at the top
-        array_unshift($testimonials, $dynamicTestimonial);
-    @endphp
-    <section class="py-16 md:py-24 bg-surface">
+    {{-- Hanya testimoni ASLI dari admin. Dulu di sini ada "Wisatawan dari {kota}"
+         yang di-generate per halaman pSEO (15 kota) + nama fiktif Julian/Isabella
+         — testimoni karangan melanggar UU Perlindungan Konsumen. Section kosong
+         lebih baik daripada kesaksian palsu. --}}
+    <!-- Testimonials — Modern & Elegant -->
+    @php $testimonials = $settings['testimonials'] ?? []; @endphp
+    @if(($settings['show_testimonials'] ?? true) && count($testimonials))
+    <section class="py-8 md:py-12 bg-slate-50/50 border-t border-b border-slate-100">
         <div class="max-w-5xl mx-auto px-5 md:px-8">
-            <div class="flex items-center gap-3 mb-10 md:mb-12">
-                <span class="w-6 h-px bg-secondary"></span>
-                <span class="text-[10px] font-bold text-secondary uppercase tracking-[0.25em]">{{ __('Testimoni') }}</span>
+            <div class="flex items-center gap-3 mb-6 md:mb-6">
+                <span class="w-6 h-px bg-toba-green"></span>
+                <span class="text-[11px] font-bold text-toba-green uppercase tracking-[0.25em]">{{ __('Testimoni Wisatawan') }}</span>
             </div>
 
-            <div class="space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 @foreach($testimonials as $t)
-                <div class="flex flex-col md:flex-row gap-6 md:gap-10 items-start">
-                    {{-- Quote --}}
-                    <div class="flex-1">
-                        <p class="font-headline-md text-[18px] md:text-[22px] text-primary leading-relaxed italic">
+                <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-1 text-amber-400 mb-4">
+                            @for($i=0; $i<5; $i++)
+                            <svg class="w-4 h-4 fill-amber-400 text-amber-400" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            @endfor
+                        </div>
+                        <p class="text-slate-700 text-sm md:text-[15px] leading-relaxed font-medium italic mb-6">
                             "{{ __($t['text']) }}"
                         </p>
                     </div>
-                    {{-- Author --}}
-                    <div class="flex items-center gap-3 md:w-48 shrink-0">
-                        <div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-low shrink-0">
-                            <img alt="{{ $t['name'] }}"
-                                 src="{{ imageUrl($t['image'] ?? null, 'user' . ($loop->iteration ?? 1)) }}"
-                                 class="w-full h-full object-cover">
-                        </div>
+                    <div class="flex items-center gap-3.5 pt-4 border-t border-slate-100">
+                        <img alt="{{ $t['name'] }}"
+                             src="{{ imageUrl($t['image'] ?? null, 'user' . ($loop->iteration ?? 1)) }}"
+                             loading="lazy" decoding="async"
+                             class="w-11 h-11 rounded-full object-cover shrink-0 ring-2 ring-slate-100">
                         <div>
-                            <p class="text-xs font-bold text-on-surface font-body-md">{{ $t['name'] }}</p>
-                            <p class="text-[10px] text-on-surface-variant font-body-md">{{ __($t['location'] ?? 'Wisatawan Terverifikasi') }}</p>
+                            <p class="text-sm font-bold text-slate-900 leading-tight">{{ $t['name'] }}</p>
+                            <p class="text-xs text-slate-400 mt-0.5 font-medium">{{ __($t['location'] ?? 'Wisatawan Terverifikasi') }}</p>
                         </div>
                     </div>
                 </div>
-                @if(!$loop->last)
-                    <div class="h-px bg-outline-variant/40"></div>
-                @endif
                 @endforeach
             </div>
         </div>
     </section>
     @endif
 
-    <!-- Specialist — minimal inline -->
+    <!-- Specialist — High Contrast Banner -->
     @if($settings['show_specialist'] ?? true)
-    <section class="bg-surface pb-16 md:pb-20 px-5 md:px-8">
+    <section class="py-6 md:py-8 px-4 md:px-8">
         <div class="max-w-5xl mx-auto">
-            <div class="bg-primary rounded-3xl px-6 py-7 md:px-10 md:py-8 flex flex-col sm:flex-row items-center gap-5 sm:gap-8 text-center sm:text-left">
-                <img alt="{{ $settings['specialist_name'] ?? 'Sarah Anggraini' }}"
-                     class="w-14 h-14 rounded-full object-cover border-2 border-white/10 shrink-0"
-                     src="{{ imageUrl($settings['specialist_image_url'] ?? '', 'staff1') }}"/>
-                <div class="flex-1 text-center sm:text-left">
-                    <p class="text-white font-bold font-body-md text-sm">{{ $settings['specialist_name'] ?? 'Sarah Anggraini' }}</p>
-                    <p class="text-white/50 font-body-md text-xs">{{ __('Punya pertanyaan? Saya siap membantu merencanakan liburan impian Anda.') }}</p>
+            <div class="bg-slate-900 rounded-2xl p-6 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl border border-slate-800">
+                <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 text-center sm:text-left">
+                    <img alt="{{ $settings['specialist_name'] ?? 'Sarah Anggraini' }}"
+                         class="w-14 h-14 rounded-full object-cover ring-2 ring-toba-green/50 shrink-0"
+                         loading="lazy" decoding="async"
+                         src="{{ imageUrl($settings['specialist_image_url'] ?? '', 'staff1') }}"/>
+                    <div>
+                        <p class="text-white font-bold text-base md:text-lg leading-tight">{{ $settings['specialist_name'] ?? 'Sarah Anggraini' }}</p>
+                        <p class="text-slate-300 text-xs md:text-sm font-medium mt-1">{{ __('Ada pertanyaan? Saya bersedia membantu merancang percutian impian anda.') }}</p>
+                    </div>
                 </div>
                 <a target="_blank" rel="noopener"
-                   href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $settings['specialist_wa'] ?? $settings['contact_wa_1'] ?? '6282277848855') }}?text={{ urlencode('Halo ' . ($settings['specialist_name'] ?? 'Sarah') . ', saya ingin tanya paket tour...') }}"
-                   class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-xl font-label-caps text-[10px] uppercase tracking-widest transition shrink-0">
-                    <span class="material-symbols-outlined text-[16px]">chat</span>
-                    {{ __('WhatsApp') }}
+                   href="https://wa.me/{{ \App\Helpers\ContactHelper::specialistDigits() }}?text={{ urlencode('Halo ' . ($settings['specialist_name'] ?? 'Sarah') . ', saya ingin tanya paket tour...') }}"
+                   class="inline-flex items-center gap-2.5 px-6 py-3 bg-toba-green hover:bg-green-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all duration-300 shadow-md shrink-0 transform hover:scale-105">
+                    <x-icon name="whatsapp" class="w-4 h-4" />
+                    <span>{{ __('WHATSAPP') }}</span>
                 </a>
             </div>
         </div>
@@ -463,8 +469,8 @@
 
     <!-- Journal/Blog -->
     @if($settings['show_blogs'] ?? true)
-    <section class="py-16 md:py-24 max-w-7xl mx-auto px-5 md:px-8 bg-surface">
-        <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-10 md:mb-14 gap-4">
+    <section class="py-8 md:py-12 max-w-7xl mx-auto px-5 md:px-8 bg-surface">
+        <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-6 md:mb-8 gap-4">
             <div class="max-w-xl">
                 <span class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-secondary mb-3">
                     <span class="w-6 h-px bg-secondary"></span>{{ __('Cerita') }}
@@ -475,22 +481,22 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             @foreach($blogs as $blog)
-            <div class="group cursor-pointer" onclick="window.location.href='{{ route('tour.blog.detail', $blog->slug) }}'">
+            <a href="{{ route('tour.blog.detail', $blog->slug) }}" class="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 rounded-lg">
                 <div class="aspect-[16/10] overflow-hidden rounded-lg mb-4 md:mb-6 shadow-md border border-slate-100 bg-slate-100">
-                    <img alt="{{ $blog->translated_title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="{{ $blog->image_url }}"/>
+                    <img alt="{{ $blog->translated_title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="{{ $blog->image_url }}" loading="lazy" decoding="async"/>
                 </div>
                 <span class="font-label-caps text-[10px] text-secondary border border-secondary px-2 py-0.5 rounded-full uppercase tracking-wider mb-3 md:mb-4 inline-block">{{ strtoupper($blog->category ?? 'EKSPEDISI') }}</span>
                 <h3 class="font-headline-md text-[20px] md:text-[22px] group-hover:text-secondary transition-colors duration-300 font-bold leading-tight">{{ $blog->translated_title }}</h3>
-            </div>
+            </a>
             @endforeach
         </div>
     </section>
     @endif
 
     <!-- FAQ -->
-    <section class="py-16 md:py-24 bg-surface-container-low">
+    <section class="py-8 md:py-12 bg-surface-container-low">
         <div class="max-w-3xl mx-auto px-5">
-            <div class="text-center mb-10 md:mb-14">
+            <div class="text-center mb-6 md:mb-8">
                 <h2 class="text-3xl md:text-5xl font-bold text-primary tracking-tight mb-4">{{ __('Pertanyaan Umum') }}</h2>
                 <div class="w-12 h-0.5 bg-secondary mx-auto"></div>
             </div>
@@ -498,11 +504,11 @@
                 $faqs = $settings['faqs'] ?? [
                     [
                         'q' => 'Bagaimana cara terbaik menuju Danau Toba dari Bandara Kualanamu (KNO)?',
-                        'a' => 'Cara terbaik dan paling nyaman adalah menggunakan layanan transfer private (armada premium dengan supir pribadi) yang disediakan oleh Sujai Laketoba. Perjalanan darat memakan waktu sekitar 3.5 hingga 4 jam melalui jalan tol Medan-Tebing Tinggi, lalu dilanjutkan ke Parapat, pintu gerbang utama menuju Pulau Samosir.'
+                        'a' => 'Cara terbaik dan paling nyaman adalah menggunakan layanan transfer private (armada premium dengan supir pribadi) yang disediakan oleh Sujai Toba Sumatera. Perjalanan darat memakan waktu sekitar 3.5 hingga 4 jam melalui jalan tol Medan-Tebing Tinggi, lalu dilanjutkan ke Parapat, pintu gerbang utama menuju Pulau Samosir.'
                     ],
                     [
                         'q' => 'Apakah makanan halal mudah ditemukan di sekitar Danau Toba?',
-                        'a' => 'Ya, sangat mudah. Di Parapat dan Pulau Samosir (terutama daerah wisata Tuk-tuk dan Tomok), terdapat banyak restoran Muslim lokal yang bersertifikat halal atau menyajikan menu ramah Muslim seperti ikan mas bakar, ayam penyet, dan masakan khas Minang/Padang. Supir dan pemandu Sujai Laketoba akan selalu mengarahkan Anda ke tempat makan halal pilihan.'
+                        'a' => 'Ya, sangat mudah. Di Parapat dan Pulau Samosir (terutama daerah wisata Tuk-tuk dan Tomok), terdapat banyak restoran Muslim lokal yang bersertifikat halal atau menyajikan menu ramah Muslim seperti ikan mas bakar, ayam penyet, dan masakan khas Minang/Padang. Supir dan pemandu Sujai Toba Sumatera akan selalu mengarahkan Anda ke tempat makan halal pilihan.'
                     ],
                     [
                         'q' => 'Mata uang apa yang digunakan, dan apakah kartu kredit diterima?',
@@ -518,14 +524,35 @@
                     ]
                 ];
             @endphp
+            @php
+                // Pertanyaan khusus kota ini -- satu-satunya FAQ yang berbeda antar
+                // halaman, dan yang paling dicari orang dari kota tersebut.
+                $faqs = array_merge([[
+                    'q' => 'Bagaimana cara ke Danau Toba dari ' . $originName . '?',
+                    'a' => 'Dari ' . $originName . ', terbang atau menuju Bandara Kualanamu (KNO) Medan, atau Bandara Silangit (DTB) bila jadwalnya tersedia. Setelah mendarat, tim Sujai Toba Sumatera menjemput Anda dengan kendaraan private menuju Parapat dan Pulau Samosir; perjalanan darat dari Kualanamu sekitar 3,5 hingga 4 jam. Kami bantu menyusun rute dan jadwal penjemputan sesuai jam kedatangan Anda.'
+                ]], $faqs);
+            @endphp
+            <script type="application/ld+json">{!! json_encode([
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'mainEntity' => collect($faqs)->map(fn ($f) => [
+                    '@type' => 'Question',
+                    'name' => $f['q'],
+                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['a']],
+                ])->values()->all(),
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
             <div class="space-y-2 md:space-y-4" x-data="{ selected: 1 }">
                 @foreach($faqs as $index => $faq)
                 <div class="bg-white px-5 md:px-6 rounded-2xl border border-slate-100 shadow-xs transition-shadow hover:shadow-sm">
-                    <button @click="selected !== {{ $index + 1 }} ? selected = {{ $index + 1 }} : selected = null" class="w-full py-5 md:py-6 flex justify-between items-center gap-4 text-left focus:outline-none">
+                    <button @click="selected !== {{ $index + 1 }} ? selected = {{ $index + 1 }} : selected = null"
+                            :aria-expanded="selected === {{ $index + 1 }} ? 'true' : 'false'"
+                            aria-controls="faq-panel-{{ $index + 1 }}"
+                            id="faq-tombol-{{ $index + 1 }}"
+                            class="w-full py-5 md:py-6 flex justify-between items-center gap-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-toba-green focus-visible:ring-offset-2">
                         <span class="text-[15px] md:text-[18px] text-primary font-bold leading-snug">{{ __($faq['q']) }}</span>
-                        <span :class="selected === {{ $index + 1 }} ? 'rotate-180 text-secondary' : ''" class="material-symbols-outlined transition-transform duration-300">expand_more</span>
+                        <span :class="selected === {{ $index + 1 }} ? 'rotate-180 text-secondary' : ''" class="material-symbols-outlined transition-transform duration-300" aria-hidden="true">expand_more</span>
                     </button>
-                    <div x-show="selected === {{ $index + 1 }}" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="overflow-hidden">
+                    <div x-show="selected === {{ $index + 1 }}" id="faq-panel-{{ $index + 1 }}" role="region" aria-labelledby="faq-tombol-{{ $index + 1 }}" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" class="overflow-hidden">
                         <p class="pb-5 md:pb-6 font-body-md text-[14px] md:text-[16px] text-on-surface-variant leading-relaxed">
                             {{ __($faq['a']) }}
                         </p>
@@ -536,11 +563,29 @@
         </div>
     </section>
 
+    {{-- Tautan internal ke landing page kota lain: menyebarkan otoritas halaman
+         dan memberi perayap jalur ke seluruh halaman pSEO. --}}
+    @if(!empty($otherOrigins))
+    <section class="py-8 md:py-10 bg-white border-t border-slate-100">
+        <div class="max-w-5xl mx-auto px-5 md:px-8 text-center">
+            <h2 class="text-lg md:text-xl font-bold text-primary mb-4">{{ __('Berangkat dari kota lain?') }}</h2>
+            <div class="flex flex-wrap justify-center gap-2">
+                @foreach($otherOrigins as $o)
+                <a href="{{ route('landing.origin', $o['slug']) }}"
+                   class="px-4 py-2 rounded-full border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition">
+                    {{ __('Paket Wisata Danau Toba dari :city', ['city' => $o['name']]) }}
+                </a>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
     <!-- Cinema CTA -->
-    <section class="py-16 md:py-32 px-5 md:px-8 bg-surface">
-        <div class="max-w-7xl mx-auto bg-primary rounded-[2rem] md:rounded-[4rem] p-8 md:p-24 relative overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,37,19,0.3)]">
+    <section class="py-8 md:py-14 px-5 md:px-8 bg-surface">
+        <div class="max-w-7xl mx-auto bg-primary rounded-[2rem] md:rounded-[4rem] p-8 md:p-24 relative overflow-hidden shadow-[0_50px_100px_-20px] shadow-primary/30">
             <div class="absolute inset-0 opacity-40">
-                <img src="{{ $ctaImg }}" alt="{{ $ctaAlt ?? 'Call to action image' }}" class="w-full h-full object-cover">
+                <img src="{{ $ctaImg }}" alt="{{ $ctaAlt ?? __('Suasana perjalanan bersama Sujai Toba Sumatera') }}" @if($__ss = imageSrcset($ctaImg)) srcset="{{ $__ss }}" sizes="(max-width: 1023px) 100vw, 800px" @endif class="w-full h-full object-cover" loading="lazy" decoding="async">
             </div>
             <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary/60 to-transparent"></div>
             
@@ -552,7 +597,7 @@
                 <h2 class="text-3xl sm:text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8 tracking-tight leading-[1.05] md:leading-[0.95]">
                     {{ __('Siap Untuk') }} <br/> <span class="text-white">{{ __('Petualangan Nyata?') }}</span>
                 </h2>
-                <p class="text-base md:text-xl text-slate-300 mb-8 md:mb-12 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                <p class="text-base md:text-xl text-slate-300 mb-6 md:mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                     @php
                         $touristsCount = $settings['stat_customers'] ?? '1.500+';
                     @endphp
@@ -573,7 +618,7 @@
                         ];
                         @endphp
                         @foreach($avatarPhotos as $avatarUrl)
-                            <img src="{{ $avatarUrl }}" class="w-14 h-14 rounded-full border-4 border-primary shadow-xl object-cover" alt="Pelanggan Sujai Laketoba">
+                            <img src="{{ $avatarUrl }}" class="w-14 h-14 rounded-full border-4 border-primary shadow-xl object-cover" alt="" loading="lazy" decoding="async">
                         @endforeach
                         <div class="w-14 h-14 rounded-full border-4 border-primary bg-secondary flex items-center justify-center text-white text-[10px] font-bold">
                             {{ $touristsCount }}

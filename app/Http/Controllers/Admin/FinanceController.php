@@ -16,7 +16,18 @@ class FinanceController extends Controller
             ->latest('createdAt')
             ->paginate(20);
 
-        return view('admin.finance.index', compact('transactions'));
+        // Agregat dihitung ulang atas SELURUH data, bukan atas $transactions:
+        // koleksi itu hanya berisi 20 baris halaman aktif, jadi menjumlahkannya
+        // membuat omzet menyusut setiap kali admin pindah halaman.
+        $summary = Booking::whereIn('status', ['confirmed', 'completed'])
+            ->selectRaw('COALESCE(SUM(totalPrice_idr), 0) as revenue, COALESCE(AVG(totalPrice_idr), 0) as average')
+            ->first();
+
+        return view('admin.finance.index', [
+            'transactions' => $transactions,
+            'revenue' => (float) $summary->revenue,
+            'average' => (float) $summary->average,
+        ]);
     }
 
     public function export()
@@ -34,7 +45,7 @@ class FinanceController extends Controller
 
         $callback = function () use ($transactions) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['ID', 'Booking Code', 'Customer', 'Email', 'Type', 'Item', 'Total Price', 'Booking Date']);
+            fputcsv($file, ['ID', 'Booking Code', 'Customer', 'Email', 'Type', 'Item', 'Currency', 'Total Price', 'Total Price (IDR)', 'Booking Date']);
 
             foreach ($transactions as $booking) {
                 fputcsv($file, [
@@ -44,7 +55,9 @@ class FinanceController extends Controller
                     $booking->customerEmail,
                     ucfirst($booking->type),
                     $booking->package->name ?? 'N/A',
+                    $booking->currency,
                     $booking->totalPrice,
+                    $booking->totalPrice_idr,
                     $booking->createdAt->format('Y-m-d H:i'),
                 ]);
             }

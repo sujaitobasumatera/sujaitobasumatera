@@ -11,6 +11,19 @@ class OgBannerService
     /**
      * Generate dynamic, beautiful OpenGraph card banners for social shares with Caching.
      */
+    /**
+     * Buang banner yang sudah tersimpan supaya dibuat ulang saat diminta.
+     *
+     * Banner ini memuat judul, gambar, dan HARGA ke dalam satu file .webp,
+     * lalu file itu dipakai selamanya. Begitu harga paket berubah, kartu yang
+     * muncul di WhatsApp dan Facebook masih memajang harga lama — dan tidak
+     * ada yang memberi tahu, karena halamannya sendiri sudah benar.
+     */
+    public function forget(string $type, int $id): void
+    {
+        Storage::disk('public')->delete("og-banners/{$type}_{$id}.webp");
+    }
+
     public function getOrGenerateBanner(string $type, int $id)
     {
         $filename = "og-banners/{$type}_{$id}.webp";

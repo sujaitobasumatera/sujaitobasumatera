@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\CurrencyHelper;
 use App\Models\Booking;
 use App\Models\Customer;
 use App\Models\Package;
@@ -21,12 +22,44 @@ class BookingService
     ) {}
 
     /**
-     * Check if a package/date is available for booking.
-     * Currently always returns true — extend with real capacity/blackout logic.
+     * Apakah paket/tanggal ini masih boleh dipesan.
+     *
+     * Dulu selalu mengembalikan true, sehingga pemesanan untuk tanggal yang
+     * SUDAH LEWAT tetap diterima dan masuk ke daftar pesanan sebagai kerja
+     * admin yang harus dibatalkan manual. Lead time-nya sendiri sudah ditegakkan
+     * di StoreBookingRequest, tapi create() juga dipanggil dari admin dan dari
+     * jalur lain yang tidak melewati form request itu — jadi penjaga terakhirnya
+     * harus ada di sini.
      */
     public function isAvailable(array $data): bool
     {
-        // Future: check package capacity, blackout dates, fleet availability
+        if (empty($data['startDate'])) {
+            return false;
+        }
+
+        try {
+            $start = \Carbon\Carbon::parse($data['startDate'])->startOfDay();
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        if ($start->lt(now()->startOfDay())) {
+            return false;
+        }
+
+        // Tanggal yang diblokir admin, bila diatur.
+        $blackouts = optional(\App\Models\Setting::where('key', 'booking_settings')->first())->value['blackout_dates'] ?? [];
+        foreach ((array) $blackouts as $blocked) {
+            try {
+                if (\Carbon\Carbon::parse($blocked)->isSameDay($start)) {
+                    return false;
+                }
+            } catch (\Throwable $e) {
+                // Baris yang salah format diabaikan, jangan sampai menjatuhkan pemesanan.
+                continue;
+            }
+        }
+
         return true;
     }
 
@@ -46,17 +79,51 @@ class BookingService
                 $data['totalPrice'] = $prices['price'];
                 $data['total_cost'] = $prices['cost'];
 
+                // Freeze the currency of this booking. totalPrice follows the
+                // package price list (ringgit); totalPrice_idr is stamped once,
+                // here, and is what every report and tax figure reads later. It
+                // must never be re-derived, or an admin editing the exchange
+                // rate would retroactively change issued invoices and past
+                // months' revenue.
+                $data['currency'] = CurrencyHelper::PRICE_BASE;
+                $data['exchange_rate_idr'] = CurrencyHelper::getRate('IDR');
+                $data['totalPrice_idr'] = CurrencyHelper::toIdr($prices['price']);
+
                 // Set default status
                 $data['status'] = $data['status'] ?? 'pending';
 
                 // Sync Customer — include soft-deleted records so a repeat booking
-                // from a previously removed email restores that customer instead of
-                // hitting the customers_email_unique index with a fresh insert.
-                $customer = Customer::withTrashed()->firstOrNew(['email' => $data['customerEmail']]);
+                // from a previously removed customer restores that record instead
+                // of hitting the unique index with a fresh insert.
+                //
+                // Dikunci pada NOMOR TELEPON, bukan email: email tidak lagi
+                // diminta saat memesan. Kalau tetap dikunci pada email, setiap
+                // tamu tanpa email akan bertabrakan jadi satu baris pelanggan
+                // yang sama — namanya bertukar-tukar setiap ada pesanan baru.
+                $phoneKey = Customer::phoneKey($data['customerPhone'] ?? null);
+                $email = trim((string) ($data['customerEmail'] ?? '')) ?: null;
+                $data['customerEmail'] = $email;
+
+                if ($phoneKey !== null) {
+                    $customer = Customer::withTrashed()->firstOrNew(['phone_key' => $phoneKey]);
+                } elseif ($email !== null) {
+                    $customer = Customer::withTrashed()->firstOrNew(['email' => $email]);
+                } else {
+                    // Tanpa keduanya tidak ada yang bisa dijadikan pengenal;
+                    // buat baris baru daripada menempel ke pelanggan asing.
+                    $customer = new Customer;
+                }
+
                 $customer->fill([
                     'name' => $data['customerName'],
                     'phone' => $data['customerPhone'] ?? null,
+                    'phone_key' => $phoneKey,
                 ]);
+                // Email hanya ditimpa bila memang diisi — pesanan baru tanpa
+                // email tidak boleh menghapus alamat yang sudah tercatat.
+                if ($email !== null) {
+                    $customer->email = $email;
+                }
                 if ($customer->trashed()) {
                     $customer->deleted_at = null;
                 }
@@ -68,7 +135,10 @@ class BookingService
                 // Update customer stats
                 $customer->update([
                     'total_bookings' => $customer->bookings()->count(),
-                    'total_spent' => $customer->bookings()->whereIn('status', ['confirmed', 'completed'])->sum('totalPrice'),
+                    // Sum the frozen IDR figures, not totalPrice: bookings made
+                    // before the ringgit price list are stored in rupiah, so
+                    // adding raw totalPrice across both would be meaningless.
+                    'total_spent' => $customer->bookings()->whereIn('status', ['confirmed', 'completed'])->sum('totalPrice_idr'),
                     'last_booking_at' => now(),
                 ]);
 
@@ -104,7 +174,38 @@ class BookingService
     public function update(Booking $booking, array $data)
     {
         return DB::transaction(function () use ($booking, $data) {
-            return $this->repository->update($booking, $data);
+            // Admin mengoreksi totalPrice (ringgit). totalPrice_idr — yang dibaca
+            // laporan pendapatan & total_spent pelanggan — harus ikut diperbarui,
+            // TAPI dengan kurs BEKU booking ini (exchange_rate_idr), bukan kurs
+            // terkini, agar invoice & pendapatan bulan lalu tidak berubah surut.
+            if (array_key_exists('totalPrice', $data)) {
+                $rate = (float) ($booking->exchange_rate_idr ?? 0);
+                if (strtoupper((string) $booking->currency) === 'IDR') {
+                    // Pesanan lama pra-ringgit: totalPrice sudah dalam rupiah.
+                    $data['totalPrice_idr'] = (float) $data['totalPrice'];
+                } elseif ($rate > 0) {
+                    $data['totalPrice_idr'] = round((float) $data['totalPrice'] * $rate, 2);
+                } else {
+                    // Data lama tanpa kurs beku: jaring pengaman pakai kurs terkini.
+                    $data['totalPrice_idr'] = CurrencyHelper::toIdr((float) $data['totalPrice']);
+                }
+            }
+
+            $updated = $this->repository->update($booking, $data);
+
+            // Harga/status berubah → segarkan statistik pelanggan agar total_spent
+            // tetap cocok dengan jumlah totalPrice_idr pesanan confirmed/completed.
+            $customer = $updated->customer;
+            if ($customer) {
+                $customer->update([
+                    'total_bookings' => $customer->bookings()->count(),
+                    'total_spent' => $customer->bookings()
+                        ->whereIn('status', ['confirmed', 'completed'])
+                        ->sum('totalPrice_idr'),
+                ]);
+            }
+
+            return $updated;
         });
     }
 
@@ -141,8 +242,15 @@ class BookingService
         $pax = $data['metadata']['pax'] ?? 1;
         $paxChildren = $data['metadata']['paxChildren'] ?? 0;
         $selectedServices = $data['metadata']['selected_services'] ?? [];
+        $serviceQty = (array) ($data['metadata']['service_qty'] ?? []);
+        $pakaiVan = (bool) ($data['metadata']['use_van'] ?? false);
 
-        $taxPercentage = 11;
+        // Bawaan NOL, bukan 11. Memungut 11% adalah keputusan yang hanya boleh
+        // diambil sadar oleh pemilik -- memungut PPN tanpa berstatus PKP itu
+        // masalah hukum, dan angka 11 yang tertanam di kode berarti setiap
+        // pesanan sejak awal dipungut tanpa seorang pun pernah memilihnya.
+        // Kalau nanti sudah PKP, isi Pengaturan > Keuangan > Persentase Pajak.
+        $taxPercentage = 0;
         $surchargeWeekend = 0;
         $surchargePeak = 0;
         $peakStart = '';
@@ -150,7 +258,7 @@ class BookingService
 
         $setting = \App\Models\Setting::where('key', 'general')->first();
         if ($setting && isset($setting->value['finance'])) {
-            $taxPercentage = (float) ($setting->value['finance']['tax_percentage'] ?? 11);
+            $taxPercentage = (float) ($setting->value['finance']['tax_percentage'] ?? 0);
             $surchargeWeekend = (float) ($setting->value['finance']['surcharge_weekend'] ?? 0);
             $surchargePeak = (float) ($setting->value['finance']['surcharge_peak'] ?? 0);
             $peakStart = $setting->value['finance']['surcharge_peak_start'] ?? '';
@@ -163,54 +271,87 @@ class BookingService
             $costPerPerson = $package->cost_price ?? 0;
             $childPricePerPerson = $package->childPrice ?? ($pricePerPerson * 0.5);
 
-            // Check if there are pricing details for specific pax count
-            if ($package->pricingDetails && is_array($package->pricingDetails)) {
-                $tiers = $package->pricingDetails['tiers'] ?? [];
-                
-                // Find matching pax tier
-                $match = null;
-                foreach ($tiers as $detail) {
-                    if (isset($detail['min_pax']) && isset($detail['max_pax']) && $pax >= $detail['min_pax'] && $pax <= $detail['max_pax']) {
-                        $match = $detail;
-                        break;
-                    }
-                }
+            // Punya harga grosir? Maka harga datang dari tier, titik. Aturan
+            // pemilihannya hidup di satu tempat, Package::pricingTierFor(),
+            // supaya kalkulator di kartu paket tidak bisa memakai aturan lain.
+            //
+            // Dewasa dan anak dihitung TERPISAH: tier harga dewasa dipilih dari
+            // jumlah dewasa, tier harga anak dari jumlah anak. Menggabungkan
+            // keduanya jadi satu ambang membuat menambah anak justru bisa
+            // MENURUNKAN total tagihan -- rombongan yang lebih besar membayar
+            // lebih murah daripada rombongan yang lebih kecil, dan tamu yang
+            // membatalkan satu anak menerima harga yang naik.
+            $adultTier = $package->pricingTierFor($pax);
+            $childTier = $package->pricingTierFor($paxChildren);
 
-                if ($match) {
-                    $pricePerPerson = $match['price'] ?? $pricePerPerson;
-                    $childPricePerPerson = $match['child_price'] ?? $package->childPrice ?? ($pricePerPerson * 0.5);
-                } else {
-                    // If no match, check if pax exceeds max tier
-                    $maxTier = null;
-                    foreach ($tiers as $detail) {
-                        if (isset($detail['max_pax']) && (!$maxTier || $detail['max_pax'] > $maxTier['max_pax'])) {
-                            $maxTier = $detail;
-                        }
-                    }
-                    if ($maxTier && $pax > $maxTier['max_pax']) {
-                        $pricePerPerson = $maxTier['price'] ?? $pricePerPerson;
-                        $childPricePerPerson = $maxTier['child_price'] ?? $package->childPrice ?? ($pricePerPerson * 0.5);
-                    }
-                }
+            if ($adultTier !== null) {
+                $pricePerPerson = $adultTier['price'] ?? $pricePerPerson;
+            }
+            if ($childTier !== null) {
+                // Harga anak ikut tier juga. childPrice paket sengaja TIDAK
+                // dipakai di sini: mencampur harga anak dasar dengan harga
+                // dewasa tier membuat anak bisa lebih mahal daripada setengah
+                // harga dewasa yang benar-benar dibayar. Kolomnya wajib diisi
+                // di form admin; setengah harga dewasa tier-nya sendiri hanya
+                // jaring pengaman untuk baris tier lama yang terlanjur kosong.
+                $childPricePerPerson = $childTier['child_price']
+                    ?? (($childTier['price'] ?? $pricePerPerson) * 0.5);
+            }
+
+            // Van MENGGANTIKAN tarif per pax, tidak menambahnya. Ambangnya
+            // diperiksa ulang di sini, bukan dipercaya dari form: rombongan
+            // kecil yang mengirim use_van=1 tetap membayar tarif Innova.
+            $kendaraan = $package->vehicleOptionFor($pax);
+            // Dua keadaan yang berbeda, jangan disatukan:
+            //
+            // WAJIB (pax melewati kapasitas Innova) -- tarifnya SUDAH ada di
+            // tier 7+, karena band itu memang diisi tarif Van. Menimpanya lagi
+            // dengan tarif Van 6-pax justru menagih kelebihan: di paket
+            // transport, 8 pax jadi RM 565/org padahal band-nya RM 446.
+            //
+            // SUKARELA (rombongan masih muat Innova tapi minta Van demi bagasi)
+            // -- di sini tarif Van memang menggantikan tarif tier.
+            if ($pakaiVan && $kendaraan !== null && ! $kendaraan['wajib']) {
+                $pricePerPerson = $kendaraan['price'];
+                $childPricePerPerson = $pricePerPerson * 0.5;
             }
 
             $priceDewasa = $pricePerPerson * $pax;
             $priceAnak = $childPricePerPerson * $paxChildren;
             
             $additionalServicesPrice = 0;
-            $availableServices = $package->pricingDetails['additional_services'] ?? [
-                ['name' => 'Private Jet Charter', 'icon' => 'flight_takeoff', 'price' => 120000000],
-                ['name' => 'Pemandu Antropologi', 'icon' => 'person_pin', 'price' => 5500000]
-            ];
+            // No configured extras means no extras. The old placeholder here
+            // ("Private Jet Charter", 120000000) was a demo leftover that could
+            // be selected and billed.
+            $availableServices = $package->pricingDetails['additional_services'] ?? [];
             
             $detailedServices = [];
             foreach ($availableServices as $srv) {
                 if (in_array($srv['name'], $selectedServices)) {
-                    $srvPrice = $srv['price'] ?? 0;
+                    // Tarifnya PER PAX, dan jumlah pesertanya belum tentu
+                    // serombongan: Hiking Sibayak sering cuma sebagian yang naik.
+                    //
+                    // Angka dari form DIJEPIT ke jumlah tamu. Tanpa itu, satu
+                    // permintaan yang disusun tangan bisa mengirim qty raksasa
+                    // (menagih tamu kelewat mahal) atau nol (jasa ikut jalan
+                    // tanpa dibayar). Tidak ada qty sama sekali -> jatuh ke
+                    // seluruh rombongan, perilaku lama.
+                    $jiwa = $pax + $paxChildren;
+                    $diminta = $serviceQty[$srv['name']] ?? null;
+                    $qty = $diminta === null ? $jiwa : max(0, min((int) $diminta, $jiwa));
+
+                    if ($qty === 0) {
+                        continue;
+                    }
+
+                    $srvUnit = (float) ($srv['price'] ?? 0);
+                    $srvPrice = $srvUnit * $qty;
                     $additionalServicesPrice += $srvPrice;
                     $detailedServices[] = [
                         'name' => $srv['name'],
-                        'price' => $srvPrice
+                        'unit_price' => $srvUnit,
+                        'pax' => $qty,
+                        'price' => $srvPrice,
                     ];
                 }
             }
@@ -269,7 +410,9 @@ class BookingService
             }
 
             $totalDenganSurcharge = $totalSebelumPajak + $surchargeAmount;
-            $pajakLayanan = round($totalDenganSurcharge * ($taxPercentage / 100));
+            // 2 decimals: prices are in ringgit now, so rounding to whole units
+            // would discard sen on every booking.
+            $pajakLayanan = round($totalDenganSurcharge * ($taxPercentage / 100), 2);
             $totalAkhir = $totalDenganSurcharge + $pajakLayanan;
 
             $price = $totalAkhir;

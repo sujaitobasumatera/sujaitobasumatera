@@ -21,6 +21,7 @@ class Blog extends Model
 
     protected $fillable = [
         'slug', 'title', 'content', 'excerpt', 'image', 'cover_image_id', 'author', 'category', 'status', 'tags',
+        'published_at', 'metaTitle', 'metaDescription',
     ];
 
     protected $appends = ['image_url', 'translated_title', 'translated_excerpt', 'translated_category'];

@@ -24,7 +24,7 @@ class ReportService
             'bookings' => $bookings,
             'startDate' => $startDate ?? 'Awal',
             'endDate' => $endDate ?? 'Sekarang',
-            'totalRevenue' => $bookings->whereIn('status', ['confirmed', 'completed'])->sum('totalPrice'),
+            'totalRevenue' => $bookings->whereIn('status', ['confirmed', 'completed'])->sum('totalPrice_idr'),
             'totalBookings' => $bookings->count(),
             'generatedAt' => now()->format('d F Y H:i'),
         ];

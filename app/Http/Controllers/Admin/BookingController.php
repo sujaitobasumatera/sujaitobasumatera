@@ -101,8 +101,9 @@ class BookingController extends Controller
             'packageId' => 'nullable|exists:packages,id',
             'startDate' => 'required|date|after_or_equal:today',
             'endDate' => 'required|date|after_or_equal:startDate',
+            'pax' => 'required|integer|min:1|max:99',
             'customerName' => 'required|string|max:255',
-            'customerEmail' => 'required|email',
+            'customerEmail' => 'nullable|email',
             'customerPhone' => 'required|string',
             'notes' => 'nullable|string',
         ]);

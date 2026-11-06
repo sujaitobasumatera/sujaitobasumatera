@@ -65,6 +65,157 @@ class TourService
 
         $data['images'] = array_values(array_unique($currentImages));
 
+        // 5b. Video: baris tautan dari form + berkas unggahan digabung jadi
+        // satu daftar. Kuncinya `videos` hanya ditulis kalau formnya memang
+        // mengirim salah satunya -- kalau tidak, kolomnya jangan disentuh,
+        // supaya simpan dari form lain (mis. toggle status) tidak mengosongkan
+        // video yang sudah ada.
+        if (array_key_exists('video_links', $data) || isset($data['video_files']) || isset($data['remove_videos'])) {
+            $keep = [];
+            $remove = array_filter((array) ($data['remove_videos'] ?? []));
+
+            foreach ((array) ($package->videos ?? []) as $existing) {
+                if (! is_array($existing)) {
+                    continue;
+                }
+                $src = (string) ($existing['src'] ?? '');
+                if ($src === '' || in_array($src, $remove, true)) {
+                    // Berkas yang dibuang ikut dihapus dari disk; kalau tidak,
+                    // video 40 MB itu menghuni hosting selamanya tanpa rujukan.
+                    if ($src !== '' && ($existing['type'] ?? '') === 'file') {
+                        Storage::disk('public')->delete($src);
+                    }
+
+                    continue;
+                }
+                $keep[] = $existing;
+            }
+
+            // Baris tautan dikirim ulang utuh setiap simpan, jadi yang lama
+            // dibuang dan diganti isi form -- itu yang membuat tombol hapus
+            // pada baris tautan benar-benar menghapus.
+            $keep = array_values(array_filter($keep, fn ($v) => ($v['type'] ?? 'link') === 'file'));
+
+            foreach ((array) ($data['video_links'] ?? []) as $row) {
+                $src = trim((string) (is_array($row) ? ($row['src'] ?? '') : $row));
+                if ($src === '') {
+                    continue;
+                }
+                $keep[] = [
+                    'type' => 'link',
+                    'src' => $src,
+                    'title' => trim((string) (is_array($row) ? ($row['title'] ?? '') : '')),
+                    'gear' => trim((string) (is_array($row) ? ($row['gear'] ?? '') : '')),
+                ];
+            }
+
+            foreach ((array) ($data['video_files'] ?? []) as $file) {
+                if (! $file) {
+                    continue;
+                }
+                // Video TIDAK lewat uploadAndIndex: helper itu mengonversi ke
+                // WebP dan mengindeks ke pustaka gambar.
+                $path = $file->store('packages/videos', 'public');
+                if ($path) {
+                    $keep[] = ['type' => 'file', 'src' => $path, 'title' => $file->getClientOriginalName()];
+                }
+            }
+
+            $data['videos'] = array_values($keep);
+        }
+
+        // 5b-2. Penginapan per malam. Barisnya dikirim ulang utuh tiap simpan,
+        // foto lama dipertahankan lewat field tersembunyi kecuali ada unggahan
+        // baru di baris yang sama.
+        if (array_key_exists('accommodations', $data)) {
+            $rows = [];
+            $files = (array) ($data['accommodation_files'] ?? []);
+
+            foreach ((array) $data['accommodations'] as $i => $row) {
+                if (! is_array($row)) {
+                    continue;
+                }
+
+                $name = trim((string) ($row['name'] ?? ''));
+                if ($name === '') {
+                    continue;
+                }
+
+                $image = trim((string) ($row['image'] ?? ''));
+                if (! empty($files[$i])) {
+                    $baru = $this->uploadAndIndex($files[$i], 'packages', 'akomodasi', $name);
+                    if ($baru) {
+                        // Foto lama baris ini tidak lagi dirujuk siapa pun.
+                        if ($image !== '') {
+                            Storage::disk('public')->delete($image);
+                        }
+                        $image = $baru;
+                    }
+                }
+
+                $rows[] = [
+                    'night' => (int) ($row['night'] ?? 0) ?: count($rows) + 1,
+                    'name' => $name,
+                    'class' => trim((string) ($row['class'] ?? '')),
+                    'image' => $image,
+                ];
+            }
+
+            $data['accommodations'] = $rows;
+        }
+
+        // 5b-3. Pembeda khusus paket. Sama seperti penginapan: barisnya dikirim
+        // ulang utuh tiap simpan, jadi menghapus baris di form = menghapus
+        // poinnya. Baris tanpa judul dibuang di sini, bukan disaring saat
+        // render -- supaya yang tersimpan di database sudah bersih dan tidak
+        // ada pembaca lain yang perlu tahu aturannya.
+        if (array_key_exists('highlights', $data)) {
+            $rows = [];
+
+            foreach ((array) $data['highlights'] as $row) {
+                if (! is_array($row)) {
+                    continue;
+                }
+
+                $title = trim((string) ($row['title'] ?? ''));
+                if ($title === '') {
+                    continue;
+                }
+
+                $rows[] = [
+                    'title' => $title,
+                    'text' => trim((string) ($row['text'] ?? '')),
+                ];
+            }
+
+            $data['highlights'] = $rows;
+        }
+
+        // 5c. Brosur PDF -- satu berkas, unggahan baru menggantikan yang lama.
+        if (! empty($data['remove_brochure']) && $package->brochure) {
+            Storage::disk('public')->delete($package->brochure);
+            $data['brochure'] = null;
+        }
+        if (isset($data['brochure_file']) && $data['brochure_file']) {
+            if ($package->brochure) {
+                Storage::disk('public')->delete($package->brochure);
+            }
+            $data['brochure'] = $data['brochure_file']->store('packages/brochures', 'public');
+        }
+
+        // 5d. Gambar informasi harga -- pola sama dengan brosur di atas:
+        // satu berkas, unggahan baru menggantikan yang lama.
+        if (! empty($data['remove_price_image']) && $package->priceImage) {
+            Storage::disk('public')->delete($package->priceImage);
+            $data['priceImage'] = null;
+        }
+        if (isset($data['price_image_file']) && $data['price_image_file']) {
+            if ($package->priceImage) {
+                Storage::disk('public')->delete($package->priceImage);
+            }
+            $data['priceImage'] = $data['price_image_file']->store('packages/price-images', 'public');
+        }
+
         // 6. Save Package
         $package->fill($data);
         $package->save();
@@ -106,9 +257,11 @@ class TourService
     public function clearCache($slug = null)
     {
         Cache::forget('tour_packages_all');
+        Cache::forget('tour_packages_nav');
         Cache::forget('featured_packages');
         Cache::forget('tour_blogs_all');
         Cache::forget('tour_homepage_data');
+        Cache::forget('tour_gallery_all');
         Cache::forget('site_settings_structured_cms_tour_general');
 
         if ($slug) {
@@ -171,6 +324,10 @@ class TourService
 
     /**
      * Get all active tour packages with eager loaded images and city. Cached.
+     *
+     * locationTag ikut disertakan agar filter Alpine di /tour/packages bisa
+     * mencocokkan nama destinasi (mis. "Samosir", "Berastagi") yang tidak selalu
+     * muncul di nama paket — sebelumnya ketik "Samosir" bisa menghasilkan 0 hasil.
      */
     public function getAllPackages()
     {
@@ -179,6 +336,19 @@ class TourService
                 ->with(['packageImages', 'city', 'cities'])
                 ->orderBy('sortOrder')
                 ->get();
+        });
+    }
+
+    /**
+     * Slim package list for the navbar dropdown. Hanya kolom yang dirender menu,
+     * supaya murah dipanggil di setiap halaman.
+     */
+    public function getNavPackages()
+    {
+        return Cache::remember('tour_packages_nav', 600, function () {
+            return Package::where('status', 'active')
+                ->orderBy('sortOrder')
+                ->get(['id', 'slug', 'name', 'duration', 'translations']);
         });
     }
 
@@ -195,16 +365,20 @@ class TourService
      */
     public function getGallery()
     {
-        return GalleryImage::where('isActive', true)
-            ->with('imageMedia')
-            ->where(function ($query) {
-                $query->where('category', 'tour')
-                    ->orWhere('category', 'Tour')
-                    ->orWhereNull('category')
-                    ->orWhere('category', '');
-            })
-            ->orderBy('orderPriority')
-            ->get();
+        // Dulu dibatasi ke kategori 'tour'/'Tour'/kosong saja. Akibatnya foto
+        // berkategori Adventure, Culture, Waterfall, dan Wildlife — yang semuanya
+        // foto tour juga — tidak pernah tampil: separuh isi galeri hilang diam-diam.
+        // Sekaligus itu membuat chip filter di halaman galeri mustahil punya lebih
+        // dari satu pilihan, jadi filternya tampak rusak padahal kueri ini
+        // penyebabnya. Galeri publik = semua gambar yang admin tandai aktif.
+        // Di-cache seperti data tour lain; key 'tour_gallery_all' ikut dibersihkan
+        // clearCache() saat admin mengubah galeri (via Syncable → triggerSync).
+        return Cache::remember('tour_gallery_all', 600, function () {
+            return GalleryImage::where('isActive', true)
+                ->with('imageMedia')
+                ->orderBy('orderPriority')
+                ->get();
+        });
     }
 
     /**

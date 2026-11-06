@@ -4,7 +4,7 @@
 @section('page-title', 'Pendaftaran Pelanggan Manual')
 
 @section('content')
-<div class="w-full max-w-full space-y-10">
+<div class="w-full max-w-full space-y-6">
     <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
             <a href="{{ route('admin.customers.index') }}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 text-slate-400 hover:bg-slate-900 hover:text-white transition">
@@ -19,13 +19,13 @@
 
     <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-50 overflow-hidden">
         <div class="p-10 lg:p-16">
-            <form action="{{ route('admin.customers.store') }}" method="POST" class="space-y-12">
+            <form action="{{ route('admin.customers.store') }}" method="POST" class="space-y-6">
                 @csrf
                 
                 <!-- Section 1: Identity -->
                 <div class="space-y-8">
                     <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center">
+                        <div class="w-10 h-10 rounded-xl bg-green-100 text-green-700 flex items-center justify-center">
                             <i class="fas fa-user-tag text-xs"></i>
                         </div>
                         <h3 class="text-[11px] font-black uppercase tracking-widest text-slate-900">Identitas Pelanggan</h3>
@@ -54,7 +54,7 @@
                 </div>
 
                 <!-- Section 2: Additional Info -->
-                <div class="space-y-8 pt-12 border-t border-slate-50">
+                <div class="space-y-8 pt-6 border-t border-slate-50">
                     <div class="flex items-center gap-4">
                         <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center">
                             <i class="fas fa-location-dot text-xs"></i>
@@ -77,7 +77,7 @@
                     </div>
                 </div>
 
-                <div class="pt-12">
+                <div class="pt-6">
                     <button type="submit" class="w-full bg-slate-900 text-white py-6 rounded-3xl text-[12px] font-black uppercase tracking-[0.4em] hover:bg-slate-800 transition shadow-2xl shadow-slate-100 transform active:scale-[0.98]">
                         Daftarkan Pelanggan Baru
                     </button>

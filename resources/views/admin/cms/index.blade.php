@@ -17,12 +17,12 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('cmsLandingHandler', () => ({
         activeTab: 'branding',
-        brandName: @json($settings['brand_name'] ?? 'Sujai Laketoba'),
+        brandName: @json($settings['brand_name'] ?? 'Sujai Toba Sumatera'),
         brandTagline: @json($settings['brand_tagline'] ?? 'SUMATERA UTARA'),
         brandIcon: @json($resolve($settings['brand_icon_url'] ?? '', 'https://ui-avatars.com/api/?name=W&background=0f172a&color=fff')),
         brandLogo: @json($resolve($settings['brand_logo_url'] ?? '')),
-        metaTitle: @json($settings['meta_title'] ?? 'Sujai Laketoba | Premium Tour Travel'),
-        metaDescription: @json($settings['meta_description'] ?? 'Portal utama Sujai Laketoba. Pilih layanan premium Tour Travel Sumatera Utara.'),
+        metaTitle: @json($settings['meta_title'] ?? 'Sujai Toba Sumatera | Premium Tour Travel'),
+        metaDescription: @json($settings['meta_description'] ?? 'Portal utama Sujai Toba Sumatera. Pilih layanan premium Tour Travel Sumatera Utara.'),
         tourTitle: @json($settings['tour_title'] ?? "Tour &\nTravel."),
         tourSubtitle: @json($settings['tour_subtitle'] ?? 'Eksplorasi keindahan Danau Toba dengan paket liburan eksklusif.'),
         tourImage: @json($resolve($settings['tour_image_url'] ?? '', 'tour')),
@@ -61,7 +61,7 @@ document.addEventListener('alpine:init', () => {
         <div class="bg-white p-2 rounded-[2rem] shadow-sm border border-slate-100 flex items-center space-x-1">
             <button @click="activeTab = 'branding'" :class="activeTab === 'branding' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition">Brand</button>
             <button @click="activeTab = 'tour'" :class="activeTab === 'tour' ? 'bg-toba-green text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition">Tour</button>
-            <button @click="activeTab = 'seo'" :class="activeTab === 'seo' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition">SEO</button>
+            <button @click="activeTab = 'seo'" :class="activeTab === 'seo' ? 'bg-green-800 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" class="flex-1 py-3 rounded-[1.2rem] font-black text-[8px] uppercase tracking-widest transition">SEO</button>
         </div>
 
         <form action="{{ route('admin.cms.save', 'cms_landing') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
@@ -104,7 +104,7 @@ document.addEventListener('alpine:init', () => {
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Background Image</label>
                             
                             <div class="grid grid-cols-1 gap-4">
-                                <div @click="openCMSMediaPicker('tour')" class="h-20 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center bg-white hover:border-toba-green hover:bg-emerald-50 transition group cursor-pointer">
+                                <div @click="openCMSMediaPicker('tour')" class="h-20 border-2 border-slate-200 rounded-2xl flex flex-col items-center justify-center bg-white hover:border-toba-green hover:bg-green-50 transition group cursor-pointer">
                                     <i class="fas fa-images text-lg text-slate-300 group-hover:text-toba-green mb-1"></i>
                                     <span class="text-[8px] font-black text-slate-400 uppercase group-hover:text-toba-green">Pilih dari Media Library</span>
                                 </div>
@@ -120,17 +120,17 @@ document.addEventListener('alpine:init', () => {
 
                 <!-- SEO Tab -->
                 <div x-show="activeTab === 'seo'" x-transition class="space-y-6">
-                    <h4 class="text-sm font-black text-indigo-600 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-indigo-600"></span> SEO & Meta Tags
+                    <h4 class="text-sm font-black text-green-800 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-green-800"></span> SEO & Meta Tags
                     </h4>
                     <div class="space-y-4">
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Meta Title (Browser Tab)</label>
-                            <input type="text" name="meta_title" x-model="metaTitle" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-600 font-bold text-slate-900 text-sm">
+                            <input type="text" name="meta_title" x-model="metaTitle" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-green-800 font-bold text-slate-900 text-sm">
                         </div>
                         <div class="space-y-2">
                             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Meta Description</label>
-                            <textarea name="meta_description" x-model="metaDescription" rows="5" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-600 font-medium text-slate-600 text-xs leading-relaxed"></textarea>
+                            <textarea name="meta_description" x-model="metaDescription" rows="5" class="w-full px-5 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-green-800 font-medium text-slate-600 text-xs leading-relaxed"></textarea>
                         </div>
                     </div>
                 </div>
@@ -153,7 +153,7 @@ document.addEventListener('alpine:init', () => {
                 <div class="absolute inset-0 bg-gradient-to-b from-black/20 to-black/80"></div>
                 
                 <div class="absolute inset-0 flex flex-col justify-end items-center p-8 md:p-12 text-center z-10">
-                    <span class="inline-block px-3 py-1 bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 text-emerald-400 text-[8px] font-black uppercase tracking-widest rounded-full mb-4 w-fit">Premium Travel</span>
+                    <span class="inline-block px-3 py-1 bg-green-500/10 backdrop-blur-md border border-green-500/20 text-green-400 text-[8px] font-black uppercase tracking-widest rounded-full mb-4 w-fit">Premium Travel</span>
                     <h2 class="text-4xl md:text-6xl font-black text-white leading-[0.85] tracking-tighter whitespace-pre-line mb-6" x-text="tourTitle"></h2>
                     <p class="text-slate-200 text-xs font-medium max-w-[400px] leading-relaxed opacity-80" x-text="tourSubtitle"></p>
                 </div>
@@ -167,7 +167,7 @@ document.addEventListener('alpine:init', () => {
             </template>
             <template x-if="!brandLogo">
                 <div class="flex flex-col items-center">
-                    <div class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-2xl mb-3">W</div>
+                    <div class="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-2xl mb-3">W</div>
                     <h1 class="text-white font-black text-xs tracking-[0.2em] uppercase" x-text="brandName"></h1>
                 </div>
             </template>
@@ -175,7 +175,7 @@ document.addEventListener('alpine:init', () => {
 
         <!-- Overlay Status -->
         <div class="absolute top-6 left-6 z-50 flex items-center gap-3">
-            <div class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 text-white text-[8px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-emerald-500/20">
+            <div class="flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white text-[8px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-green-500/20">
                 <span class="w-1 h-1 rounded-full bg-white animate-pulse"></span> Live Sync
             </div>
             <div class="px-3 py-1.5 bg-white/10 backdrop-blur-md border border-white/10 text-white text-[8px] font-black uppercase tracking-widest rounded-lg">Landing Preview</div>

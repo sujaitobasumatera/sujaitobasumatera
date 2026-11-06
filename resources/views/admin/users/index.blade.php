@@ -58,7 +58,7 @@
         </div>
         <div class="flex items-center gap-3 w-full sm:w-auto">
             <a href="{{ route('admin.users.export', request()->all()) }}" class="flex-1 sm:flex-none bg-white border border-slate-200 text-slate-600 px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition text-center">
-                <i class="fas fa-file-excel mr-2 text-emerald-500"></i> Export Excel
+                <i class="fas fa-file-excel mr-2 text-green-500"></i> Export Excel
             </a>
             <a href="{{ route('admin.users.create') }}" class="flex-1 sm:flex-none inline-flex items-center justify-center bg-slate-900 text-white px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition shadow-xl shadow-slate-100">
                 <i class="fas fa-plus mr-2 text-xs"></i> New User
@@ -129,7 +129,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @forelse($users as $user)
-                        <tr class="group hover:bg-gray-50/50 transition" :class="selected.includes({{ $user->id }}) ? 'bg-indigo-50/50' : ''">
+                        <tr class="group hover:bg-gray-50/50 transition" :class="selected.includes({{ $user->id }}) ? 'bg-green-100/50' : ''">
                             <td class="pl-8 py-4">
                                 <input type="checkbox" 
                                     value="{{ $user->id }}" 
@@ -138,7 +138,9 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-{{ $user->role === 'superadmin' ? 'indigo-600 to-violet-700' : ($user->role === 'admin' ? 'orange-500 to-red-600' : 'blue-500 to-purple-600') }} rounded-2xl flex items-center justify-center text-white font-black text-xs mr-3 shadow-sm">
+                                    {{-- Kelas ditulis utuh, bukan dirakit lewat interpolasi: Tailwind memindai
+                                         teks sumber, jadi 'from-' + variabel tidak pernah terdeteksi. --}}
+                                    <div class="w-10 h-10 bg-gradient-to-br {{ $user->role === 'superadmin' ? 'from-toba-green to-primary' : ($user->role === 'admin' ? 'from-toba-orange to-toba-orange-dark' : 'from-slate-500 to-slate-700') }} rounded-2xl flex items-center justify-center text-white font-black text-xs mr-3 shadow-sm">
                                         {{ strtoupper(substr($user->name, 0, 1)) }}
                                     </div>
                                     <div class="min-w-0">
@@ -163,7 +165,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="inline-flex items-center px-3 py-1 rounded-xl text-[8px] font-black uppercase tracking-widest
-                                    {{ $user->role === 'superadmin' ? 'bg-indigo-50 text-indigo-700' : ($user->role === 'admin_tour' ? 'bg-orange-50 text-orange-700' : 'bg-blue-50 text-blue-700') }}">
+                                    {{ $user->role === 'superadmin' ? 'bg-green-100 text-green-900' : ($user->role === 'admin_tour' ? 'bg-orange-50 text-orange-700' : 'bg-blue-50 text-blue-700') }}">
                                     <i class="fas fa-{{ $user->role === 'superadmin' ? 'crown' : ($user->role === 'admin_tour' ? 'user-shield' : 'user') }} mr-1.5"></i>
                                     {{ str_replace('_', ' ', $user->role) }}
                                 </span>
@@ -193,7 +195,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-16 text-center">
+                            <td colspan="6" class="px-6 py-8 text-center">
                                 <div class="flex flex-col items-center justify-center text-gray-400">
                                     <i class="fas fa-users text-5xl mb-4"></i>
                                     <p class="text-sm font-black uppercase tracking-widest">No users found</p>
@@ -225,7 +227,7 @@
          x-cloak>
         <div class="bg-slate-900 text-white rounded-[2.5rem] p-5 shadow-2xl flex items-center justify-between border border-white/10 backdrop-blur-xl bg-opacity-90">
             <div class="flex items-center gap-4 pl-4">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-500 flex items-center justify-center text-white text-sm font-black shadow-lg">
+                <div class="w-10 h-10 rounded-2xl bg-green-700 flex items-center justify-center text-white text-sm font-black shadow-lg">
                     <span x-text="selected.length"></span>
                 </div>
                 <div>

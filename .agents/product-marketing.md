@@ -1,7 +1,7 @@
-# Product Marketing Context: Sujai Laketoba
+# Product Marketing Context: Sujai Toba Sumatera
 
 ## 1. The Product/Service
-Sujai Laketoba is a premium tour and travel agency specializing in tailored, hassle-free vacations to Lake Toba and the surrounding North Sumatra region (e.g., Samosir, Berastagi, Sipiso-piso). 
+Sujai Toba Sumatera is a premium tour and travel agency specializing in tailored, hassle-free vacations to Lake Toba and the surrounding North Sumatra region (e.g., Samosir, Berastagi, Sipiso-piso). 
 We provide an all-in-one "peace of mind" experience: curated itineraries, comfortable private transportation (Innova, Alphard, etc.), selected local accommodations, and experienced local guides.
 
 ## 2. Target Audience (Ideal Customer Profile)
@@ -33,6 +33,5 @@ We handle the logistics so the customer can focus entirely on enjoying the natur
 - Homepage (`/`)
 - Tour Packages (`/tour/packages`)
 - Package Detail (`/tour/package/{slug}`)
-- Car Rental (`/sewa-mobil`)
 - About Us (`/about`)
 - Gallery (`/tour/gallery`)

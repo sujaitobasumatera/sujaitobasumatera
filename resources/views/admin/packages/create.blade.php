@@ -63,6 +63,8 @@
                 @error('package_images') <p class="text-red-500 text-xs mt-2 font-bold">{{ $message }}</p> @enderror
                 @error('media_ids') <p class="text-red-500 text-xs mt-2 font-bold">{{ $message }}</p> @enderror
 
+                @include('admin.packages._media-fields', ['package' => null])
+
                 <!-- Short Description -->
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">Short Description</label>
@@ -97,8 +99,8 @@
                                         <span x-text="index + 1"></span>
                                     </div>
                                     <input type="text" :name="'itinerary['+index+'][title]'" x-model="item.title" placeholder="Judul Hari (misal: Penjemputan & City Tour)"
-                                        class="flex-1 px-4 py-2 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-toba-green/20 font-bold text-sm">
-                                    <button type="button" @click="removeDay(index)" class="text-gray-300 hover:text-red-500 transition px-2">
+                                        class="flex-1 min-w-0 px-4 py-2 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-toba-green/20 font-bold text-sm">
+                                    <button type="button" @click="removeDay(index)" class="shrink-0 text-gray-300 hover:text-red-500 transition p-3">
                                         <i class="fas fa-trash-alt text-sm"></i>
                                     </button>
                                 </div>
@@ -136,8 +138,8 @@
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Price (Adult) *</label>
                         <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">Rp</span>
-                            <input type="number" name="price" value="{{ old('price') }}" required min="0" step="1000"
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">RM</span>
+                            <input type="number" name="price" value="{{ old('price') }}" required min="0" step="0.01"
                                 class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-toba-green focus:border-transparent transition @error('price') border-red-500 @enderror">
                         </div>
                         @error('price')
@@ -148,8 +150,8 @@
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2">Price (Child)</label>
                         <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">Rp</span>
-                            <input type="number" name="childPrice" value="{{ old('childPrice') }}" min="0" step="1000"
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">RM</span>
+                            <input type="number" name="childPrice" value="{{ old('childPrice') }}" min="0" step="0.01"
                                 class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-toba-green focus:border-transparent transition">
                         </div>
                     </div>
@@ -157,7 +159,7 @@
 
                 <!-- PENGATURAN LANJUTAN (ACCORDION) -->
                 <div x-data="{ advancedOpen: false }" class="bg-gray-50 rounded-2xl border border-gray-200 mt-8">
-                    <button type="button" @click="advancedOpen = !advancedOpen" class="w-full px-6 py-4 flex items-center justify-between focus:outline-none">
+                    <button type="button" @click="advancedOpen = !advancedOpen" class="w-full px-6 py-4 flex items-center justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-toba-green focus-visible:ring-offset-2">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-lg bg-gray-200 text-gray-600 flex items-center justify-center font-black">
                                 <i class="fas fa-sliders-h"></i>
@@ -178,31 +180,56 @@
                                 <input type="number" name="cost_price" value="{{ old('cost_price') }}" min="0" step="1000"
                                     class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition" placeholder="Opsional">
                             </div>
-                            <p class="mt-1 text-[10px] text-gray-400 font-bold uppercase tracking-widest">Digunakan untuk menghitung laba bersih</p>
+                            <p class="mt-1 text-[10px] text-gray-400 font-bold uppercase tracking-widest">Dicatat dalam Rupiah (dibayar ke vendor lokal), berbeda dari harga jual yang dalam Ringgit</p>
                         </div>
 
                 <!-- Layanan Tambahan (Additional Services) - DYNAMIC CRUD -->
-                <div class="bg-indigo-50/50 rounded-2xl p-6 border border-indigo-100 space-y-4">
+                <div class="bg-green-100/50 rounded-2xl p-6 border border-green-200 space-y-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-sm font-black text-indigo-950 flex items-center gap-2">
-                                <i class="fas fa-hand-holding-usd text-indigo-600"></i> Layanan Tambahan (Additional Services)
+                            <h3 class="text-sm font-black text-green-950 flex items-center gap-2">
+                                <i class="fas fa-hand-holding-usd text-green-800"></i> Layanan Tambahan (Additional Services)
                             </h3>
-                            <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1">Kelola opsi layanan berbayar tambahan untuk paket ini</p>
+                            <p class="text-[10px] font-bold text-green-700 uppercase tracking-widest mt-1">Kelola opsi layanan berbayar tambahan untuk paket ini</p>
                         </div>
-                        <button type="button" @click="addAdditionalService()" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-indigo-700 transition shadow-sm">
+                        <button type="button" @click="addAdditionalService()" class="bg-green-800 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-green-900 transition shadow-sm">
                             <i class="fas fa-plus mr-1"></i> Tambah Layanan
                         </button>
                     </div>
 
+                    {{-- Kendaraan besar: tarif PENGGANTI per pax, bukan biaya
+                         tambahan. Sengaja di luar daftar layanan, sama seperti
+                         di form edit. --}}
+                    <div class="mb-4 p-4 bg-white border border-green-200 rounded-xl">
+                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase tracking-widest">Pilihan Kendaraan Besar (tarif pengganti)</label>
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1">
+                                <label class="block text-[10px] font-bold text-gray-500 mb-1">Nama Kendaraan</label>
+                                <input type="text" name="pricingDetails[vehicle][name]" x-model="vehicle.name" placeholder="Van Toyota Hiace"
+                                    class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-green-400">
+                            </div>
+                            <div class="md:w-32">
+                                <label class="block text-[10px] font-bold text-gray-500 mb-1">Mulai Dari (pax)</label>
+                                <input type="number" min="1" name="pricingDetails[vehicle][min_pax]" x-model.number="vehicle.min_pax" placeholder="6"
+                                    class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-green-400">
+                            </div>
+                            <div class="md:w-40">
+                                <label class="block text-[10px] font-bold text-gray-500 mb-1">Tarif (RM/pax)</label>
+                                <input type="number" min="0" step="0.01" name="pricingDetails[vehicle][price]" x-model.number="vehicle.price" placeholder="700.00"
+                                    class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-green-400">
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-gray-400 mt-2 italic">* Tamu baru melihat pilihan ini setelah jumlah dewasa mencapai ambang di atas. Kalau dipilih, seluruh tarif per orang memakai angka ini — tarif grosir di atas diabaikan. Kosongkan tarifnya bila paket ini tidak menawarkan kendaraan besar.</p>
+                    </div>
+
                     <div class="space-y-3">
                         <template x-for="(service, index) in additionalServices" :key="index">
-                            <div class="flex flex-col md:flex-row gap-4 p-4 bg-white border border-indigo-100 rounded-xl relative group animate-in fade-in duration-200">
+                            <div class="flex flex-col md:flex-row gap-4 p-4 bg-white border border-green-200 rounded-xl relative group animate-in fade-in duration-200">
                                 <!-- Nama Layanan -->
                                 <div class="flex-1">
                                     <label class="block text-[10px] font-bold text-gray-500 mb-1">Nama Layanan</label>
                                     <input type="text" :name="'pricingDetails[additional_services]['+index+'][name]'" x-model="service.name" placeholder="misal: Private Jet Charter" required
-                                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-indigo-300">
+                                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-green-400">
                                 </div>
                                 
                                 <!-- Icon -->
@@ -210,18 +237,18 @@
                                     <label class="block text-[10px] font-bold text-gray-500 mb-1">Material Icon Name</label>
                                     <div class="relative">
                                         <input type="text" :name="'pricingDetails[additional_services]['+index+'][icon]'" x-model="service.icon" placeholder="misal: flight_takeoff" required
-                                            class="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-indigo-300">
+                                            class="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-green-400">
                                         <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-500 text-sm" x-text="service.icon || 'help'"></span>
                                     </div>
                                 </div>
 
                                 <!-- Harga -->
                                 <div class="w-full md:w-56">
-                                    <label class="block text-[10px] font-bold text-gray-500 mb-1">Harga (Rp)</label>
+                                    <label class="block text-[10px] font-bold text-gray-500 mb-1">Harga (RM)</label>
                                     <div class="relative">
-                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-bold">Rp</span>
-                                        <input type="number" :name="'pricingDetails[additional_services]['+index+'][price]'" x-model.number="service.price" placeholder="120000000" required min="0" step="1000"
-                                            class="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-indigo-300">
+                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-bold">RM</span>
+                                        <input type="number" :name="'pricingDetails[additional_services]['+index+'][price]'" x-model.number="service.price" placeholder="350.00" required min="0" step="0.01"
+                                            class="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-green-400">
                                     </div>
                                 </div>
 
@@ -234,7 +261,7 @@
                             </div>
                         </template>
 
-                        <div x-show="additionalServices.length === 0" class="text-center py-6 text-indigo-400 text-xs font-bold uppercase tracking-widest bg-white border-2 border-dashed border-indigo-100 rounded-2xl">
+                        <div x-show="additionalServices.length === 0" class="text-center py-6 text-green-600 text-xs font-bold uppercase tracking-widest bg-white border-2 border-dashed border-green-200 rounded-2xl">
                             Belum ada layanan tambahan aktif
                         </div>
                     </div>
@@ -244,9 +271,9 @@
                         <div class="flex items-center justify-between mb-4">
                             <div>
                                 <h4 class="text-sm font-black text-gray-900">Harga Grosir (Tiered Pricing)</h4>
-                                <p class="text-xs text-gray-500 mt-1">Atur harga berbeda berdasarkan jumlah orang (misal 1-9 pax = Rp 5jt, 10-15 pax = Rp 4.5jt)</p>
+                                <p class="text-xs text-gray-500 mt-1">Atur harga berbeda berdasarkan jumlah orang (misal 1-9 pax = RM 350, 10-15 pax = RM 320)</p>
                             </div>
-                            <button type="button" @click="addTier()" class="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-100 transition shadow-sm border border-indigo-100">
+                            <button type="button" @click="addTier()" class="px-4 py-2 bg-green-100 text-green-800 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-green-200 transition shadow-sm border border-green-200">
                                 <i class="fas fa-plus mr-1"></i> Add Tier
                             </button>
                         </div>
@@ -257,32 +284,32 @@
                                 <div class="flex-1 md:w-32">
                                     <label class="block text-[10px] font-bold text-gray-500 mb-1">Min Orang</label>
                                     <input type="number" :name="'pricingDetails[tiers]['+index+'][min_pax]'" x-model.number="tier.min_pax" required min="1"
-                                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-indigo-300">
+                                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-green-400">
                                 </div>
                                 
                                 <!-- Max Pax -->
                                 <div class="flex-1 md:w-32">
                                     <label class="block text-[10px] font-bold text-gray-500 mb-1">Max Orang</label>
                                     <input type="number" :name="'pricingDetails[tiers]['+index+'][max_pax]'" x-model.number="tier.max_pax" required min="1"
-                                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-indigo-300">
+                                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-green-400">
                                 </div>
 
                                 <!-- Harga Dewasa & Anak -->
-                                <div class="flex-1 flex gap-4">
+                                <div class="flex-1 flex flex-col sm:flex-row gap-4">
                                     <div class="w-full md:flex-1 md:min-w-[140px]">
-                                        <label class="block text-[10px] font-bold text-gray-500 mb-1">Harga Dewasa (Rp)</label>
+                                        <label class="block text-[10px] font-bold text-gray-500 mb-1">Harga Dewasa (RM)</label>
                                         <div class="relative">
-                                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-bold">Rp</span>
-                                            <input type="number" :name="'pricingDetails[tiers]['+index+'][price]'" x-model.number="tier.price" required min="0" step="1000"
-                                                class="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-indigo-300">
+                                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-bold">RM</span>
+                                            <input type="number" :name="'pricingDetails[tiers]['+index+'][price]'" x-model.number="tier.price" required min="0" step="0.01"
+                                                class="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-green-400">
                                         </div>
                                     </div>
                                     <div class="w-full md:flex-1 md:min-w-[140px]">
-                                        <label class="block text-[10px] font-bold text-gray-500 mb-1">Harga Anak (Rp)</label>
+                                        <label class="block text-[10px] font-bold text-gray-500 mb-1">Harga Anak (RM)</label>
                                         <div class="relative">
-                                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-bold">Rp</span>
-                                            <input type="number" :name="'pricingDetails[tiers]['+index+'][child_price]'" x-model.number="tier.child_price" min="0" step="1000" placeholder="Kosongkan jika default"
-                                                class="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-indigo-300">
+                                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-bold">RM</span>
+                                            <input type="number" :name="'pricingDetails[tiers]['+index+'][child_price]'" x-model.number="tier.child_price" required min="0" step="0.01" placeholder="0 jika anak gratis"
+                                                class="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-green-400">
                                         </div>
                                     </div>
                                 </div>
@@ -296,7 +323,7 @@
                             </div>
                         </template>
 
-                        <div x-show="tiers.length === 0" class="text-center py-6 text-indigo-400 text-xs font-bold uppercase tracking-widest bg-white border-2 border-dashed border-indigo-100 rounded-2xl">
+                        <div x-show="tiers.length === 0" class="text-center py-6 text-green-600 text-xs font-bold uppercase tracking-widest bg-white border-2 border-dashed border-green-200 rounded-2xl">
                             Belum ada pengaturan harga grosir
                         </div>
                     </div>
@@ -305,13 +332,13 @@
                 <!-- Dynamic Includes & Excludes Editor -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Includes -->
-                    <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+                    <div class="bg-green-50 rounded-2xl p-5 border border-green-100">
                         <div class="flex items-center justify-between mb-4">
                             <div>
-                                <h3 class="text-sm font-black text-emerald-900">✅ Yang Termasuk</h3>
-                                <p class="text-[9px] font-bold text-emerald-600 uppercase tracking-widest mt-0.5">Fasilitas yang didapat</p>
+                                <h3 class="text-sm font-black text-green-900">✅ Yang Termasuk</h3>
+                                <p class="text-[9px] font-bold text-green-600 uppercase tracking-widest mt-0.5">Fasilitas yang didapat</p>
                             </div>
-                            <button type="button" @click="addInclude()" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-emerald-700 transition">
+                            <button type="button" @click="addInclude()" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-green-700 transition">
                                 <i class="fas fa-plus mr-1"></i> Tambah
                             </button>
                         </div>
@@ -319,13 +346,13 @@
                             <template x-for="(item, index) in includes" :key="'inc'+index">
                                 <div class="flex items-center gap-2">
                                     <input type="text" :name="'includes['+index+']'" x-model="includes[index]" placeholder="contoh: Tiket Masuk"
-                                        class="flex-1 px-3 py-2 bg-white border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-emerald-300">
-                                    <button type="button" @click="includes.splice(index, 1)" class="text-emerald-300 hover:text-red-500 transition">
+                                        class="flex-1 px-3 py-2 bg-white border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-green-300">
+                                    <button type="button" @click="includes.splice(index, 1)" class="text-green-300 hover:text-red-500 transition">
                                         <i class="fas fa-times text-xs"></i>
                                     </button>
                                 </div>
                             </template>
-                            <div x-show="includes.length === 0" class="text-center py-4 text-emerald-400 text-[10px] font-bold uppercase tracking-widest">Belum ada item</div>
+                            <div x-show="includes.length === 0" class="text-center py-4 text-green-400 text-[10px] font-bold uppercase tracking-widest">Belum ada item</div>
                         </div>
                     </div>
 
@@ -378,8 +405,8 @@
             </div> <!-- End of Advanced Settings -->
 
                 <!-- Submit Buttons -->
-                <div class="flex items-center gap-4 pt-6 border-t border-gray-200">
-                    <button type="submit" class="inline-flex items-center justify-center bg-gradient-to-r from-toba-green to-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-toba-green/30 transition shadow-md">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4 pt-6 border-t border-gray-200">
+                    <button type="submit" class="inline-flex items-center justify-center bg-gradient-to-r from-toba-green to-green-600 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-toba-green/30 transition shadow-md">
                         <i class="fas fa-save mr-2"></i> Create Package
                     </button>
                     <a href="{{ route('admin.packages.index') }}" class="inline-flex items-center justify-center bg-gray-100 text-gray-700 px-8 py-3 rounded-xl font-bold hover:bg-gray-200 transition">
@@ -411,10 +438,10 @@
             includes: [],
             excludes: [],
             additionalServices: [
-                { name: 'Private Jet Charter', icon: 'flight_takeoff', price: 120000000 },
-                { name: 'Pemandu Antropologi', icon: 'person_pin', price: 5500000 }
+                { name: 'Private Jet Charter', icon: 'flight_takeoff', price: 0 }
             ],
             tiers: [],
+            vehicle: { name: '', min_pax: 6, price: null },
             localFiles: [],
             localPreviews: [],
 

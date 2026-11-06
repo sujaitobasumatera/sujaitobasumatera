@@ -13,7 +13,7 @@
         return asset('storage/' . $clean);
     };
 @endphp
-<div class="space-y-12 pb-32">
+<div class="space-y-6 pb-14">
     <!-- Header -->
     <div class="flex flex-col gap-2">
         <h1 class="text-3xl font-black text-slate-900 tracking-tight">Halaman Statis</h1>
@@ -50,7 +50,7 @@ document.addEventListener('alpine:init', () => {
     <div x-cloak x-data="cmsPagesHandler()" class="bg-white rounded-[2.5rem] p-10 border border-slate-50 shadow-sm">
         <form action="{{ route('admin.cms.save', 'page_about') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <div class="flex items-center justify-between mb-10">
+            <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-2xl bg-toba-green flex items-center justify-center text-white shadow-lg">
                         <i class="fas fa-info-circle text-sm"></i>
@@ -67,11 +67,11 @@ document.addEventListener('alpine:init', () => {
                 <div class="space-y-6">
                     <div class="space-y-3">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Judul Utama</label>
-                        <input type="text" name="title" value="{{ $about['title'] ?? 'Mengenal Lebih Dekat Sujai Laketoba' }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-sm">
+                        <input type="text" name="title" value="{{ $about['title'] ?? 'Mengenal Lebih Dekat Sujai Toba Sumatera' }}" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-sm">
                     </div>
                     <div class="space-y-3">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Deskripsi Singkat</label>
-                        <textarea name="description" rows="4" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-sm">{{ $about['description'] ?? 'Berawal dari kecintaan terhadap keindahan alam Sumatera Utara, Sujai Laketoba hadir untuk memberikan pengalaman perjalanan yang tak terlupakan bagi setiap wisatawan.' }}</textarea>
+                        <textarea name="description" rows="4" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-sm">{{ $about['description'] ?? 'Berawal dari kecintaan terhadap keindahan alam Sumatera Utara, Sujai Toba Sumatera hadir untuk memberikan pengalaman perjalanan yang tak terlupakan bagi setiap wisatawan.' }}</textarea>
                     </div>
                     <div class="bg-slate-50 rounded-2xl p-6 space-y-4">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">📊 Statistik Pencapaian</p>
@@ -113,7 +113,7 @@ document.addEventListener('alpine:init', () => {
                         <div class="bg-slate-50 rounded-2xl p-6 space-y-3">
                             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">💬 Testimoni / Kutipan</p>
                             <textarea name="testimonial_quote" rows="2" placeholder="Isi kutipan testimoni..." class="w-full px-4 py-2 bg-white border-none rounded-xl font-bold text-[11px] leading-tight">{{ $about['testimonial_quote'] ?? 'Layanan terbaik, armada baru, dan guide yang sangat informatif.' }}</textarea>
-                            <input type="text" name="testimonial_name" value="{{ $about['testimonial_name'] ?? 'Pelanggan Setia Sujai Laketoba' }}" placeholder="Nama pelanggan..." class="w-full px-4 py-2 bg-white border-none rounded-xl font-bold text-[11px]">
+                            <input type="text" name="testimonial_name" value="{{ $about['testimonial_name'] ?? 'Pelanggan Setia Sujai Toba Sumatera' }}" placeholder="Nama pelanggan..." class="w-full px-4 py-2 bg-white border-none rounded-xl font-bold text-[11px]">
                         </div>
                     </div>
                 </div>
@@ -135,7 +135,7 @@ document.addEventListener('alpine:init', () => {
     <div class="bg-white rounded-[2.5rem] p-10 border border-slate-50 shadow-sm">
         <form action="{{ route('admin.cms.save', 'page_terms') }}" method="POST">
             @csrf
-            <div class="flex items-center justify-between mb-10">
+            <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center text-white shadow-lg">
                         <i class="fas fa-file-contract text-sm"></i>
@@ -150,7 +150,7 @@ document.addEventListener('alpine:init', () => {
 
             <div class="space-y-3">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Konten Halaman (HTML didukung)</label>
-                <textarea name="content" rows="15" class="w-full px-8 py-6 bg-slate-50 border-none rounded-[2rem] font-medium text-sm leading-relaxed">{{ $terms['content'] ?? "<h3>1. Ketentuan Umum</h3><p>Seluruh layanan yang disediakan oleh Sujai Laketoba tunduk pada syarat dan ketentuan yang berlaku...</p>" }}</textarea>
+                <textarea name="content" rows="15" class="w-full px-8 py-6 bg-slate-50 border-none rounded-[2rem] font-medium text-sm leading-relaxed">{{ $terms['content'] ?? "<h3>1. Ketentuan Umum</h3><p>Seluruh layanan yang disediakan oleh Sujai Toba Sumatera tunduk pada syarat dan ketentuan yang berlaku...</p>" }}</textarea>
             </div>
         </form>
     </div>
@@ -159,9 +159,9 @@ document.addEventListener('alpine:init', () => {
     <div class="bg-white rounded-[2.5rem] p-10 border border-slate-50 shadow-sm">
         <form action="{{ route('admin.cms.save', 'page_privacy') }}" method="POST">
             @csrf
-            <div class="flex items-center justify-between mb-10">
+            <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white shadow-lg">
+                    <div class="w-12 h-12 rounded-2xl bg-green-700 flex items-center justify-center text-white shadow-lg">
                         <i class="fas fa-shield-halved text-sm"></i>
                     </div>
                     <div>
@@ -169,7 +169,7 @@ document.addEventListener('alpine:init', () => {
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Perlindungan Data Pelanggan</p>
                     </div>
                 </div>
-                <button type="submit" class="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition">Simpan Perubahan</button>
+                <button type="submit" class="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-green-800 transition">Simpan Perubahan</button>
             </div>
 
             <div class="space-y-3">

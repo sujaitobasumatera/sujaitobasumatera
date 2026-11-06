@@ -10,7 +10,7 @@
             <i class="fas fa-arrow-left mr-2"></i> Kembali ke Daftar
         </a>
         <div class="flex items-center gap-3">
-            <a href="{{ route('admin.packages.edit', $package) }}" class="bg-emerald-600 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition shadow-lg shadow-emerald-200 flex items-center gap-2">
+            <a href="{{ route('admin.packages.edit', $package) }}" class="bg-green-600 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-green-700 transition shadow-lg shadow-green-200 flex items-center gap-2">
                 <i class="fas fa-edit"></i> Edit Paket
             </a>
             <a href="{{ route('tour.package.detail', $package->slug) }}" target="_blank" class="bg-white text-slate-900 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-200 hover:bg-slate-50 transition flex items-center gap-2">
@@ -101,7 +101,7 @@
             <div class="bg-white rounded-[2.5rem] p-10 shadow-sm border border-slate-50 space-y-8">
                 <div>
                     <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Status Layanan</p>
-                    <span class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest {{ $package->status === 'active' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-slate-200 text-slate-500' }}">
+                    <span class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest {{ $package->status === 'active' ? 'bg-green-500 text-white shadow-lg shadow-green-200' : 'bg-slate-200 text-slate-500' }}">
                         {{ $package->status }}
                     </span>
                 </div>
@@ -109,7 +109,7 @@
                 <div class="pt-8 border-t border-slate-50">
                     <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Harga Dewasa</p>
                     <p class="text-4xl font-black text-slate-900 tracking-tighter">
-                        <span class="text-lg text-toba-green mr-1">Rp</span>{{ number_format($package->price) }}
+                        <span class="text-lg text-toba-green mr-1">RM</span>{{ \App\Helpers\CurrencyHelper::formatIn($package->price, 'MYR', false) }}
                     </p>
                 </div>
 
@@ -117,7 +117,7 @@
                     <div class="pt-8 border-t border-slate-50">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Harga Anak</p>
                         <p class="text-3xl font-black text-slate-900 tracking-tighter">
-                            <span class="text-lg text-toba-green mr-1">Rp</span>{{ number_format($package->childPrice) }}
+                            <span class="text-lg text-toba-green mr-1">RM</span>{{ \App\Helpers\CurrencyHelper::formatIn($package->childPrice, 'MYR', false) }}
                         </p>
                     </div>
                 @endif
@@ -126,13 +126,20 @@
                     <div class="pt-8 border-t border-slate-50 bg-amber-50 -mx-10 p-10 rounded-b-[2.5rem]">
                         <p class="text-[9px] font-black text-amber-600 uppercase tracking-widest mb-3">Harga Modal (Internal)</p>
                         <p class="text-2xl font-black text-slate-900 tracking-tighter">
-                            <span class="text-lg text-amber-500 mr-1">Rp</span>{{ number_format($package->cost_price) }}
+                            <span class="text-lg text-amber-500 mr-1">Rp</span>{{ \App\Helpers\CurrencyHelper::formatIn($package->cost_price, 'IDR', false) }}
                         </p>
-                        <div class="mt-4 p-4 bg-white/50 rounded-2xl">
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Estimasi Laba</p>
-                            <p class="text-lg font-black text-emerald-600">
-                                + Rp {{ number_format($package->price - $package->cost_price) }}
-                            </p>
+                        {{-- Margin tidak dihitung di sini: harga jual dicatat dalam MYR, modal dalam IDR.
+                             Mengurangkan keduanya menghasilkan angka tanpa arti, jadi kedua nominal
+                             ditampilkan terpisah apa adanya. --}}
+                        <div class="mt-4 p-4 bg-white/50 rounded-2xl space-y-3">
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Harga Jual</p>
+                                <p class="text-lg font-black text-green-600">{{ \App\Helpers\CurrencyHelper::formatIn($package->price, 'MYR') }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Harga Modal</p>
+                                <p class="text-lg font-black text-slate-900">{{ \App\Helpers\CurrencyHelper::formatIn($package->cost_price, 'IDR') }}</p>
+                            </div>
                         </div>
                     </div>
                 @endif
@@ -157,11 +164,11 @@
             <!-- Includes/Excludes -->
             <div class="bg-white rounded-[2.5rem] p-10 shadow-sm border border-slate-50 space-y-8">
                 <div>
-                    <h3 class="text-xs font-black text-emerald-600 uppercase tracking-widest mb-4">✅ Inklusi</h3>
+                    <h3 class="text-xs font-black text-green-600 uppercase tracking-widest mb-4">✅ Inklusi</h3>
                     <ul class="space-y-3">
                         @forelse($package->includes ?? [] as $inc)
                             <li class="flex items-start gap-3 text-sm font-medium text-slate-600">
-                                <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
                                 {{ $inc }}
                             </li>
                         @empty

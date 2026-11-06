@@ -32,14 +32,20 @@ class Booking extends Model
 
     protected $fillable = [
         'userId', 'customerId', 'type', 'packageId', 'startDate', 'endDate',
-        'totalPrice', 'total_cost', 'customerName', 'customerEmail', 'customerPhone',
+        'totalPrice', 'currency', 'exchange_rate_idr', 'totalPrice_idr',
+        'total_cost', 'customerName', 'customerEmail', 'customerPhone',
         'notes', 'metadata', 'status', 'bookingCode',
     ];
 
     protected $casts = [
         'startDate' => 'datetime',
         'endDate' => 'datetime',
-        'totalPrice' => 'double',
+        // decimal, matching the columns — 'double' reintroduced float error on
+        // values the schema deliberately stores exactly.
+        'totalPrice' => 'decimal:2',
+        'totalPrice_idr' => 'decimal:2',
+        'total_cost' => 'decimal:2',
+        'exchange_rate_idr' => 'decimal:4',
         'metadata' => 'array',
     ];
 

@@ -12,10 +12,25 @@ use Illuminate\Support\Facades\Log;
 class PdfController extends Controller
 {
     /**
-     * Download Itinerary PDF for a package.
-     * Uses Eloquent so all model attributes, casts, and resolveImageUrl() work correctly.
+     * Itinerary PDF sebuah paket.
+     *
+     * Bawaannya DITAMPILKAN di peramban, bukan dipaksa terunduh. Tamu jarang
+     * mau menyimpan berkas yang belum ia lihat isinya; memaksa unduh di awal
+     * itu hambatan, dan di ponsel berkasnya sering hilang begitu saja ke folder
+     * unduhan tanpa pernah dibuka. Yang benar-benar ingin menyimpan menekan
+     * tautan unduh di sebelahnya (?unduh=1), atau tombol simpan milik pembaca
+     * PDF peramban.
+     *
+     * Ini juga menyamakan perilakunya dengan brosur unggahan admin, yang selalu
+     * terbuka di tab baru. Sebelumnya satu tombol yang sama berperilaku berbeda
+     * tergantung ada tidaknya brosur -- dan tulisannya "Unduh" di kedua keadaan.
+     *
+     * Nama rutenya dibiarkan (itinerary.download) supaya tautan lama tidak
+     * putus; yang berubah cuma cara berkasnya disajikan.
+     *
+     * Memakai Eloquent supaya atribut, cast, dan resolveImageUrl() bekerja.
      */
-    public function downloadItinerary($slug)
+    public function downloadItinerary($slug, \Illuminate\Http\Request $request)
     {
         $package = Package::with(['packageImages', 'city'])
             ->where('slug', $slug)
@@ -45,19 +60,25 @@ class PdfController extends Controller
         ];
 
         $pdf = Pdf::loadView('pdf.itinerary', $data);
+        $namaBerkas = "Itinerary-{$package->slug}.pdf";
 
-        return $pdf->download("Itinerary-{$package->slug}.pdf");
+        return $request->boolean('unduh')
+            ? $pdf->download($namaBerkas)
+            : $pdf->stream($namaBerkas);
     }
 
     public function streamInvoice($identifier)
     {
         try {
             $view = $this->renderInvoice($identifier);
-            return response((string) $view->render());
+            return response((string) $view->render(), 200, [
+                'Content-Type' => 'text/html; charset=UTF-8',
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            abort(404, 'Invoice tidak ditemukan.');
         } catch (\Throwable $e) {
-            Log::error('Invoice Render Error: '.$e->getMessage());
-
-            return 'Gagal membuka invoice: '.$e->getMessage();
+            Log::error('Invoice Render Error: '.$e->getMessage(), ['identifier' => $identifier]);
+            abort(500, 'Gagal membuka invoice. Silakan coba lagi atau hubungi admin.');
         }
     }
 
@@ -69,10 +90,11 @@ class PdfController extends Controller
             $booking = Booking::where('bookingCode', $identifier)->firstOrFail();
 
             return app(InvoiceService::class)->downloadInvoice($booking);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            abort(404, 'Invoice tidak ditemukan.');
         } catch (\Throwable $e) {
-            Log::error('Invoice Download Error: '.$e->getMessage());
-
-            return 'Gagal mengunduh invoice: '.$e->getMessage();
+            Log::error('Invoice Download Error: '.$e->getMessage(), ['identifier' => $identifier]);
+            abort(500, 'Gagal mengunduh invoice. Silakan coba lagi atau hubungi admin.');
         }
     }
 
@@ -86,20 +108,22 @@ class PdfController extends Controller
             ->where('bookingCode', $identifier)
             ->firstOrFail();
 
-        $general = Setting::where('key', 'general')->first()?->value ?? [];
-        $company = Setting::where('key', 'company')->first()?->value ?? [];
-        $landing = Setting::where('key', 'cms_landing')->first()?->value ?? [];
+        // Satu query menggantikan tiga.
+        $rows    = Setting::whereIn('key', ['general', 'company', 'cms_landing'])->pluck('value', 'key');
+        $general = $rows->get('general', []) ?? [];
+        $company = $rows->get('company', []) ?? [];
+        $landing = $rows->get('cms_landing', []) ?? [];
 
         $logoRaw = $general['logo_light_url'] ?? ($landing['brand_logo_url'] ?? null);
 
         $data = [
             'booking' => $booking,
-            'companyName' => $general['site_name'] ?? 'Sujai Laketoba',
-            'legalName' => $company['legal_name'] ?? 'PT Sujai Laketoba Experience',
+            'companyName' => $general['site_name'] ?? 'Sujai Toba Sumatera',
+            'legalName' => $company['legal_name'] ?? ($general['site_name'] ?? 'Sujai Toba Sumatera'),
             'taxId' => $company['tax_id'] ?? null,
             'bankAccount' => $company['bank_account'] ?? null,
             'bankAccountName' => $company['bank_account_name'] ?? ($company['legal_name'] ?? null),
-            'address' => $general['office_address'] ?? 'Sumatera Utara',
+            'address' => $general['office_address'] ?? 'Jl. Trimurti 109 Berastagi Kabupaten Karo',
             'email' => $general['contact_email'] ?? null,
             'instagram' => $general['social_instagram'] ?? null,
             'logoUrl' => $logoRaw ? imageUrl($logoRaw) : null,

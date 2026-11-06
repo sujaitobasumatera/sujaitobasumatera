@@ -48,6 +48,8 @@ class AdminBookingVisibilityTest extends TestCase
                 'customerPhone' => '081122334455',
                 'startDate' => date('Y-m-d', strtotime('+2 days')),
                 'pax' => 3,
+                // Wajib sejak commit a207940 — lihat catatan di BookingIntegrationTest.
+                'terms' => 'on',
             ]);
 
         $response->assertStatus(302);

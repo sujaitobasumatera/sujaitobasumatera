@@ -25,6 +25,14 @@ class GeneralSettingsController extends Controller
 
     public function update(Request $request)
     {
+        // Branding uploads must be real images (the trait also enforces this, but validate
+        // here for a clean error instead of an exception).
+        $request->validate([
+            'logo_light_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:15360',
+            'logo_dark_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:15360',
+            'icon_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:15360',
+        ]);
+
         $data = $request->except(['_token', 'logo_light_file', 'logo_dark_file', 'icon_file', 'company']);
 
         $setting = Setting::firstOrNew(['key' => 'general']);
@@ -64,7 +72,22 @@ class GeneralSettingsController extends Controller
             $companySetting->save();
         }
 
-        Cache::flush();
+        // JANGAN gunakan Cache::flush() — itu menghapus SELURUH cache termasuk sesi
+        // pengguna bila driver cache dan session adalah Redis/Memcached yang sama.
+        // SettingObserver sudah menangani ini ketika setting->save() dipanggil di
+        // atas, tapi kita tetap eksplisit di sini sebagai safety net.
+        foreach ([
+            'site_settings_global', 'site_settings_all', 'tour_homepage_data',
+            'contact_whatsapp_digits', 'contact_whatsapp_digits_2',
+            'site_settings_structured_cms_tour_general',
+            'site_settings_structured_cms_landing_cms_tour_general',
+            'site_settings_structured_cms_landing_general',
+            'site_settings_structured_general',
+            'site_settings_structured_cms_tour',
+            'site_settings_structured_cms_landing',
+        ] as $cacheKey) {
+            Cache::forget($cacheKey);
+        }
 
         return back()->with('success', 'Pengaturan umum berhasil diperbarui!');
     }

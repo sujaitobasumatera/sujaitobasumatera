@@ -19,7 +19,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FULL = os.path.join(HERE, "_ms-full.woff2")
 OUT  = os.path.join(HERE, "material-symbols-subset.woff2")
 
-USED = "account_balance add arrow_forward arrow_upward article badge calendar_month calendar_today call cancel chat chat_bubble check_circle chevron_left chevron_right close content_copy diamond done download expand_more flight_takeoff fullscreen grade group image_not_supported info link location_on mail map menu_book open_in_new payments photo_library public remove schedule search star support_agent task_alt travel_explore verified_user visibility help"
+USED = "account_balance add arrow_forward arrow_upward article badge calendar_month calendar_today call cancel chat chat_bubble check check_circle chevron_left chevron_right close content_copy diamond done download expand_more favorite flight_takeoff fullscreen grade group image_not_supported info link location_on mail map menu_book open_in_new payments photo_library public receipt_long remove schedule search share star support_agent task_alt travel_explore verified_user videocam visibility help zoom_in zoom_out"
 EXTRA = "hotel restaurant restaurant_menu directions_car directions_bus directions_boat flight flight_land train local_cafe wifi pool beach_access hiking photo_camera local_activity king_bed person_pin water terrain forest park landscape ac_unit local_bar local_dining spa fitness_center luggage backpack explore tour place near_me navigation sailing kayaking nights_stay wb_sunny umbrella set_meal lunch_dining airport_shuttle car_rental currency_exchange language translate favorite verified workspace_premium military_tech home phone email pin_drop"
 names = set((USED + " " + EXTRA).split())
 

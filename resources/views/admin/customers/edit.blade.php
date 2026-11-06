@@ -4,13 +4,13 @@
 @section('page-title', 'Modifikasi Profil Pelanggan')
 
 @section('content')
-<div class="w-full max-w-full space-y-8 pb-20">
+<div class="w-full max-w-full space-y-8 pb-10">
     <a href="{{ route('admin.customers.show', $customer) }}" class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-slate-900 transition">
         <i class="fas fa-arrow-left"></i> Batal & Kembali
     </a>
 
     <div class="bg-white rounded-[3rem] p-10 lg:p-16 border border-slate-100 shadow-sm relative overflow-hidden">
-        <div class="flex items-center space-x-6 mb-12">
+        <div class="flex items-center space-x-6 mb-6">
             <div class="w-16 h-16 rounded-3xl bg-slate-900 text-white flex items-center justify-center text-xl shadow-xl shadow-slate-200">
                 <i class="fas fa-user-pen"></i>
             </div>

@@ -15,17 +15,18 @@
         <!-- User Avatar Card -->
         <div class="md:col-span-1">
             <div class="bg-white rounded-[2.5rem] p-10 shadow-sm border border-slate-50 text-center">
-                <div class="w-32 h-32 mx-auto bg-gradient-to-br from-{{ $user->role === 'superadmin' ? 'indigo-600 to-violet-700' : ($user->role === 'admin' ? 'orange-500 to-red-600' : 'blue-500 to-purple-600') }} rounded-[2.5rem] flex items-center justify-center text-white font-black text-5xl shadow-xl mb-6">
+                {{-- Kelas ditulis utuh; lihat catatan di users/index.blade.php --}}
+                <div class="w-32 h-32 mx-auto bg-gradient-to-br {{ $user->role === 'superadmin' ? 'from-toba-green to-primary' : ($user->role === 'admin' ? 'from-toba-orange to-toba-orange-dark' : 'from-slate-500 to-slate-700') }} rounded-[2.5rem] flex items-center justify-center text-white font-black text-5xl shadow-xl mb-6">
                     {{ strtoupper(substr($user->name, 0, 1)) }}
                 </div>
                 <h2 class="text-2xl font-black text-slate-900 tracking-tight mb-2">{{ $user->name }}</h2>
                 <span class="inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest 
-                    {{ $user->role === 'superadmin' ? 'bg-indigo-100 text-indigo-700' : ($user->role === 'admin' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700') }}">
+                    {{ $user->role === 'superadmin' ? 'bg-green-200 text-green-900' : ($user->role === 'admin' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700') }}">
                     <i class="fas fa-{{ $user->role === 'superadmin' ? 'crown' : ($user->role === 'admin' ? 'user-shield' : 'user') }} mr-2"></i>
                     {{ $user->role === 'superadmin' ? 'Superadmin' : ($user->role === 'admin' ? 'Tour Admin' : 'User') }}
                 </span>
                 
-                <div class="mt-10 pt-10 border-t border-slate-50 space-y-4">
+                <div class="mt-6 pt-6 border-t border-slate-50 space-y-4">
                     <a href="{{ route('admin.users.edit', $user) }}" class="w-full flex items-center justify-center gap-3 py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition">
                         <i class="fas fa-user-pen"></i> Edit Profil
                     </a>
@@ -55,7 +56,7 @@
                             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Alamat Email</p>
                             <p class="text-lg font-black text-slate-900 tracking-tight">{{ $user->email }}</p>
                             @if($user->email_verified_at)
-                                <span class="inline-flex items-center mt-1 text-[10px] font-bold text-emerald-600">
+                                <span class="inline-flex items-center mt-1 text-[10px] font-bold text-green-600">
                                     <i class="fas fa-circle-check mr-1.5"></i> Terverifikasi
                                 </span>
                             @endif

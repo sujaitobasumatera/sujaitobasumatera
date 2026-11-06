@@ -13,7 +13,7 @@
     </div>
 
     <div class="bg-white rounded-[2rem] border border-gray-100 p-8 shadow-sm">
-        <form action="{{ route('admin.clients.store') }}" method="POST" class="mb-10 p-6 bg-gray-50 rounded-2xl border border-gray-100">
+        <form action="{{ route('admin.clients.store') }}" method="POST" class="mb-6 p-6 bg-gray-50 rounded-2xl border border-gray-100">
             @csrf
             <h3 class="text-sm font-black text-gray-900 uppercase tracking-widest mb-4">Add New Client</h3>
             <div class="grid grid-cols-1 gap-6">
@@ -50,7 +50,7 @@
                     </form>
                 </div>
             @empty
-                <div class="col-span-full text-center py-10">
+                <div class="col-span-full text-center py-6">
                     <p class="text-gray-400 font-bold">No clients added yet</p>
                 </div>
             @endforelse

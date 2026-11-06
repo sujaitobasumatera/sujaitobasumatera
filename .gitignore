@@ -51,8 +51,33 @@ Thumbs.db
 .aider*
 composer.phar
 /public/error_log
+/image.png
+
+# Artefak & staging deploy — besar, dan .deploy/ pernah berisi salinan
+# database.sqlite. Tidak ada yang perlu masuk riwayat.
+/deploy/
+/.deploy/
 
 # Credentials & signing keys — NEVER commit
 ssh.md
 informasi.md
 *.keystore
+ROTASI-RAHASIA.*
+
+# Dump database — jangan pernah masuk riwayat
+*.sql
+
+# Font Material Symbols versi penuh (~450 KiB) yang diunduh skrip subset
+# sebagai cache. Yang dipakai situs cuma hasil pangkasannya
+# (material-symbols-subset.woff2), dan berkas ini bisa diunduh ulang kapan saja.
+/resources/fonts/_ms-full.woff2
+
+# Screenshot yang tertempel ke akar repo saat menempel gambar di chat.
+# Sudah pernah tidak sengaja ikut ter-commit sekali (2 MB) -- dijaga di sini.
+/image copy*.png
+/Screenshot *.png
+/aa.png
+/aha.png
+
+# Media yang diunggah lewat panel admin. Tempatnya di server, bukan di git.
+/storage/app/public/packages

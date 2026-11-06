@@ -1,5 +1,5 @@
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/u754986547/domains/sujailaketoba.com/public_html/
+    - export DEPLOYPATH=/home/u754986547/domains/sujaitobasumatera.com/public_html/
     - /bin/cp -R * $DEPLOYPATH
     - /bin/chmod 755 $DEPLOYPATH/artisan

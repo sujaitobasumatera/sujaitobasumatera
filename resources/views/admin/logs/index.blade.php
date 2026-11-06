@@ -13,7 +13,7 @@
         </div>
         <div class="w-full sm:w-auto">
             <div class="px-6 py-3 bg-white border border-slate-100 rounded-2xl flex items-center gap-4 shadow-sm">
-                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
                 <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Real-time Monitoring Active</span>
             </div>
         </div>
@@ -93,7 +93,7 @@
                         <tr class="group hover:bg-slate-50/30 transition duration-300">
                             @php
                                 $colors = [
-                                    'created' => 'bg-emerald-50 text-emerald-600',
+                                    'created' => 'bg-green-50 text-green-600',
                                     'updated' => 'bg-blue-50 text-blue-600',
                                     'deleted' => 'bg-rose-50 text-rose-600',
                                     'bulk_deleted' => 'bg-rose-100 text-rose-700',
@@ -145,7 +145,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-8 py-32 text-center">
+                            <td colspan="5" class="px-8 py-14 text-center">
                                 <div class="flex flex-col items-center justify-center text-slate-300">
                                     <i class="fas fa-fingerprint text-6xl mb-4"></i>
                                     <p class="text-[10px] font-black uppercase tracking-[0.4em]">Tidak ada catatan aktivitas</p>

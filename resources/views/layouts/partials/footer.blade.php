@@ -1,15 +1,15 @@
-<footer class="bg-slate-950 pt-16 md:pt-20 pb-10 px-5 md:px-8 relative overflow-hidden">
+<footer class="bg-slate-950 pt-8 md:pt-10 pb-6 px-5 md:px-8 relative overflow-hidden">
     <div class="absolute top-0 left-0 w-full h-[1px] bg-white/10"></div>
     
     <div class="max-w-7xl mx-auto relative z-10">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-6 md:mb-8">
 
             <!-- ── Brand Column ── -->
             <div class="space-y-6 sm:col-span-2 lg:col-span-1">
                 <div class="flex items-center">
                     @php
                         $logoDark = asset('images/logo_compressed.webp');
-                        $brandName = $siteSettings['general']['site_name'] ?? 'Sujai Laketoba';
+                        $brandName = $siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera';
                     @endphp
 
                     @if($logoDark)
@@ -20,9 +20,9 @@
                         />
                     @else
                         <div class="flex items-center space-x-3">
-                            <div class="w-9 h-9 bg-secondary rounded-lg flex items-center justify-center text-on-secondary font-bold text-lg">S</div>
+                            <div class="w-9 h-9 bg-toba-green rounded-lg flex items-center justify-center text-white font-bold text-lg">S</div>
                             <span class="text-lg font-bold font-headline-md text-on-primary tracking-tight uppercase">
-                                Sujai <span class="text-secondary">Laketoba</span>
+                                Sujai <span class="text-green-400">Laketoba</span>
                             </span>
                         </div>
                     @endif
@@ -92,6 +92,9 @@
                 <ul class="space-y-3">
                     <li><a href="/" class="text-slate-400 hover:text-white font-body-md text-xs transition-colors inline-block">{{ __('Beranda') }}</a></li>
                     <li><a href="/tour/packages" class="text-slate-400 hover:text-white font-body-md text-xs transition-colors inline-block">{{ __('Semua Destinasi') }}</a></li>
+                    <li><a href="/paket-wisata-danau-toba-dari-kuala-lumpur" class="text-green-400 hover:text-green-300 font-body-md text-xs font-semibold transition-colors inline-block">🇲🇾 {{ __('Pakej dari Kuala Lumpur') }}</a></li>
+                    <li><a href="/paket-wisata-danau-toba-dari-penang" class="text-green-400 hover:text-green-300 font-body-md text-xs font-semibold transition-colors inline-block">🇲🇾 {{ __('Pakej dari Penang') }}</a></li>
+                    <li><a href="/paket-wisata-danau-toba-dari-johor" class="text-green-400 hover:text-green-300 font-body-md text-xs font-semibold transition-colors inline-block">🇲🇾 {{ __('Pakej dari Johor') }}</a></li>
                     <li><a href="/tour/gallery" class="text-slate-400 hover:text-white font-body-md text-xs transition-colors inline-block">{{ __('Galeri Foto') }}</a></li>
                     <li><a href="/tour/blog" class="text-slate-400 hover:text-white font-body-md text-xs transition-colors inline-block">{{ __('Blog Perjalanan') }}</a></li>
                 </ul>
@@ -115,7 +118,7 @@
                 <h4 class="text-white font-label-caps text-[10px] uppercase tracking-[0.2em] mb-6">{{ __('Alamat & Kontak') }}</h4>
                 @php
                     $g = $siteSettings['general'] ?? [];
-                    $addressLine = $g['office_address'] ?? 'Jl. Sisingamangaraja No. 1, Parapat, Sumatera Utara 21174';
+                    $addressLine = $g['office_address'] ?? $g['address'] ?? 'Jl. Trimurti 109, Berastagi, Kabupaten Karo';
                     $cityPostal = trim(($g['office_city'] ?? '').' '.($g['office_postal'] ?? ''));
                 @endphp
                 <div class="space-y-4 text-slate-400 font-body-md text-xs">
@@ -125,34 +128,30 @@
                     </div>
                     <div class="flex items-center space-x-3">
                         <x-icon name="whatsapp" class="w-4 h-4 text-secondary shrink-0" />
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $g['contact_whatsapp'] ?? '6282277848855') }}" target="_blank"
+                        <a href="{{ \App\Helpers\ContactHelper::whatsappLink() }}" target="_blank"
                            class="hover:text-secondary transition-colors">
-                            {{ $g['contact_whatsapp'] ?? '+62 813-2388-8207' }}
+                            {{ \App\Helpers\ContactHelper::whatsappDisplay() }}
                         </a>
                     </div>
-                    @if($g['contact_whatsapp_2'] ?? false)
                     <div class="flex items-center space-x-3">
                         <x-icon name="whatsapp" class="w-4 h-4 text-secondary shrink-0" />
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $g['contact_whatsapp_2']) }}" target="_blank"
+                        <a href="{{ \App\Helpers\ContactHelper::whatsappLink2() }}" target="_blank"
                            class="hover:text-secondary transition-colors">
-                            {{ $g['contact_whatsapp_2'] }} <span class="text-slate-500">(CS 2)</span>
+                            {{ \App\Helpers\ContactHelper::whatsappDisplay2() }} <span class="text-slate-500 text-[11px]">(CS 2)</span>
                         </a>
                     </div>
-                    @endif
-                    @if($g['contact_phone'] ?? false)
-                    <div class="flex items-center space-x-3">
-                        <span class="material-symbols-outlined text-secondary text-[18px] shrink-0">call</span>
-                        <a href="tel:{{ preg_replace('/[^0-9+]/', '', $g['contact_phone']) }}"
-                           class="hover:text-secondary transition-colors">
-                            {{ $g['contact_phone'] }}
-                        </a>
-                    </div>
-                    @endif
+                    {{-- contact_phone removed as requested to strictly display only the 2 WhatsApp numbers --}}
                     <div class="flex items-center space-x-3">
                         <span class="material-symbols-outlined text-secondary text-[18px] shrink-0">mail</span>
-                        <a href="mailto:{{ $g['contact_email'] ?? 'info@sujailaketoba.com' }}"
+                        {{-- Lewat ContactHelper. Footer punya nilai bawaan sendiri
+                             ('info@') yang berbeda dari sisa situs ('hello@'), dan
+                             karena $g di sini kadang tidak memuat contact_email,
+                             halaman S&K sempat menampilkan DUA alamat berbeda
+                             sekaligus: satu di badan teks, satu di footernya. --}}
+                        @php $footerEmail = \App\Helpers\ContactHelper::email(); @endphp
+                        <a href="mailto:{{ $footerEmail }}"
                            class="hover:text-secondary transition-colors">
-                            {{ $g['contact_email'] ?? 'info@sujailaketoba.com' }}
+                            {{ $footerEmail }}
                         </a>
                     </div>
                     @if($g['operating_hours'] ?? false)
@@ -173,14 +172,19 @@
         <!-- ── Bottom bar ── -->
         <div class="pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
                 <p class="text-slate-500 font-label-caps text-[10px] uppercase tracking-wider">
-                &copy; {{ date('Y') }} <span class="text-white/80">{{ $siteSettings['general']['site_copyright'] ?? ($siteSettings['general']['site_name'] ?? 'Sujai Laketoba') }}</span>. {{ __('All rights reserved.') }}
+                &copy; {{ date('Y') }} <span class="text-white/80">{{ $siteSettings['general']['site_copyright'] ?? ($siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera') }}</span>. {{ __('All rights reserved.') }}
             </p>
             <div class="flex items-center gap-4">
                 @php
-                    $partnerLogoUrl = $siteSettings['cms_landing']['brand_partner_logo_url'] ?? 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Wonderful_Indonesia_logo.svg';
+                    // Tanpa nilai bawaan eksternal: hotlink ke Wikimedia sebelumnya
+                    // gagal dimuat (gambar rusak). Logo tampil hanya bila admin
+                    // mengunggah/mengisinya di pengaturan CMS.
+                    $partnerLogoUrl = $siteSettings['cms_landing']['brand_partner_logo_url'] ?? null;
                 @endphp
                 <div class="flex items-center gap-3">
+                    @if(!empty($partnerLogoUrl))
                     <x-premium-image :src="$partnerLogoUrl" alt="Wonderful Indonesia" class="h-6 opacity-30 grayscale hover:grayscale-0 hover:opacity-70 transition" />
+                    @endif
                     <span class="text-slate-500 font-label-caps text-[8px] uppercase tracking-wider leading-tight">{{ __('Agen Resmi') }}<br>Wonderful Indonesia</span>
                 </div>
             </div>

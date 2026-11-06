@@ -12,7 +12,7 @@
         }
         .header {
             text-align: center;
-            border-bottom: 2px solid #059669;
+            border-bottom: 2px solid #05963d;
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
@@ -23,7 +23,7 @@
             text-transform: uppercase;
         }
         .header p {
-            color: #059669;
+            color: #05963d;
             font-weight: bold;
             margin: 5px 0 0 0;
         }
@@ -34,7 +34,7 @@
             font-size: 18px;
             font-weight: bold;
             color: #0f172a;
-            border-left: 4px solid #059669;
+            border-left: 4px solid #05963d;
             padding-left: 10px;
             margin-bottom: 15px;
             background: #f8fafc;
@@ -84,7 +84,7 @@
 <body>
     <div class="header">
         <h1>{{ $package->translated_name }}</h1>
-        <p>{{ $siteSettings['general']['site_name'] ?? 'Sujai Laketoba' }} – Sumatera Utara</p>
+        <p>{{ $siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera' }} – Sumatera Utara</p>
     </div>
 
     <div class="section">
@@ -100,7 +100,7 @@
             </tr>
             <tr>
                 <td class="label">Harga Mulai Dari</td>
-                <td>Rp {{ number_format($package->price, 0, ',', '.') }} / orang</td>
+                <td>{{ \App\Helpers\CurrencyHelper::formatIn($package->price, \App\Helpers\CurrencyHelper::PRICE_BASE) }} / orang</td>
             </tr>
         </table>
     </div>
@@ -146,8 +146,8 @@
     </div>
 
     <div class="footer">
-        <p>&copy; {{ date('Y') }} {{ $siteSettings['general']['site_name'] ?? 'Sujai Laketoba' }}. All rights reserved.</p>
-        <p>Hubungi kami: {{ $siteSettings['general']['contact_wa_1'] ?? '+62 813-2388-8207' }} | {{ $siteSettings['general']['contact_email'] ?? 'info@sujailaketoba.com' }}</p>
+        <p>&copy; {{ date('Y') }} {{ $siteSettings['general']['site_name'] ?? 'Sujai Toba Sumatera' }}. All rights reserved.</p>
+        <p>Hubungi kami: {{ \App\Helpers\ContactHelper::whatsappDisplay() }} | {{ \App\Helpers\ContactHelper::email() }}</p>
     </div>
 </body>
 </html>

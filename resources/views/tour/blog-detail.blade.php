@@ -14,8 +14,17 @@
     }
 @endphp
 
-@section('title', ($post->translated_title ?? 'Blog') . ' – Sujai Laketoba')
-@section('description', \Illuminate\Support\Str::limit($post->content ?? '', 160))
+@section('title', ($post->translated_title ?? 'Blog') . ' – Sujai Toba Sumatera')
+{{-- Isi artikel adalah HTML dari editor. Str::limit atas HTML mentah memotong
+     160 huruf PERTAMA -- yang sebagian besar berisi tag pembuka, bukan kalimat,
+     sehingga pratinjau tautan terbaca sebagai kode. Ringkasan dipakai lebih
+     dulu kalau penulisnya sudah menuliskannya. --}}
+@php
+    $metaArtikel = trim(preg_replace('/\s+/', ' ',
+        preg_replace('/<[^>]*>/', ' ', html_entity_decode((string) ($post->excerpt ?: $post->content ?? ''), ENT_QUOTES | ENT_HTML5))
+    ));
+@endphp
+@section('description', \Illuminate\Support\Str::limit($metaArtikel, 160))
 
 @section('og_image', ogBannerUrl($post))
 
@@ -31,14 +40,14 @@
   "datePublished": "{{ date('c', strtotime($post->createdAt)) }}",
   "author": [{
       "@type": "Organization",
-      "name": "Sujai Laketoba"
+      "name": "Sujai Toba Sumatera"
     }]
 }
 </script>
 @endpush
 
 @section('content')
-<div class="bg-surface min-h-screen pb-32 font-body-md text-on-background selection:bg-primary-container selection:text-on-primary-container">
+<div class="bg-surface min-h-screen pb-14 font-body-md text-on-background selection:bg-primary-container selection:text-on-primary-container">
 
     {{-- ====== IMMERSIVE CINEMATIC HERO ====== --}}
     <div class="relative h-[55dvh] w-full overflow-hidden bg-primary">
@@ -49,7 +58,7 @@
         <div class="absolute inset-0 bg-gradient-to-r from-primary/70 via-primary/20 to-transparent"></div>
 
         {{-- Hero content --}}
-        <div class="relative z-10 h-full max-w-5xl mx-auto px-5 md:px-8 flex flex-col justify-center pt-16">
+        <div class="relative z-10 h-full max-w-5xl mx-auto px-5 md:px-8 flex flex-col justify-center pt-8">
             <div class="animate-in fade-in slide-in-from-bottom-12 duration-1000">
                 {{-- Back button --}}
                 <a href="/tour/blog" 
@@ -62,6 +71,11 @@
                     {{ __('Kembali ke Jurnal') }}
                 </a>
                 
+                <x-breadcrumb :dark="true" class="mb-5" :items="[
+                    ['label' => __('Blog'), 'url' => route('tour.blog')],
+                    ['label' => $post->translated_title ?? $post->title],
+                ]" />
+
                 {{-- Category & date badges --}}
                 <div class="flex flex-wrap items-center gap-3 mb-6">
                     <span class="px-4 py-1.5 bg-secondary text-on-secondary rounded-lg text-[10px] font-bold uppercase tracking-wider shadow-sm">
@@ -88,18 +102,18 @@
                 <article class="bg-white rounded-3xl p-6 md:p-14 shadow-sm border border-outline-variant/30">
                     
                     {{-- Author meta --}}
-                    <div class="flex items-center gap-4 mb-10 pb-8 border-b border-outline-variant/30">
+                    <div class="flex items-center gap-4 mb-6 pb-8 border-b border-outline-variant/30">
                         <div class="w-12 h-12 rounded-xl bg-primary text-on-primary flex items-center justify-center font-bold text-lg">
                             S
                         </div>
                         <div>
                             <p class="font-label-caps text-[9px] text-secondary uppercase tracking-wider mb-0.5">{{ __('Ditulis Oleh') }}</p>
-                            <p class="text-base font-bold text-on-surface tracking-tight font-headline-md">{{ __('Tim Redaksi Sujai Laketoba') }}</p>
+                            <p class="text-base font-bold text-on-surface tracking-tight font-headline-md">{{ __('Tim Redaksi Sujai Toba Sumatera') }}</p>
                         </div>
                     </div>
 
                     @if($coverExif)
-                    <div class="mb-10 p-5 bg-slate-50 border border-slate-200/60 rounded-2xl flex flex-wrap gap-4 items-center justify-between text-xs text-slate-500 animate-in fade-in slide-in-from-top-4 duration-500 shadow-sm">
+                    <div class="mb-6 p-5 bg-slate-50 border border-slate-200/60 rounded-2xl flex flex-wrap gap-4 items-center justify-between text-xs text-slate-500 animate-in fade-in slide-in-from-top-4 duration-500 shadow-sm">
                         <div class="flex items-center gap-3">
                             <span class="text-lg">📸</span>
                             <div>
@@ -115,7 +129,7 @@
                             </div>
                         </div>
                         @if(!empty($coverExif['gps']['lat']) && !empty($coverExif['gps']['lng']))
-                        <a href="https://www.google.com/maps/search/?api=1&query={{ $coverExif['gps']['lat'] }},{{ $coverExif['gps']['lng'] }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg font-semibold tracking-wide transition-colors">
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ $coverExif['gps']['lat'] }},{{ $coverExif['gps']['lng'] }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 rounded-lg font-semibold tracking-wide transition-colors">
                             <span class="material-symbols-outlined text-[14px]">location_on</span>
                             {{ __('Titik Lokasi') }}
                         </a>
@@ -124,24 +138,27 @@
                     @endif
 
                     {{-- Article body --}}
-                    <div class="prose prose-lg md:prose-xl max-w-none text-slate-700 font-body-md leading-[1.8] tracking-[0.01em]
+                    <div class="prose prose-lg md:prose-xl max-w-none break-words [&_a]:break-all text-slate-700 font-body-md leading-[1.8] tracking-[0.01em]
                                 prose-headings:font-headline-md prose-headings:text-primary prose-headings:font-semibold
-                                prose-a:text-emerald-600 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline
+                                prose-a:text-green-600 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline
                                 prose-strong:text-slate-900 prose-strong:font-bold
-                                prose-blockquote:border-l-4 prose-blockquote:border-emerald-500 prose-blockquote:bg-emerald-50/50 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:text-slate-700 prose-blockquote:not-italic prose-blockquote:rounded-r-xl
+                                prose-blockquote:border-l-4 prose-blockquote:border-green-500 prose-blockquote:bg-green-50/50 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:text-slate-700 prose-blockquote:not-italic prose-blockquote:rounded-r-xl
                                 prose-img:rounded-2xl prose-img:shadow-sm">
                         @if(!empty($post->content) && strlen($post->content) > 10)
-                            {!! nl2br($post->content) !!}
+                            {!! nl2br(e($post->content)) !!}
                         @else
-                            <p class="text-slate-400 italic text-center py-10">{{ $post->translated_excerpt }}</p>
+                            <p class="text-slate-400 italic text-center py-6">{{ $post->translated_excerpt }}</p>
                         @endif
                     </div>
 
                     {{-- Tags --}}
                     @if(isset($post->tags) && count($post->tags) > 0)
-                        <div class="mt-12 pt-8 border-t border-outline-variant/30 flex flex-wrap gap-2">
+                        <div class="mt-6 pt-8 border-t border-outline-variant/30 flex flex-wrap gap-2">
                             @foreach($post->tags as $tag)
-                                <span class="px-4 py-1.5 bg-surface-container-low text-on-surface-variant rounded-lg text-[10px] font-bold uppercase tracking-wider border border-outline-variant/30 hover:bg-secondary hover:text-on-secondary transition cursor-default">
+                                {{-- Gaya hover dihapus: tag ini bukan tautan (belum ada
+                                     halaman arsip per tag), jadi warna yang berubah saat
+                                     disentuh menjanjikan klik yang tidak akan terjadi. --}}
+                                <span class="px-4 py-1.5 bg-surface-container-low text-on-surface-variant rounded-lg text-[10px] font-bold uppercase tracking-wider border border-outline-variant/30 cursor-default">
                                     #{{ $tag }}
                                 </span>
                             @endforeach
@@ -149,15 +166,15 @@
                     @endif
 
                     {{-- Premium share bar --}}
-                    <div class="mt-12 p-6 bg-surface-container-low border border-outline-variant/30 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="mt-6 p-6 bg-surface-container-low border border-outline-variant/30 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
                         <div>
                             <h4 class="text-base font-bold font-headline-md text-on-surface tracking-tight mb-1">{{ __('Bagikan Inspirasi Ini') }}</h4>
                             <p class="text-xs text-on-surface-variant font-body-md">{{ __('Bantu orang lain menemukan petualangan impian mereka.') }}</p>
                         </div>
                         <div class="flex items-center gap-3">
-                            <a href="https://wa.me/?text={{ urlencode(__('Baca artikel ini dari Sujai Laketoba: ') . $post->translated_title . ' ' . url()->current()) }}" 
+                            <a href="https://wa.me/?text={{ urlencode(__('Baca artikel ini dari Sujai Toba Sumatera: ') . $post->translated_title . ' ' . url()->current()) }}" 
                                target="_blank"
-                               class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-sm hover:scale-105 transition">
+                               class="w-10 h-10 bg-toba-green text-white rounded-xl flex items-center justify-center shadow-sm hover:scale-105 transition">
                                 <x-icon name="whatsapp" class="w-5 h-5" />
                             </a>
                             <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}" 
@@ -210,7 +227,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="font-bold text-on-surface text-sm font-body-md">Sujai Laketoba</p>
+                                <p class="font-bold text-on-surface text-sm font-body-md">Sujai Toba Sumatera</p>
                                 <p class="font-label-caps text-[9px] text-secondary uppercase tracking-wider">{{ __('Editorial Team') }}</p>
                             </div>
                         </div>
@@ -243,8 +260,8 @@
 
         {{-- ====== RELATED POSTS ====== --}}
         @if(count($relatedPosts) > 0)
-            <div class="mt-16 md:mt-24 pt-12 md:pt-16 border-t border-outline-variant/30">
-                <div class="flex items-center gap-3 mb-10 md:mb-12">
+            <div class="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-outline-variant/30">
+                <div class="flex items-center gap-3 mb-6 md:mb-6">
                     <span class="w-10 h-px bg-secondary"></span>
                     <span class="text-[10px] font-bold text-secondary uppercase tracking-[0.25em]">{{ __('Inspirasi Lainnya') }}</span>
                 </div>
@@ -252,7 +269,7 @@
                     @foreach($relatedPosts as $rp)
                         <article class="group cursor-pointer" onclick="window.location.href='/tour/blog/{{ $rp->slug ?? $rp->id }}'">
                             <div class="relative aspect-[16/10] rounded-3xl overflow-hidden mb-5 border border-outline-variant/20 shadow-sm">
-                                <img src="{{ $rp->image_url }}" alt="{{ $rp->translated_title }}" 
+                                <img src="{{ $rp->image_url }}" alt="{{ $rp->translated_title }}" @if($__ss = imageSrcset($rp->image_url)) srcset="{{ $__ss }}" sizes="(max-width: 639px) 100vw, 380px" @endif 
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.5s]">
                                 <div class="absolute inset-0 bg-gradient-to-t from-primary/70 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex items-end p-5">
                                     <span class="font-label-caps text-[9px] text-secondary-fixed uppercase tracking-widest flex items-center gap-1">

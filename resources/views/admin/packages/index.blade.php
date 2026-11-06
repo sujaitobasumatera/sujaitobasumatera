@@ -9,13 +9,11 @@
 
 @section('content')
 @php
-    $primaryColor = 'emerald';
-    $primaryHex = '#10b981';
-    $bgColor = 'bg-emerald-500';
-    $shadowColor = 'shadow-emerald-100';
+    $bgColor = 'bg-green-500';
+    $shadowColor = 'shadow-green-100';
 @endphp
 
-<div class="space-y-10 w-full max-w-none" x-data="{ 
+<div class="space-y-6 w-full max-w-none" x-data="{ 
     selected: [],
     
     toggleAll(ids) {
@@ -70,7 +68,7 @@
         </div>
         <div class="flex items-center gap-3 w-full md:w-auto">
             <a href="{{ route('admin.packages.export', request()->all()) }}" class="flex-1 md:flex-none bg-white border border-slate-200 text-slate-600 px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition text-center">
-                <i class="fas fa-file-excel mr-2 text-emerald-500"></i> Export
+                <i class="fas fa-file-excel mr-2 text-green-500"></i> Export
             </a>
             <a href="{{ route('admin.packages.create') }}" class="flex-1 md:flex-none bg-slate-900 text-white px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition shadow-xl shadow-slate-200 flex items-center justify-center gap-2">
                 <i class="fas fa-plus-circle text-sm"></i> Baru
@@ -131,14 +129,14 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         @forelse($packages as $package)
             <div class="group bg-white rounded-[2.5rem] md:rounded-[3rem] overflow-hidden border border-slate-50 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 transition duration-500 flex flex-col relative"
-                 :class="selected.includes({{ $package->id }}) ? 'ring-4 ring-emerald-500' : ''">
+                 :class="selected.includes({{ $package->id }}) ? 'ring-4 ring-green-500' : ''">
                 
                 {{-- Bulk Checkbox --}}
                 <div class="absolute top-6 left-6 z-20">
                     <input type="checkbox" 
                         value="{{ $package->id }}" 
                         x-model="selected"
-                        class="w-6 h-6 rounded-lg border-white/20 bg-black/20 backdrop-blur-md text-emerald-500 focus:ring-emerald-500/20 transition cursor-pointer">
+                        class="w-6 h-6 rounded-lg border-white/20 bg-black/20 backdrop-blur-md text-green-500 focus:ring-green-500/20 transition cursor-pointer">
                 </div>
 
                 <div class="h-64 relative overflow-hidden bg-slate-50">
@@ -168,19 +166,19 @@
                     <div class="absolute bottom-6 right-6">
                         <div class="bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl border border-white/10 backdrop-blur-md">
                             <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 text-center">Mulai Dari</p>
-                            <p class="text-lg font-black tracking-tight leading-none">Rp {{ number_format($package->price / 1000, 0) }}K</p>
+                            <p class="text-lg font-black tracking-tight leading-none">{{ \App\Helpers\CurrencyHelper::formatIn($package->price, 'MYR') }}</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="p-6 md:p-10 flex-1 flex flex-col">
                     <div class="flex items-center gap-3 mb-4 text-slate-400">
-                        <span class="text-[10px] font-black uppercase tracking-widest"><i class="fas fa-map-marker-alt mr-2 text-emerald-500"></i> {{ $package->locationTag ?? 'Sumatera Utara' }}</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest"><i class="fas fa-map-marker-alt mr-2 text-green-500"></i> {{ $package->locationTag ?? 'Sumatera Utara' }}</span>
                         <span class="w-1 h-1 rounded-full bg-slate-200"></span>
-                        <span class="text-[10px] font-black uppercase tracking-widest"><i class="fas fa-clock mr-2 text-emerald-500"></i> {{ $package->duration ?? '3D2N' }}</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest"><i class="fas fa-clock mr-2 text-green-500"></i> {{ $package->duration ?? '3D2N' }}</span>
                     </div>
                     
-                    <h3 class="text-xl font-black text-slate-900 tracking-tight mb-4 leading-tight group-hover:text-emerald-600 transition-colors">{{ $package->name }}</h3>
+                    <h3 class="text-xl font-black text-slate-900 tracking-tight mb-4 leading-tight group-hover:text-green-600 transition-colors">{{ $package->name }}</h3>
                     <p class="text-sm font-medium text-slate-400 line-clamp-2 leading-relaxed mb-8 flex-1">
                         {{ $package->shortDescription ?? 'Deskripsi paket belum tersedia.' }}
                     </p>
@@ -193,11 +191,17 @@
                             <a href="{{ route('admin.packages.show', $package) }}" class="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-900 hover:text-white transition shadow-sm">
                                 <i class="fas fa-external-link-alt text-xs"></i>
                             </a>
+                            <form action="{{ route('admin.packages.toggle-status', $package) }}" method="POST" onsubmit="return confirm('{{ $package->status === 'active' ? 'Nonaktifkan paket ini?' : 'Aktifkan paket ini?' }}')">
+                                @csrf
+                                <button type="submit" class="w-10 h-10 rounded-xl {{ $package->status === 'active' ? 'bg-amber-50 text-amber-600 hover:bg-amber-500' : 'bg-green-50 text-green-600 hover:bg-green-600' }} flex items-center justify-center hover:text-white transition shadow-sm" title="{{ $package->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                    <i class="fas {{ $package->status === 'active' ? 'fa-toggle-on' : 'fa-toggle-off' }} text-xs"></i>
+                                </button>
+                            </form>
                         </div>
                         <div class="flex items-center gap-2">
                             <form action="{{ route('admin.packages.duplicate', $package) }}" method="POST" onsubmit="return confirm('Duplikat paket ini?')">
                                 @csrf
-                                <button type="submit" class="w-10 h-10 rounded-xl bg-slate-50 text-indigo-500 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition shadow-sm" title="Duplikat Paket">
+                                <button type="submit" class="w-10 h-10 rounded-xl bg-slate-50 text-green-700 flex items-center justify-center hover:bg-green-800 hover:text-white transition shadow-sm" title="Duplikat Paket">
                                     <i class="fas fa-copy text-xs"></i>
                                 </button>
                             </form>
@@ -212,12 +216,12 @@
                 </div>
             </div>
         @empty
-            <div class="col-span-full py-40 text-center bg-white rounded-[4rem] border border-dashed border-slate-200">
+            <div class="col-span-full py-20 text-center bg-white rounded-[4rem] border border-dashed border-slate-200">
                 <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8 text-slate-200">
                     <i class="fas fa-box-open text-4xl"></i>
                 </div>
                 <h5 class="text-2xl font-black text-slate-900 mb-2">Daftar Paket Tour Kosong</h5>
-                <a href="{{ route('admin.packages.create') }}" class="mt-10 inline-block bg-slate-900 text-white px-10 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition">Buat Paket Sekarang</a>
+                <a href="{{ route('admin.packages.create') }}" class="mt-6 inline-block bg-slate-900 text-white px-10 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition">Buat Paket Sekarang</a>
             </div>
         @endforelse
     </div>
@@ -239,9 +243,9 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 translate-y-10"
-         class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] w-full max-w-md px-4"
+         class="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] md:bottom-10 left-1/2 -translate-x-1/2 z-[100] w-full max-w-md px-4"
          x-cloak>
-        <div class="bg-slate-900 text-white rounded-[2.5rem] p-5 shadow-2xl flex items-center justify-between border border-white/10 backdrop-blur-xl bg-opacity-90">
+        <div class="bg-slate-900 text-white rounded-[2.5rem] p-4 md:p-5 shadow-2xl flex flex-col sm:flex-row gap-3 sm:items-center justify-between border border-white/10 backdrop-blur-xl bg-opacity-90">
             <div class="flex items-center gap-4 pl-4">
                 <div class="w-10 h-10 rounded-2xl {{ $bgColor }} flex items-center justify-center text-white text-sm font-black shadow-lg">
                     <span x-text="selected.length"></span>

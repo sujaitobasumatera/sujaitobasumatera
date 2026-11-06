@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 class PublicController extends Controller
 {
@@ -88,7 +89,11 @@ class PublicController extends Controller
         } catch (\Exception $e) {
             Log::error('Error loading tour index: '.$e->getMessage());
 
-            return back()->with('error', 'Gagal memuat data tour. Silakan coba beberapa saat lagi.');
+            // 503, bukan 500: gangguan koneksi database itu SEMENTARA. Google
+            // membaca 503 sebagai "coba lagi nanti" dan mempertahankan peringkat,
+            // sedangkan 500 dibaca sebagai halaman rusak. Retry-After memberi
+            // tahu kapan boleh kembali.
+            throw new ServiceUnavailableHttpException(300, 'Gagal memuat data tour. Terjadi gangguan koneksi sistem.');
         }
     }
 
@@ -103,7 +108,10 @@ class PublicController extends Controller
         } catch (\Exception $e) {
             Log::error('Error loading tour packages: '.$e->getMessage());
 
-            return back()->with('error', 'Gagal memuat daftar paket.');
+            // back() memantulkan pengunjung ke halaman lain TANPA pesan apa pun:
+            // layout publik tidak pernah merender session('error'). Kegagalannya
+            // jadi tak terlihat. Sama seperti /tour, ini gangguan sementara.
+            throw new ServiceUnavailableHttpException(300, 'Gagal memuat daftar paket.');
         }
     }
 
@@ -130,7 +138,18 @@ class PublicController extends Controller
         return view('tour.blog', compact('posts', 'siteSettings'));
     }
 
-    public function tourPackageDetail($slug)
+    /**
+     * Halaman detail paket tanpa form pemesanan (/tour/detail/{slug}).
+     *
+     * Sengaja menumpang jalur yang sama: isi, media, harga, dan SEO-nya harus
+     * identik dengan halaman berform -- yang berbeda cuma isi sidebarnya.
+     */
+    public function tourPackageDetailNoForm($slug)
+    {
+        return $this->tourPackageDetail($slug, false);
+    }
+
+    public function tourPackageDetail($slug, bool $showBookingForm = true)
     {
         try {
             $siteSettings = $this->getSiteSettings();
@@ -171,13 +190,25 @@ class PublicController extends Controller
 
             $city = City::find($package->cityId);
 
-            $taxPercentage = 11;
-            $setting = Setting::where('key', 'general')->first();
-            if ($setting && isset($setting->value['finance']['tax_percentage'])) {
-                $taxPercentage = (float) $setting->value['finance']['tax_percentage'];
-            }
+            // Bawaan nol — lihat catatan di BookingService. Kalkulator depan
+            // dan tagihan harus memakai angka yang sama.
+            // Ambil dari $siteSettings (sudah di-cache di getSiteSettings) daripada
+            // query 'general' lagi — ini halaman publik paling ramai.
+            $finance = $siteSettings['general']['finance'] ?? [];
+            $taxPercentage = (float) ($finance['tax_percentage'] ?? 0);
 
-            return view('tour.package-detail', compact('package', 'city', 'siteSettings', 'originCity', 'taxPercentage'));
+            // Surcharge akhir pekan & musim ramai ikut dikirim ke kalkulator depan.
+            // Selama nilainya 0 tidak ada bedanya, tapi begitu admin mengisinya,
+            // halaman ini akan mengutip angka yang lebih murah dari yang ditagih
+            // BookingService — dan tamu baru tahu setelah menekan Pesan.
+            $surcharge = [
+                'weekend' => (float) ($finance['surcharge_weekend'] ?? 0),
+                'peak' => (float) ($finance['surcharge_peak'] ?? 0),
+                'peakStart' => (string) ($finance['surcharge_peak_start'] ?? ''),
+                'peakEnd' => (string) ($finance['surcharge_peak_end'] ?? ''),
+            ];
+
+            return view('tour.package-detail', compact('package', 'city', 'siteSettings', 'originCity', 'taxPercentage', 'surcharge', 'showBookingForm'));
         } catch (\Exception $e) {
             Log::error("Error loading package detail ($slug): ".$e->getMessage());
 
@@ -234,12 +265,32 @@ class PublicController extends Controller
             }
 
             $originName = Str::title(str_replace('-', ' ', $kotaSlug));
-            
+
+            // Gambar kota untuk hero, bila admin sudah membuat entri kota
+            // dengan slug yang sama persis dengan slug URL ini.
+            //
+            // Daftar kota asal di atas berasal dari Pengaturan (teks bebas),
+            // sedangkan tabel `cities` saat ini berisi kota TUJUAN di Sumatera
+            // Utara -- jadi umumnya tidak ada yang cocok dan hero jatuh ke
+            // gambar dari Pengaturan seperti sebelumnya. Begitu admin
+            // menambah entri kota bernama sama dengan kota asal, gambarnya
+            // otomatis terpakai tanpa perlu sentuh kode lagi.
+            $originCity = City::with('imageMedia')->where('slug', $kotaSlug)->first();
+            $originImage = $originCity?->imageMedia?->path ?: ($originCity?->image ?: null);
+
             // Re-use logic from tour() method
             $packages = $this->tourService->getFeaturedPackages();
             $blogs = $this->tourService->getBlogs(3);
 
-            return view('tour.landing-origin', compact('packages', 'blogs', 'siteSettings', 'originName', 'kotaSlug'));
+            // Tautan internal ke landing page kota asal lainnya.
+            $otherOrigins = collect($allowedOrigins)
+                ->reject(fn ($o) => $o === $kotaSlug)
+                ->unique()
+                ->map(fn ($o) => ['slug' => $o, 'name' => Str::title(str_replace('-', ' ', $o))])
+                ->values()
+                ->all();
+
+            return view('tour.landing-origin', compact('packages', 'blogs', 'siteSettings', 'originName', 'kotaSlug', 'originImage', 'otherOrigins'));
         } catch (\Exception $e) {
             Log::error('Error loading pSEO landing page: '.$e->getMessage());
             return redirect()->route('tour.packages');
@@ -251,12 +302,15 @@ class PublicController extends Controller
         try {
             // Honeypot Security Check (Pencegahan Spam)
             if ($request->filled('website_url')) {
-                // Bot terdeteksi karena mengisi hidden input. Berikan respon seolah berhasil.
+                // Bot terdeteksi karena mengisi hidden input. Balas seolah berhasil
+                // supaya bot tidak belajar, TAPI tanpa kode booking palsu: kode
+                // 'BOT-xxxxxx' yang dulu dikirim ke sini selalu 404 di halaman
+                // pelacakan, jadi manusia yang terjaring autofill justru dikirim
+                // mengejar pesanan yang tidak pernah ada.
                 Log::warning('Honeypot triggered during booking submission.', ['ip' => $request->ip()]);
+
                 return back()->with([
                     'success' => __('Booking berhasil dikirim! Kami akan menghubungi Anda segera.'),
-                    'bookingCode' => 'BOT-' . strtoupper(Str::random(6)),
-                    'whatsappUrl' => null,
                 ]);
             }
 
@@ -284,12 +338,14 @@ class PublicController extends Controller
                 'metadata' => [
                     'pax' => $validated['pax'],
                     'paxChildren' => $validated['paxChildren'] ?? 0,
-                    'selected_services' => $validated['selected_services'] ?? []
+                    'selected_services' => $validated['selected_services'] ?? [],
+                    'service_qty' => $validated['service_qty'] ?? [],
+                    'use_van' => (bool) ($validated['use_van'] ?? false),
                 ],
             ]));
 
             // Set Carbon locale for date formatting
-            $locale = session('locale', 'id');
+            $locale = session('locale', 'my');
             $carbonLocaleMap = ['id' => 'id', 'my' => 'ms', 'en' => 'en'];
             $carbonLocale = $carbonLocaleMap[$locale] ?? 'id';
             $formattedDate = Carbon::parse($validated['startDate'])
@@ -303,18 +359,25 @@ class PublicController extends Controller
                 ->locale($carbonLocale)
                 ->translatedFormat('d F Y, H:i');
 
-            $waMessage = __('Halo Sujai Laketoba, saya ingin memesan paket wisata.')."\n\n".
+            $waMessage = __('Halo Sujai Toba Sumatera, saya ingin memesan paket wisata.')."\n\n".
                          '*'.__('Detail Pesanan:')."*\n".
                          '- '.__('Kode Booking').': '.$booking->bookingCode."\n".
                          '- '.__('Status').': '.__('Menunggu konfirmasi admin')."\n".
                          '- '.__('Paket').': '.$package->name."\n".
                          '- '.__('Link Paket').': '.route('tour.package.detail', $package->slug)."\n".
                          '- '.__('Nama').': '.$validated['customerName']."\n".
-                         '- '.__('Email').': '.$validated['customerEmail']."\n".
+                         // Email tidak lagi wajib di form; barisnya hanya ikut
+                         // bila memang diisi. Membacanya tanpa penjaga membuat
+                         // SELURUH pengiriman pesanan gagal dengan "Undefined
+                         // array key" -- tamu menerima form yang memantul tanpa
+                         // pesan yang bisa ia perbaiki.
+                         (! empty($validated['customerEmail'])
+                             ? '- '.__('Email').': '.$validated['customerEmail']."\n"
+                             : '').
                          '- '.__('WhatsApp').': '.$validated['customerPhone']."\n".
                          '- '.__('Tanggal').': '.$formattedDate."\n".
                          '- '.__('Peserta').': '.$validated['pax'].' '.__('Orang')."\n".
-                         '- '.__('Estimasi Total').': Rp '.number_format((float) $booking->totalPrice, 0, ',', '.')."\n".
+                         '- '.__('Estimasi Total').': '.\App\Helpers\CurrencyHelper::formatIn($booking->totalPrice, $booking->currency)."\n".
                          '- '.__('Tanggal Booking').': '.$bookingDate."\n\n".
                          '*'.__('Link Penting:')."*\n".
                          '- '.__('Invoice').': '.$invoiceUrl."\n".
@@ -326,31 +389,17 @@ class PublicController extends Controller
 
             $waMessage .= "\n".__('Mohon konfirmasinya. Terima kasih!');
 
-            $settings = Setting::where('key', 'cms_tour')->first()?->value ?? [];
-            $genSettings = Setting::where('key', 'general')->first()?->value ?? [];
+            // Satu sumber nomor (ContactHelper), sama dengan yang ditampilkan di
+            // footer/navbar/pembayaran. Sebelumnya blok ini menurunkan nomornya
+            // sendiri dari setting, sehingga bisa berbeda dari yang dilihat tamu.
+            $waUrl = \App\Helpers\ContactHelper::whatsappLink($waMessage);
 
-            $waSource = $settings['contact_whatsapp']
-                ?? $genSettings['contact_whatsapp'] 
-                ?? config('services.whatsapp.number');
-            $waNumber = preg_replace('/[^0-9]/', '', (string) $waSource);
-
-            // If there's no WhatsApp number configured, log and return success without WA URL
-            if (empty($waNumber)) {
-                \Log::warning('submitBooking: WhatsApp number not configured.', ['cms_tour' => $settings, 'general' => $genSettings]);
-
-                return back()->with([
-                    'success' => __('Booking berhasil dikirim! Kami akan menghubungi Anda segera.'),
-                    'bookingCode' => $booking->bookingCode,
-                    'whatsappUrl' => null,
-                    'warning' => __('Nomor WhatsApp belum dikonfigurasi. Tim admin akan menghubungi Anda.'),
-                ]);
-            }
-
-            $waUrl = "https://wa.me/{$waNumber}?text=".urlencode($waMessage);
-
-            return back()->with([
+            // Redirect ke URL permanen, bukan back(). Dengan back(), kode booking
+            // hidup di flash session: begitu tamu me-refresh atau menekan Back,
+            // satu-satunya bukti pesanannya hilang. Halaman pelacakan menampung
+            // status, rincian biaya, invoice, dan tombol konfirmasi sekaligus.
+            return redirect()->route('booking.track', $booking->bookingCode)->with([
                 'success' => __('Booking berhasil dikirim! Kami akan menghubungi Anda segera.'),
-                'bookingCode' => $booking->bookingCode,
                 'whatsappUrl' => $waUrl,
             ]);
         } catch (\Exception $e) {
@@ -384,7 +433,17 @@ class PublicController extends Controller
         $code = strtoupper(trim($code));
         $booking = \App\Models\Booking::with(['package', 'package.city'])
             ->where('bookingCode', $code)
-            ->firstOrFail();
+            ->first();
+
+        // firstOrFail() melempar tamu ke 404 mentah. Kode yang salah ketik adalah
+        // kesalahan yang wajar dan sering terjadi justru saat orang cemas menunggu
+        // kabar pesanannya — kembalikan ke form dengan pesan yang bisa ditindaklanjuti.
+        if (! $booking) {
+            return redirect()
+                ->route('booking.track.form')
+                ->withInput(['booking_code' => $code])
+                ->with('error', __('Kode booking :code tidak ditemukan. Periksa kembali huruf dan angkanya, atau hubungi kami jika Anda yakin kodenya benar.', ['code' => $code]));
+        }
 
         return view('booking.track', compact('booking', 'siteSettings'));
     }
@@ -422,7 +481,24 @@ class PublicController extends Controller
     {
         $siteSettings = $this->getSiteSettings(['cms_landing', 'general']);
 
-        return view('pages.payment', compact('siteSettings'));
+        // Rekening dari pengaturan perusahaan — sumber yang sama dengan invoice.
+        // Halaman ini dulu menulis "Hubungi kami untuk no. rekening" secara mati
+        // di dua kotak bank, jadi meski admin sudah mengisi rekening, halaman
+        // yang isinya cuma satu hal itu tetap tidak memberitahukannya.
+        $company = Setting::where('key', 'company')->first()?->value ?? [];
+        $bankAccounts = array_values(array_filter($company['bank_accounts'] ?? [], function ($row) {
+            return ! empty($row['number'] ?? null);
+        }));
+
+        if (! $bankAccounts && ! empty($company['bank_account'])) {
+            $bankAccounts = [[
+                'bank' => $company['bank_name'] ?? 'Bank',
+                'number' => $company['bank_account'],
+                'holder' => $company['bank_account_name'] ?? ($company['legal_name'] ?? null),
+            ]];
+        }
+
+        return view('pages.payment', compact('siteSettings', 'bankAccounts'));
     }
 
     public function submitOutboundQuote(Request $request)
@@ -436,15 +512,21 @@ class PublicController extends Controller
             'whatsapp' => 'required|string|max:255',
         ]);
 
-        $generalSettings = Setting::where('key', 'general')->first()?->value ?? [];
-        $waSource = $generalSettings['contact_whatsapp'] ?? config('services.whatsapp.number');
-        $waNumber = preg_replace('/[^0-9]/', '', (string) $waSource);
+        // Satu sumber kebenaran (ContactHelper), sama dengan navbar/footer/booking.
+        // Sebelumnya blok ini menurunkan nomor dari settings secara langsung,
+        // sehingga bisa berbeda dari yang tertera di halaman bila cache belum bersih.
+        $waNumber = \App\Helpers\ContactHelper::whatsappDigits();
 
         if ($waNumber === '') {
             return back()->with('error', __('Nomor WhatsApp belum dikonfigurasi.'));
         }
 
-        $message = "Halo Sujai Laketoba, saya ingin meminta penawaran outbound.\n\n"
+        // Catat permintaan di log: halaman ini hanya membuat tautan WhatsApp,
+        // jadi bila tamu menutup halaman sebelum menekan tombolnya, permintaan
+        // ini hilang tanpa jejak. Dengan log, admin masih bisa menindaklanjuti.
+        Log::info('Outbound quote request', $validated);
+
+        $message = __('Halo Sujai Toba Sumatera, saya ingin meminta penawaran outbound.')."\n\n"
             ."Company: {$validated['company_name']}\n"
             ."Peserta: {$validated['participants']}\n"
             ."Lokasi: {$validated['location']}\n"

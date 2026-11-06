@@ -4,7 +4,7 @@
 @section('page-title', 'Preview Artikel Blog')
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-10 pb-32">
+<div class="max-w-5xl mx-auto space-y-6 pb-14">
     <!-- Action Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
         <div class="flex items-center gap-4">
@@ -28,7 +28,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
         <!-- Content Column -->
-        <div class="lg:col-span-8 space-y-10">
+        <div class="lg:col-span-8 space-y-6">
             <!-- Article Header -->
             <div class="bg-white rounded-[3rem] p-10 lg:p-16 border border-slate-50 shadow-sm space-y-8">
                 <div class="space-y-4">
@@ -65,7 +65,7 @@
             <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white space-y-6 shadow-2xl">
                 <div class="flex items-center justify-between">
                     <h3 class="text-[11px] font-black uppercase tracking-widest text-white/40">Status Artikel</h3>
-                    <span class="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest {{ $blog->status === 'published' ? 'bg-emerald-500' : 'bg-amber-500' }}">
+                    <span class="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest {{ $blog->status === 'published' ? 'bg-green-500' : 'bg-amber-500' }}">
                         {{ $blog->status }}
                     </span>
                 </div>
@@ -83,7 +83,7 @@
                     </div>
                     <div class="space-y-2 pt-6 border-t border-white/5">
                         <p class="text-[9px] font-black text-white/30 uppercase tracking-widest">Slug (URL)</p>
-                        <div class="p-3 bg-white/5 rounded-xl text-[10px] font-mono text-indigo-300 break-all">
+                        <div class="p-3 bg-white/5 rounded-xl text-[10px] font-mono text-green-400 break-all">
                             /blogs/{{ $blog->slug }}
                         </div>
                     </div>

@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.profile.update') }}" method="POST" class="p-10 space-y-10">
+        <form action="{{ route('admin.profile.update') }}" method="POST" class="p-10 space-y-6">
             @csrf @method('PATCH')
 
             <!-- Identity -->
@@ -80,7 +80,7 @@
             </div>
 
             <!-- Form Actions -->
-            <div class="pt-10 border-t border-slate-50 flex items-center justify-end">
+            <div class="pt-6 border-t border-slate-50 flex items-center justify-end">
                 <button type="submit" class="px-12 py-5 bg-slate-900 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest hover:bg-toba-green transition shadow-xl shadow-slate-200 group">
                     <i class="fas fa-save mr-2 group-hover:scale-125 transition"></i> Simpan Perubahan
                 </button>

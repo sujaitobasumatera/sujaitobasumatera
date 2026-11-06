@@ -23,7 +23,7 @@
         <form action="{{ route('admin.cities.store') }}" method="POST" enctype="multipart/form-data" x-data="cityForm" class="p-12">
             @csrf
             
-            <div class="space-y-10">
+            <div class="space-y-6">
                 <!-- Step 1: Lokasi Terstruktur -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
@@ -61,8 +61,8 @@
                             <!-- Manual Input Field -->
                             <div x-show="regencyId === 'manual'" x-transition class="relative group">
                                 <input type="text" name="regency_name_manual" placeholder="Ketik Nama Kabupaten Baru..."
-                                    class="w-full px-6 py-4 bg-emerald-50 border-2 border-emerald-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition font-bold text-emerald-700 placeholder:text-emerald-200">
-                                <div class="absolute right-6 top-1/2 -translate-y-1/2 text-emerald-400">
+                                    class="w-full px-6 py-4 bg-green-50 border-2 border-green-100 rounded-2xl focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition font-bold text-green-700 placeholder:text-green-200">
+                                <div class="absolute right-6 top-1/2 -translate-y-1/2 text-green-400">
                                     <i class="fas fa-pen-nib"></i>
                                 </div>
                             </div>
@@ -99,7 +99,7 @@
                         class="w-full px-8 py-5 bg-slate-50 border-none rounded-[2rem] focus:ring-4 focus:ring-toba-green/10 focus:border-toba-green transition font-medium text-slate-600 leading-relaxed">{{ old('description') }}</textarea>
                 </div>
 
-                <div class="pt-10 border-t border-slate-50 flex items-center gap-6">
+                <div class="pt-6 border-t border-slate-50 flex items-center gap-6">
                     <button type="submit" class="flex-1 bg-slate-900 text-white py-5 rounded-[2rem] font-black uppercase tracking-widest hover:bg-black transition shadow-2xl shadow-slate-200 group">
                         <i class="fas fa-check-circle mr-2 text-toba-green group-hover:scale-125 transition"></i> Simpan Destinasi
                     </button>

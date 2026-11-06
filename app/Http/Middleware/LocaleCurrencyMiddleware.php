@@ -27,12 +27,12 @@ class LocaleCurrencyMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Set default locale to Indonesia if not yet set
+        // Set default locale to Malaysia (MYR) if not yet set
         if (! session()->has('locale')) {
-            session(['locale' => 'id']);
+            session(['locale' => 'my']);
         }
 
-        $locale = session('locale', 'id');
+        $locale = session('locale', 'my');
 
         // Set Laravel application locale
         app()->setLocale($locale);

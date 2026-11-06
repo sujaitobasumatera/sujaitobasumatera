@@ -14,7 +14,7 @@ class PwaController extends Controller
         return response()->json([
             'name'             => 'Sujai Admin',
             'short_name'       => 'Sujai Admin',
-            'description'      => 'Panel manajemen wisata Sujai Laketoba',
+            'description'      => 'Panel manajemen wisata Sujai Toba Sumatera',
             'start_url'        => '/admin/',
             'scope'            => '/',
             'display'          => 'standalone',
@@ -61,7 +61,7 @@ class PwaController extends Controller
         $manifest = [
             'name'             => 'Sujai Admin Panel',
             'short_name'       => 'Sujai Admin',
-            'description'      => 'Panel manajemen wisata Sujai Laketoba — khusus Superadmin',
+            'description'      => 'Panel manajemen wisata Sujai Toba Sumatera — khusus Superadmin',
             'start_url'        => '/admin/',
             'scope'            => '/admin/',
             'display'          => 'standalone',

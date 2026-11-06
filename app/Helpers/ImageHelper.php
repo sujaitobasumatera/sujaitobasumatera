@@ -12,6 +12,43 @@ use Illuminate\Support\Facades\Storage;
 require_once __DIR__.'/RatingHelper.php';
 
 /**
+ * Batas unggah efektif server, dalam KB.
+ *
+ * PHP menolak berkas yang melewati upload_max_filesize/post_max_size SEBELUM
+ * Laravel sempat memvalidasi: form-nya memantul tanpa pesan kesalahan yang
+ * bisa dipahami admin. Jadi aturan validasi dan tulisan di form harus mengutip
+ * angka server yang sebenarnya, bukan angka yang kita harapkan.
+ *
+ * @param  int  $ceilingKb  batas atas yang kita mau, misal 50 MB untuk video
+ */
+if (! function_exists('maxUploadKb')) {
+    function maxUploadKb(int $ceilingKb = 51200): int
+    {
+        $toKb = static function (string $val): int {
+            $val = trim($val);
+            if ($val === '' || $val === '0') {
+                return PHP_INT_MAX; // 0 = tanpa batas
+            }
+            $unit = strtolower(substr($val, -1));
+            $num = (float) $val;
+
+            return (int) match ($unit) {
+                'g' => $num * 1024 * 1024,
+                'm' => $num * 1024,
+                'k' => $num,
+                default => $num / 1024,
+            };
+        };
+
+        return max(1, min(
+            $ceilingKb,
+            $toKb((string) ini_get('upload_max_filesize')),
+            $toKb((string) ini_get('post_max_size'))
+        ));
+    }
+}
+
+/**
  * Global Image Path Resolution Helper
  *
  * Single source of truth for resolving storage/asset paths to full URLs.
@@ -27,6 +64,16 @@ require_once __DIR__.'/RatingHelper.php';
 if (! function_exists('imageUrl')) {
     function imageUrl(?string $path, ?string $fallback = null): string
     {
+        // Request-level memo: this resolver runs several file_exists()/Storage::exists()
+        // stat calls and is invoked for every image in every loop. A given (path, fallback)
+        // resolves identically within one request, so cache it to avoid repeating the I/O.
+        static $memo = [];
+        $memoKey = ($path ?? "\0").'|'.($fallback ?? "\0");
+        if (array_key_exists($memoKey, $memo)) {
+            return $memo[$memoKey];
+        }
+
+        return $memo[$memoKey] = (function () use ($path, $fallback): string {
         // If path is null or empty, use fallback if specified, otherwise default local asset
         if (empty($path) || $path === 'null') {
             if ($fallback) {
@@ -37,6 +84,34 @@ if (! function_exists('imageUrl')) {
         }
 
         $lower = strtolower($path);
+
+        // BERKAS NYATA MENANG. Seluruh pemetaan kata kunci di bawah ini adalah
+        // jaring pengaman untuk path warisan yang berkasnya sudah tidak ada
+        // (mis. `assets/images/packages/toba-1.jpg`), bukan aturan penggantian.
+        //
+        // Dulu urutannya terbalik: kata kunci diperiksa lebih dulu, pemeriksaan
+        // berkas paling akhir. Akibatnya foto asli yang benar-benar diunggah
+        // pun dibajak begitu namanya memuat 'toba', 'samosir', 'medan', dan
+        // seterusnya -- admin mengunggah foto hotel bernama "danau-toba-1.jpg",
+        // yang muncul di halaman justru gambar bawaan. Tidak ada gejalanya:
+        // halaman tetap menampilkan gambar yang terlihat wajar.
+        //
+        // Hanya berlaku untuk path lokal. URL penuh, data:, dan blob: tetap
+        // diurus oleh cabangnya sendiri di bawah.
+        if (! preg_match('~^(https?:)?//|^(data|blob):~i', $path)) {
+            $nyata = ltrim($path, '/');
+            if (str_starts_with($nyata, '_static/')) {
+                $nyata = substr($nyata, 8);
+            }
+            $tanpaStorage = str_starts_with($nyata, 'storage/') ? substr($nyata, 8) : $nyata;
+
+            if ($nyata !== '' && file_exists(public_path($nyata)) && ! is_dir(public_path($nyata))) {
+                return asset($nyata);
+            }
+            if ($tanpaStorage !== '' && Storage::disk('public')->exists($tanpaStorage)) {
+                return Storage::disk('public')->url($tanpaStorage);
+            }
+        }
 
         // Special local fallback keys or avatar keywords
         if (str_contains($lower, 'staff1')) {
@@ -360,6 +435,7 @@ if (! function_exists('imageUrl')) {
         }
 
         return '/storage/' . ltrim($clean, '/');
+        })();
     }
 }
 
@@ -378,28 +454,67 @@ if (! function_exists('imageSrcset')) {
             return '';
         }
 
+        // Dihitung sekali per URL per permintaan. Satu halaman grid memanggil
+        // ini untuk setiap kartu, dan tiap panggilan menyentuh disk dua sampai
+        // tiga kali; tanpa memo, halaman berisi 12 kartu membayar puluhan
+        // pemeriksaan berkas untuk pertanyaan yang jawabannya sama.
+        static $memo = [];
+        if (array_key_exists($resolvedUrl, $memo)) {
+            return $memo[$resolvedUrl];
+        }
+
         $rel = ltrim((string) parse_url($resolvedUrl, PHP_URL_PATH), '/');
-        // Skip if already a variant, or the base file isn't a local public asset.
-        if ($rel === '' || preg_match('/-(400|800)\.webp$/i', $rel) || ! is_file(public_path($rel))) {
-            return '';
+        if ($rel === '') {
+            return $memo[$resolvedUrl] = '';
         }
 
-        $v400 = preg_replace('/\.webp$/i', '-400.webp', $rel);
-        $v800 = preg_replace('/\.webp$/i', '-800.webp', $rel);
+        // ---- Jalur 1: aset bawaan di public/, konvensi "-400/-800".
+        if (! preg_match('/-(400|800)\.webp$/i', $rel) && is_file(public_path($rel))) {
+            $v400 = preg_replace('/\.webp$/i', '-400.webp', $rel);
+            $v800 = preg_replace('/\.webp$/i', '-800.webp', $rel);
 
-        $parts = [];
-        if (is_file(public_path($v400))) {
-            $parts[] = asset($v400).' 400w';
-        }
-        if (is_file(public_path($v800))) {
-            $parts[] = asset($v800).' 800w';
-        }
-        if (empty($parts)) {
-            return '';
-        }
-        $parts[] = $resolvedUrl.' 1200w';
+            $parts = [];
+            if (is_file(public_path($v400))) {
+                $parts[] = asset($v400).' 400w';
+            }
+            if (is_file(public_path($v800))) {
+                $parts[] = asset($v800).' 800w';
+            }
+            if (! empty($parts)) {
+                $parts[] = $resolvedUrl.' 1200w';
 
-        return implode(', ', $parts);
+                return $memo[$resolvedUrl] = implode(', ', $parts);
+            }
+        }
+
+        // ---- Jalur 2: unggahan admin di /storage/, konvensi mobile/medium/large.
+        //
+        // Dua konvensi hidup berdampingan di proyek ini: aset bawaan dipotong
+        // dengan akhiran ukuran, sedangkan berkas yang diunggah lewat panel
+        // admin dipotong ke dalam subfolder oleh pipeline Media. Kartu paket
+        // memakai KEDUANYA -- paket contoh menunjuk gambar bawaan, paket asli
+        // menunjuk unggahan admin -- jadi helper yang cuma tahu satu konvensi
+        // akan diam persis di paket yang paling ramai dilihat.
+        if (str_contains($rel, 'storage/')) {
+            $bersih = substr($rel, strpos($rel, 'storage/') + 8);
+            $dir = dirname($bersih);
+            $base = basename($bersih);
+            $awalan = ($dir === '.' || $dir === '/') ? '' : $dir.'/';
+
+            $disk = \Illuminate\Support\Facades\Storage::disk('public');
+            $parts = [];
+            foreach (['mobile' => 480, 'medium' => 800, 'large' => 1200] as $folder => $lebar) {
+                $jalur = $awalan.$folder.'/'.$base;
+                if ($disk->exists($jalur)) {
+                    $parts[] = $disk->url($jalur).' '.$lebar.'w';
+                }
+            }
+            if (! empty($parts)) {
+                return $memo[$resolvedUrl] = implode(', ', $parts);
+            }
+        }
+
+        return $memo[$resolvedUrl] = '';
     }
 }
 

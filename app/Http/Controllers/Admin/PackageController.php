@@ -99,6 +99,35 @@ class PackageController extends Controller
             'cityIds.*' => 'exists:cities,id',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:15360',
+            // Media tambahan. Nama input sengaja TIDAK 'videos'/'brochure':
+            // keduanya kolom fillable, jadi berkas mentahnya akan ikut masuk
+            // ke fill() dan menimpa kolom dengan objek UploadedFile.
+            'mapEmbed' => 'nullable|string|max:2000',
+            'video_links' => 'nullable|array',
+            'video_links.*.src' => 'nullable|string|max:500',
+            'video_links.*.title' => 'nullable|string|max:255',
+            'video_links.*.gear' => 'nullable|string|max:255',
+            'accommodations' => 'nullable|array',
+            'accommodations.*.night' => 'nullable|integer|min:1|max:60',
+            'accommodations.*.name' => 'nullable|string|max:255',
+            'accommodations.*.class' => 'nullable|string|max:100',
+            'accommodations.*.image' => 'nullable|string|max:500',
+            // Bentuknya saja yang dijaga di sini. Yang menentukan tautan itu
+            // benar-benar boleh dirender adalah Package::videoEmbedUrl(), dan
+            // tautan tak dikenali dibuang di sana -- bukan diteruskan ke <iframe>.
+            'accommodations.*.video' => 'nullable|string|max:500',
+            'highlights' => 'nullable|array',
+            'highlights.*.title' => 'nullable|string|max:255',
+            'highlights.*.text' => 'nullable|string|max:1000',
+            'accommodation_files' => 'nullable|array',
+            'accommodation_files.*' => 'image|mimes:jpeg,png,jpg,webp|max:15360',
+            'video_files' => 'nullable|array',
+            'video_files.*' => 'file|mimetypes:video/mp4,video/webm,video/quicktime|max:'.maxUploadKb(51200),
+            'brochure_file' => 'nullable|file|mimes:pdf|max:'.maxUploadKb(20480),
+            'price_image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:15360',
+            'remove_videos' => 'nullable|array',
+            'remove_brochure' => 'nullable|boolean',
+            'remove_price_image' => 'nullable|boolean',
             'itinerary' => 'nullable|array',
             'cost_price' => 'nullable|numeric|min:0',
             'includes' => 'nullable|array',
@@ -109,16 +138,38 @@ class PackageController extends Controller
             'pricingDetails.additional_services.*.name' => 'required|string|max:255',
             'pricingDetails.additional_services.*.icon' => 'required|string|max:255',
             'pricingDetails.additional_services.*.price' => 'required|numeric|min:0',
+            // Kendaraan besar: tarif PENGGANTI per pax, bukan biaya tambahan.
+            'pricingDetails.vehicle' => 'nullable|array',
+            'pricingDetails.vehicle.name' => 'nullable|string|max:255',
+            'pricingDetails.vehicle.min_pax' => 'nullable|integer|min:1',
+            'pricingDetails.vehicle.price' => 'nullable|numeric|min:0',
             'pricingDetails.tiers' => 'nullable|array',
             'pricingDetails.tiers.*.min_pax' => 'required|integer|min:1',
             'pricingDetails.tiers.*.max_pax' => 'required|integer|gte:pricingDetails.tiers.*.min_pax',
             'pricingDetails.tiers.*.price' => 'required|numeric|min:0',
-            'pricingDetails.tiers.*.child_price' => 'nullable|numeric|min:0',
+            // Wajib. Begitu sebuah paket punya harga grosir, harga anak TIDAK
+            // lagi boleh diam-diam diambil dari harga anak paket -- itu
+            // mencampur harga dasar dengan harga tier, dan tamu rombongan
+            // membayar harga anak yang tidak pernah diniatkan siapa pun.
+            'pricingDetails.tiers.*.child_price' => 'required|numeric|min:0',
         ]);
 
         $pricingDetails = $request->input('pricingDetails', []);
         if (!isset($pricingDetails['additional_services'])) {
             $pricingDetails['additional_services'] = [];
+        }
+        // Tarif kosong = paket ini tidak menawarkan kendaraan besar. Blok
+        // setengah terisi dibuang, bukan disimpan: `vehicle` tanpa harga akan
+        // memunculkan pilihan kendaraan seharga nol di halaman pemesanan.
+        $kendaraan = $pricingDetails['vehicle'] ?? null;
+        if (! is_array($kendaraan) || trim((string) ($kendaraan['price'] ?? '')) === '') {
+            unset($pricingDetails['vehicle']);
+        } else {
+            $pricingDetails['vehicle'] = [
+                'name' => trim((string) ($kendaraan['name'] ?? '')) ?: 'Van',
+                'min_pax' => (int) ($kendaraan['min_pax'] ?? 6) ?: 6,
+                'price' => (float) $kendaraan['price'],
+            ];
         }
         if (!isset($pricingDetails['tiers'])) {
             $pricingDetails['tiers'] = [];
@@ -127,6 +178,17 @@ class PackageController extends Controller
 
         try {
             $validated['image_files'] = $request->file('images');
+            $validated['video_files'] = $request->file('video_files');
+            $validated['brochure_file'] = $request->file('brochure_file');
+            $validated['price_image_file'] = $request->file('price_image_file');
+            // Dikirim eksplisit walau kosong. Kalau kuncinya hilang saat admin
+            // menghapus baris tautan terakhir, service tidak punya cara
+            // membedakan "tidak ada perubahan" dari "hapus semuanya".
+            $validated['video_links'] = $request->input('video_links', []);
+            $validated['remove_videos'] = $request->input('remove_videos', []);
+            $validated['accommodations'] = $request->input('accommodations', []);
+            $validated['highlights'] = $request->input('highlights', []);
+            $validated['accommodation_files'] = $request->file('accommodation_files', []);
             $package = $tourService->savePackage($validated);
 
             $this->logActivity('created', "Created new package: {$package->name}", $package);
@@ -160,6 +222,35 @@ class PackageController extends Controller
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:15360',
             'remove_images' => 'nullable|array',
+            // Media tambahan. Nama input sengaja TIDAK 'videos'/'brochure':
+            // keduanya kolom fillable, jadi berkas mentahnya akan ikut masuk
+            // ke fill() dan menimpa kolom dengan objek UploadedFile.
+            'mapEmbed' => 'nullable|string|max:2000',
+            'video_links' => 'nullable|array',
+            'video_links.*.src' => 'nullable|string|max:500',
+            'video_links.*.title' => 'nullable|string|max:255',
+            'video_links.*.gear' => 'nullable|string|max:255',
+            'accommodations' => 'nullable|array',
+            'accommodations.*.night' => 'nullable|integer|min:1|max:60',
+            'accommodations.*.name' => 'nullable|string|max:255',
+            'accommodations.*.class' => 'nullable|string|max:100',
+            'accommodations.*.image' => 'nullable|string|max:500',
+            // Bentuknya saja yang dijaga di sini. Yang menentukan tautan itu
+            // benar-benar boleh dirender adalah Package::videoEmbedUrl(), dan
+            // tautan tak dikenali dibuang di sana -- bukan diteruskan ke <iframe>.
+            'accommodations.*.video' => 'nullable|string|max:500',
+            'highlights' => 'nullable|array',
+            'highlights.*.title' => 'nullable|string|max:255',
+            'highlights.*.text' => 'nullable|string|max:1000',
+            'accommodation_files' => 'nullable|array',
+            'accommodation_files.*' => 'image|mimes:jpeg,png,jpg,webp|max:15360',
+            'video_files' => 'nullable|array',
+            'video_files.*' => 'file|mimetypes:video/mp4,video/webm,video/quicktime|max:'.maxUploadKb(51200),
+            'brochure_file' => 'nullable|file|mimes:pdf|max:'.maxUploadKb(20480),
+            'price_image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:15360',
+            'remove_videos' => 'nullable|array',
+            'remove_brochure' => 'nullable|boolean',
+            'remove_price_image' => 'nullable|boolean',
             'itinerary' => 'nullable|array',
             'cost_price' => 'nullable|numeric|min:0',
             'includes' => 'nullable|array',
@@ -170,16 +261,38 @@ class PackageController extends Controller
             'pricingDetails.additional_services.*.name' => 'required|string|max:255',
             'pricingDetails.additional_services.*.icon' => 'required|string|max:255',
             'pricingDetails.additional_services.*.price' => 'required|numeric|min:0',
+            // Kendaraan besar: tarif PENGGANTI per pax, bukan biaya tambahan.
+            'pricingDetails.vehicle' => 'nullable|array',
+            'pricingDetails.vehicle.name' => 'nullable|string|max:255',
+            'pricingDetails.vehicle.min_pax' => 'nullable|integer|min:1',
+            'pricingDetails.vehicle.price' => 'nullable|numeric|min:0',
             'pricingDetails.tiers' => 'nullable|array',
             'pricingDetails.tiers.*.min_pax' => 'required|integer|min:1',
             'pricingDetails.tiers.*.max_pax' => 'required|integer|gte:pricingDetails.tiers.*.min_pax',
             'pricingDetails.tiers.*.price' => 'required|numeric|min:0',
-            'pricingDetails.tiers.*.child_price' => 'nullable|numeric|min:0',
+            // Wajib. Begitu sebuah paket punya harga grosir, harga anak TIDAK
+            // lagi boleh diam-diam diambil dari harga anak paket -- itu
+            // mencampur harga dasar dengan harga tier, dan tamu rombongan
+            // membayar harga anak yang tidak pernah diniatkan siapa pun.
+            'pricingDetails.tiers.*.child_price' => 'required|numeric|min:0',
         ]);
 
         $pricingDetails = $request->input('pricingDetails', []);
         if (!isset($pricingDetails['additional_services'])) {
             $pricingDetails['additional_services'] = [];
+        }
+        // Tarif kosong = paket ini tidak menawarkan kendaraan besar. Blok
+        // setengah terisi dibuang, bukan disimpan: `vehicle` tanpa harga akan
+        // memunculkan pilihan kendaraan seharga nol di halaman pemesanan.
+        $kendaraan = $pricingDetails['vehicle'] ?? null;
+        if (! is_array($kendaraan) || trim((string) ($kendaraan['price'] ?? '')) === '') {
+            unset($pricingDetails['vehicle']);
+        } else {
+            $pricingDetails['vehicle'] = [
+                'name' => trim((string) ($kendaraan['name'] ?? '')) ?: 'Van',
+                'min_pax' => (int) ($kendaraan['min_pax'] ?? 6) ?: 6,
+                'price' => (float) $kendaraan['price'],
+            ];
         }
         if (!isset($pricingDetails['tiers'])) {
             $pricingDetails['tiers'] = [];
@@ -188,6 +301,17 @@ class PackageController extends Controller
 
         try {
             $validated['image_files'] = $request->file('images');
+            $validated['video_files'] = $request->file('video_files');
+            $validated['brochure_file'] = $request->file('brochure_file');
+            $validated['price_image_file'] = $request->file('price_image_file');
+            // Dikirim eksplisit walau kosong. Kalau kuncinya hilang saat admin
+            // menghapus baris tautan terakhir, service tidak punya cara
+            // membedakan "tidak ada perubahan" dari "hapus semuanya".
+            $validated['video_links'] = $request->input('video_links', []);
+            $validated['remove_videos'] = $request->input('remove_videos', []);
+            $validated['accommodations'] = $request->input('accommodations', []);
+            $validated['highlights'] = $request->input('highlights', []);
+            $validated['accommodation_files'] = $request->file('accommodation_files', []);
             $tourService->savePackage($validated, $package);
 
             $this->logActivity('updated', "Updated package: {$package->name}", $package);

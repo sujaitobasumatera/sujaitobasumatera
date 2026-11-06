@@ -123,8 +123,8 @@ class CityController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'nullable|string|max:50',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:15360',
-            'media_id' => 'nullable|exists:media,id',
+            'city_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:15360',
+            'city_image_media_id' => 'nullable|exists:media,id',
             'province_id' => 'required_if:regency_id,manual|nullable|exists:provinces,id',
         ]);
 
@@ -136,11 +136,17 @@ class CityController extends Controller
             $validated['regency_id'] = $regency->id;
         }
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $this->uploadAndIndex($request->file('image'), 'cities', 'destinations', $validated['name']);
-        } elseif ($request->filled('media_id')) {
-            $media = Media::find($request->media_id);
-            $validated['image'] = $media->path;
+        // Image input (dual mode: file upload or media library) — must match the
+        // field names posted by <x-image-input name="city_image"> in the edit form.
+        if ($request->hasFile('city_image')) {
+            $path = $this->uploadAndIndex($request->file('city_image'), 'destinations', null, $validated['name']);
+            $mediaRecord = Media::where('path', $path)->latest()->first();
+            $validated['image_id'] = $mediaRecord?->id;
+            $validated['image'] = $path;
+        } elseif ($request->filled('city_image_media_id')) {
+            $validated['image_id'] = $request->city_image_media_id;
+            $media = Media::find($request->city_image_media_id);
+            $validated['image'] = $media ? $media->path : null;
         }
 
         if ($validated['name'] !== $city->name) {

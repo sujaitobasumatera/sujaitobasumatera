@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\AppConfigController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\ClientController;
@@ -42,9 +43,8 @@ Route::get('/home', function () {
 Route::get('/login', [WebAuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [WebAuthController::class, 'login'])->middleware('throttle:10,1');
 Route::post('/logout', [WebAuthController::class, 'logout'])->name('logout');
-Route::post('/register', [WebAuthController::class, 'register'])
-    ->name('register')
-    ->middleware('throttle:5,1');
+// Pendaftaran publik sengaja TIDAK disediakan: situs ini tidak punya area
+// pelanggan, akun hanya dibuat admin lewat panel (users.*).
 
 // API Sync (Realtime without Supabase)
 Route::get('/api/sync/version', [SyncController::class, 'getVersion'])->name('api.sync.version');
@@ -152,6 +152,13 @@ Route::middleware(['auth', 'role:superadmin,admin_tour,admin_umum'])->prefix('ad
         Route::get('/settings/general', [GeneralSettingsController::class, 'index'])->name('settings.general.index');
         Route::post('/settings/general', [GeneralSettingsController::class, 'update'])->name('settings.general.update');
         Route::post('/settings/refresh-rates', [SettingController::class, 'refreshExchangeRates'])->name('settings.refresh-rates');
+
+        // Application config. Superadmin only — deliberately narrower than the
+        // surrounding group, which also admits admin_umum.
+        Route::middleware('role:superadmin')->group(function () {
+            Route::get('/settings/app-config', [AppConfigController::class, 'index'])->name('settings.app-config.index');
+            Route::post('/settings/app-config', [AppConfigController::class, 'update'])->name('settings.app-config.update');
+        });
         Route::get('logs', [ActivityLogController::class, 'index'])->name('logs.index');
         Route::get('error-logs', [ErrorLogController::class, 'index'])->name('error-logs.index');
         Route::post('error-logs/clear', [ErrorLogController::class, 'clear'])->name('error-logs.clear');
@@ -173,6 +180,10 @@ Route::prefix('tour')->name('tour.')->group(function () {
     Route::get('/gallery', [PublicController::class, 'tourGallery'])->name('gallery');
     Route::get('/blog', [PublicController::class, 'tourBlog'])->name('blog');
     Route::get('/package/{slug}', [PublicController::class, 'tourPackageDetail'])->name('package.detail');
+    // Halaman detail yang sama, tanpa form pemesanan. Satu controller & satu
+    // view dengan flag -- menyalin view 1.000+ baris menjamin dua halaman ini
+    // melenceng, dan setiap perbaikan harus dikerjakan dua kali.
+    Route::get('/detail/{slug}', [PublicController::class, 'tourPackageDetailNoForm'])->name('package.detail.plain');
     Route::get('/blog/{slug}', [PublicController::class, 'tourBlogDetail'])->name('blog.detail');
 
     // Booking with Rate Limiting
@@ -189,14 +200,15 @@ Route::get('/about', [PublicController::class, 'about'])->name('about');
 Route::get('/terms', [PublicController::class, 'terms'])->name('terms');
 Route::get('/privacy', [PublicController::class, 'privacy'])->name('privacy');
 Route::get('/payment', [PublicController::class, 'payment'])->name('payment');
-Route::post('/outbound/quote/submit', [PublicController::class, 'submitOutboundQuote'])->name('outbound.quote.submit');
+Route::post('/outbound/quote/submit', [PublicController::class, 'submitOutboundQuote'])->middleware('throttle:5,1')->name('outbound.quote.submit');
 
 // Invoice & Itinerary
-Route::get('/invoice/{code}', [PdfController::class, 'streamInvoice'])->name('invoice.download');
+// Kode booking dibatasi lajunya: tanpa ini, kode 6 karakter bisa ditebak massal.
+Route::get('/invoice/{code}', [PdfController::class, 'streamInvoice'])->middleware('throttle:30,1')->name('invoice.download');
 Route::get('/download-itinerary/{slug}', [PdfController::class, 'downloadItinerary'])->name('itinerary.download');
 Route::get('/track-booking', [PublicController::class, 'showTrackBookingForm'])->name('booking.track.form');
-Route::post('/track-booking', [PublicController::class, 'redirectTrackBooking'])->name('booking.track.lookup');
-Route::get('/track-booking/{code}', [PublicController::class, 'trackBooking'])->name('booking.track');
+Route::post('/track-booking', [PublicController::class, 'redirectTrackBooking'])->middleware('throttle:20,1')->name('booking.track.lookup');
+Route::get('/track-booking/{code}', [PublicController::class, 'trackBooking'])->middleware('throttle:30,1')->name('booking.track');
 
 // Dynamic OpenGraph Banners
 Route::get('/og-banner/{type}/{id}.webp', [PublicController::class, 'generateOgBanner'])->name('og-banner');

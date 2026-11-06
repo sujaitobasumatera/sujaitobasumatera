@@ -42,7 +42,7 @@ class ReportController extends Controller
 
         $stats = [
             'total_orders' => $monthlyBookings->count(),
-            'revenue' => $monthlyBookings->sum('totalPrice'),
+            'revenue' => $monthlyBookings->sum('totalPrice_idr'),
         ];
 
         // 2. Status Summary (Monthly/Filtered)
@@ -74,7 +74,7 @@ class ReportController extends Controller
 
         $yearlySummary = [
             'orders' => $yearlyBookings->count(),
-            'revenue' => $yearlyBookings->sum('totalPrice'),
+            'revenue' => $yearlyBookings->sum('totalPrice_idr'),
         ];
 
         // 4. Monthly Chart Data
@@ -154,7 +154,7 @@ class ReportController extends Controller
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="'.$filename.'"');
 
-        fputcsv($handle, ['No', 'Tgl Pesan', 'ID Transaksi', 'Item', 'Pelanggan', 'Total', 'Status']);
+        fputcsv($handle, ['No', 'Tgl Pesan', 'ID Transaksi', 'Item', 'Pelanggan', 'Mata Uang', 'Total', 'Total (IDR)', 'Status']);
 
         foreach ($bookings as $index => $booking) {
             fputcsv($handle, [
@@ -163,7 +163,9 @@ class ReportController extends Controller
                 $booking->bookingCode,
                 $booking->package?->name ?? 'Custom',
                 $booking->customer?->name ?? 'Demo User',
+                $booking->currency,
                 $booking->totalPrice,
+                $booking->totalPrice_idr,
                 ucfirst($booking->status),
             ]);
         }

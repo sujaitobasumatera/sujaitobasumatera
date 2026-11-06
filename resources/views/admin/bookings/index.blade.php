@@ -52,7 +52,7 @@
         </div>
         <div class="flex items-center gap-3 w-full sm:w-auto">
             <a href="{{ route('admin.bookings.export', request()->all()) }}" class="flex-1 sm:flex-none bg-white border border-slate-200 text-slate-600 px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition text-center shadow-sm">
-                <i class="fas fa-file-csv mr-2 text-emerald-500"></i> Export CSV
+                <i class="fas fa-file-csv mr-2 text-green-500"></i> Export CSV
             </a>
             <a href="{{ route('admin.bookings.create') }}" class="flex-1 sm:flex-none bg-slate-900 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-toba-green transition shadow-xl shadow-slate-200 text-center">
                 <i class="fas fa-plus mr-2"></i> Tambah Pesanan
@@ -96,7 +96,7 @@
                 </div>
 
                 <!-- Date Range (Simplified) -->
-                <div class="flex items-center gap-3 w-full lg:w-auto">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full lg:w-auto">
                     <div class="group">
                         <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Dari</label>
                         <input type="date" name="date_from" value="{{ request('date_from') }}" 
@@ -174,7 +174,7 @@
                                             <h4 class="text-sm font-black text-slate-900 tracking-tight truncate">{{ $booking->customerName }}</h4>
                                             <div class="md:hidden flex flex-wrap items-center gap-2 mt-1">
                                                 <p class="text-[10px] font-bold text-slate-500 truncate max-w-[150px]">{{ $booking->package->name ?? 'N/A' }}</p>
-                                                <span class="text-[9px] font-black text-slate-900 uppercase">Rp {{ number_format($booking->totalPrice / 1000, 0) }}K</span>
+                                                <span class="text-[9px] font-black text-slate-900 uppercase">{{ \App\Helpers\CurrencyHelper::formatIn($booking->totalPrice, $booking->currency) }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -187,7 +187,7 @@
 
                                 <td class="px-8 py-5 text-center hidden md:table-cell">
                                     <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">Total Bayar</p>
-                                    <p class="text-xs font-black text-slate-900">Rp {{ number_format($booking->totalPrice / 1000, 0) }}K</p>
+                                    <p class="text-xs font-black text-slate-900">{{ \App\Helpers\CurrencyHelper::formatIn($booking->totalPrice, $booking->currency) }}</p>
                                 </td>
 
                                 <td class="px-6 md:px-8 py-5">
@@ -195,7 +195,7 @@
                                         @php
                                             $colors = [
                                                 'pending' => 'bg-amber-50 text-amber-600',
-                                                'confirmed' => 'bg-emerald-50 text-emerald-600',
+                                                'confirmed' => 'bg-green-50 text-green-600',
                                                 'completed' => 'bg-blue-50 text-blue-600',
                                                 'cancelled' => 'bg-rose-50 text-rose-600',
                                             ];
@@ -209,7 +209,7 @@
 
                                 <td class="px-6 md:px-8 py-5 text-right">
                                     <div class="flex items-center justify-end gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <a href="https://wa.me/{{ (str_starts_with($booking->customerPhone ?? '', '0') ? '62' . substr(preg_replace('/[^0-9]/', '', $booking->customerPhone), 1) : preg_replace('/[^0-9]/', '', $booking->customerPhone ?? '')) }}" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-500 text-white shadow-lg transition transform hover:-translate-y-0.5" title="WhatsApp">
+                                        <a href="https://wa.me/{{ (str_starts_with($booking->customerPhone ?? '', '0') ? '62' . substr(preg_replace('/[^0-9]/', '', $booking->customerPhone), 1) : preg_replace('/[^0-9]/', '', $booking->customerPhone ?? '')) }}" target="_blank" class="w-11 h-11 flex items-center justify-center rounded-xl bg-green-500 text-white shadow-lg transition transform hover:-translate-y-0.5" title="WhatsApp">
                                             <i class="fab fa-whatsapp text-xs"></i>
                                         </a>
 
@@ -217,27 +217,27 @@
                                         <form action="{{ route('admin.bookings.status', $booking) }}" method="POST" class="inline">
                                             @csrf @method('PATCH')
                                             <input type="hidden" name="status" value="confirmed">
-                                            <button type="submit" class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-500 text-white shadow-lg transition transform hover:-translate-y-0.5" title="Confirm">
+                                            <button type="submit" class="w-11 h-11 flex items-center justify-center rounded-xl bg-blue-500 text-white shadow-lg transition transform hover:-translate-y-0.5" title="Confirm">
                                                 <i class="fas fa-check text-[10px]"></i>
                                             </button>
                                         </form>
                                         @endif
 
-                                        <a href="{{ route('admin.bookings.show', $booking) }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-900 text-white shadow-lg transition transform hover:-translate-y-0.5" title="Detail">
+                                        <a href="{{ route('admin.bookings.show', $booking) }}" class="w-11 h-11 flex items-center justify-center rounded-xl bg-slate-900 text-white shadow-lg transition transform hover:-translate-y-0.5" title="Detail">
                                             <i class="fas fa-chevron-right text-[10px]"></i>
                                         </a>
 
-                                        <a href="{{ route('admin.bookings.invoice', $booking->bookingCode) }}" target="_blank" class="w-9 h-9 flex items-center justify-center rounded-xl bg-indigo-500 text-white shadow-lg transition transform hover:-translate-y-0.5" title="View PDF">
+                                        <a href="{{ route('admin.bookings.invoice', $booking->bookingCode) }}" target="_blank" class="w-11 h-11 flex items-center justify-center rounded-xl bg-green-700 text-white shadow-lg transition transform hover:-translate-y-0.5" title="View PDF">
                                             <i class="fas fa-file-pdf text-[10px]"></i>
                                         </a>
 
-                                        <a href="{{ route('admin.bookings.invoice.download', $booking->bookingCode) }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-600 shadow-sm transition transform hover:-translate-y-0.5 border border-slate-200" title="Download PDF">
+                                        <a href="{{ route('admin.bookings.invoice.download', $booking->bookingCode) }}" class="w-11 h-11 flex items-center justify-center rounded-xl bg-slate-100 text-slate-600 shadow-sm transition transform hover:-translate-y-0.5 border border-slate-200" title="Download PDF">
                                             <i class="fas fa-file-arrow-down text-[10px]"></i>
                                         </a>
 
                                         <form action="{{ route('admin.bookings.destroy', $booking) }}" method="POST" class="inline" onsubmit="return confirm('Hapus pesanan ini?');">
                                             @csrf @method('DELETE')
-                                            <button type="submit" class="w-9 h-9 flex items-center justify-center rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition shadow-sm">
+                                            <button type="submit" class="w-11 h-11 flex items-center justify-center rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition shadow-sm">
                                                 <i class="fas fa-trash-can text-[10px]"></i>
                                             </button>
                                         </form>
@@ -247,7 +247,7 @@
                         @endforeach
                     @empty
                         <tr>
-                            <td colspan="6" class="px-8 py-32 text-center">
+                            <td colspan="6" class="px-8 py-14 text-center">
                                 <div class="flex flex-col items-center justify-center text-slate-300">
                                     <i class="fas fa-folder-open text-6xl mb-4"></i>
                                     <p class="text-[10px] font-black uppercase tracking-[0.4em]">Tidak ada data ditemukan</p>
@@ -277,9 +277,9 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 translate-y-10"
-         class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] w-full max-w-md px-4"
+         class="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] md:bottom-10 left-1/2 -translate-x-1/2 z-[100] w-full max-w-md px-4"
          x-cloak>
-        <div class="bg-slate-900 text-white rounded-[2.5rem] p-5 shadow-2xl flex items-center justify-between border border-white/10 backdrop-blur-xl bg-opacity-90">
+        <div class="bg-slate-900 text-white rounded-[2.5rem] p-4 md:p-5 shadow-2xl flex flex-col sm:flex-row gap-3 sm:items-center justify-between border border-white/10 backdrop-blur-xl bg-opacity-90">
             <div class="flex items-center gap-4 pl-4">
                 <div class="w-10 h-10 rounded-2xl bg-toba-green flex items-center justify-center text-white text-sm font-black shadow-lg shadow-toba-green/20">
                     <span x-text="selected.length"></span>
