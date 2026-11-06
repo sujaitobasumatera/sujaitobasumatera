@@ -20,7 +20,7 @@
     // Satu sumber kebenaran untuk menu — desktop & strip mobile membacanya sama.
     $navLinks = [
         ['label' => '🇲🇾 Pakej Malaysia',  'url' => '/paket-wisata-danau-toba-dari-kuala-lumpur', 'active' => request()->is('paket-wisata-danau-toba-dari-*'), 'is_badge' => true],
-        ['label' => __('Cara Bayar'),      'url' => '/payment',       'active' => request()->is('payment')],
+        ['label' => __('Cara Bayar / QRIS'),      'url' => '/payment#qris-malaysia',       'active' => request()->is('payment')],
         ['label' => __('Tentang Kami'),    'url' => '/about',         'active' => request()->is('about')],
         ['label' => __('Blog'),            'url' => '/tour/blog',     'active' => request()->is('tour/blog*')],
         ['label' => __('Lacak Booking'),   'url' => route('booking.track.form'), 'active' => request()->is('track-booking*')],

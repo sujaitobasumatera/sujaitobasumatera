@@ -63,7 +63,7 @@
             <div class="space-y-6">
 
                 {{-- QRIS Cross-Border (Malaysia DuitNow & TnG eWallet) --}}
-                <div class="card-flat p-6 md:p-8 border-2 border-toba-green/30 bg-gradient-to-br from-green-50/50 to-white hover:border-toba-green transition duration-300">
+                <div id="qris-malaysia" class="card-flat p-6 md:p-8 border-2 border-toba-green/30 bg-gradient-to-br from-green-50/50 to-white hover:border-toba-green transition duration-300">
                     <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                         <div class="flex items-start gap-5">
                             <div class="w-12 h-12 bg-toba-green text-white rounded-xl flex items-center justify-center shrink-0 shadow-md shadow-toba-green/20">
