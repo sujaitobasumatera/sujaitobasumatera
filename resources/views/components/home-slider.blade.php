@@ -376,8 +376,8 @@
                 </svg>
             </div>
             <div>
-                <p class="sujai-feat-title">Booking Mudah</p>
-                <p class="sujai-feat-sub">Tanpa Ribet</p>
+                <p class="sujai-feat-title">{{ __('Booking Mudah') }}</p>
+                <p class="sujai-feat-sub">{{ __('Mudah & Pantas') }}</p>
             </div>
         </div>
         <div class="sujai-feat-item">
@@ -387,8 +387,8 @@
                 </svg>
             </div>
             <div>
-                <p class="sujai-feat-title">Proses Cepat</p>
-                <p class="sujai-feat-sub">CS 24/7 Fast Respon</p>
+                <p class="sujai-feat-title">{{ __('Proses Pantas') }}</p>
+                <p class="sujai-feat-sub">{{ __('Bantuan CS 24/7') }}</p>
             </div>
         </div>
         <div class="sujai-feat-item">
@@ -398,8 +398,8 @@
                 </svg>
             </div>
             <div>
-                <p class="sujai-feat-title">Banyak Pilihan</p>
-                <p class="sujai-feat-sub">Paket Fleksibel</p>
+                <p class="sujai-feat-title">{{ __('Banyak Pilihan') }}</p>
+                <p class="sujai-feat-sub">{{ __('Pakej Fleksibel') }}</p>
             </div>
         </div>
         <div class="sujai-feat-item">
@@ -409,8 +409,8 @@
                 </svg>
             </div>
             <div>
-                <p class="sujai-feat-title">Harga Terbaik</p>
-                <p class="sujai-feat-sub">Terjangkau &amp; Premium</p>
+                <p class="sujai-feat-title">{{ __('Harga Terbaik') }}</p>
+                <p class="sujai-feat-sub">{{ __('Mampu Milik & Premium') }}</p>
             </div>
         </div>
     </div>

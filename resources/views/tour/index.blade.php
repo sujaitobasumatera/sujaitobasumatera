@@ -89,51 +89,55 @@
     <x-home-slider :settings="$settings" :packages="$packages" />
     @endif
 
-    <!-- Kenapa Memilih Sujai Toba Sumatera (4 Keunggulan Utama) -->
+    <!-- Kenapa Memilih Sujai Toba Sumatera (Muslim-Friendly & Trusted Quality) -->
     <section class="py-6 md:py-10 bg-white border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-5 md:px-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <!-- Poin 1 -->
-                <div class="flex items-start gap-4 p-4 md:p-5 rounded-2xl bg-slate-50/80 border border-slate-100 hover:border-toba-green/30 hover:bg-green-50/40 transition duration-300 group">
-                    <div class="w-12 h-12 rounded-xl bg-toba-green/10 text-toba-green flex items-center justify-center shrink-0 group-hover:bg-toba-green group-hover:text-white transition duration-300 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">badge</span>
+                <!-- Poin 1: 100% Halal Food & Muslim Friendly -->
+                <div class="flex items-start gap-4 p-4 md:p-5 rounded-2xl bg-green-50/60 border border-green-200/80 hover:border-toba-green/40 hover:bg-green-50 transition duration-300 group shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-toba-green text-white flex items-center justify-center shrink-0 shadow-md shadow-toba-green/20">
+                        <span class="material-symbols-outlined text-2xl">verified_user</span>
                     </div>
                     <div>
-                        <h3 class="text-sm font-bold text-slate-900 leading-tight mb-1">{{ __('Pemandu Asli Danau Toba') }}</h3>
-                        <p class="text-xs text-slate-500 leading-relaxed">{{ __('Lahir &amp; tumbuh di Danau Toba, menguasai sejarah, kearifan Batak, dan spot tersembunyi.') }}</p>
+                        <div class="inline-flex items-center gap-1 text-[10px] font-extrabold text-toba-green uppercase tracking-wider mb-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-toba-green"></span>
+                            {{ __('Mesra Muslim') }}
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-900 leading-tight mb-1">{{ __('100% Makanan Halal & Waktu Solat') }}</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">{{ __('Restoran muslim sah pilihan. Pemandu sentiasa menyantuni jadual waktu solat dan singgah masjid/surau.') }}</p>
                     </div>
                 </div>
 
-                <!-- Poin 2 -->
+                <!-- Poin 2: Private Tour Sahaja -->
                 <div class="flex items-start gap-4 p-4 md:p-5 rounded-2xl bg-slate-50/80 border border-slate-100 hover:border-toba-green/30 hover:bg-green-50/40 transition duration-300 group">
                     <div class="w-12 h-12 rounded-xl bg-toba-green/10 text-toba-green flex items-center justify-center shrink-0 group-hover:bg-toba-green group-hover:text-white transition duration-300 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">directions_car</span>
                     </div>
                     <div>
-                        <h3 class="text-sm font-bold text-slate-900 leading-tight mb-1">{{ __('Armada Bersih &amp; Prima') }}</h3>
-                        <p class="text-xs text-slate-500 leading-relaxed">{{ __('Kendaraan ber-AC sejuk, terawat rutin, dengan driver andal rute perbukitan Sumatera.') }}</p>
+                        <h3 class="text-sm font-bold text-slate-900 leading-tight mb-1">{{ __('Trip Persendirian (Private Tour)') }}</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">{{ __('Kenderaan khas untuk keluarga anda sahaja, tanpa bercampur rombongan orang lain. Selesa & santai.') }}</p>
                     </div>
                 </div>
 
-                <!-- Poin 3 -->
+                <!-- Poin 3: Pemandu Asli & Berpengalaman -->
                 <div class="flex items-start gap-4 p-4 md:p-5 rounded-2xl bg-slate-50/80 border border-slate-100 hover:border-toba-green/30 hover:bg-green-50/40 transition duration-300 group">
                     <div class="w-12 h-12 rounded-xl bg-toba-green/10 text-toba-green flex items-center justify-center shrink-0 group-hover:bg-toba-green group-hover:text-white transition duration-300 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">receipt_long</span>
+                        <span class="material-symbols-outlined text-2xl">badge</span>
                     </div>
                     <div>
-                        <h3 class="text-sm font-bold text-slate-900 leading-tight mb-1">{{ __('Harga Jujur &amp; Transparan') }}</h3>
-                        <p class="text-xs text-slate-500 leading-relaxed">{{ __('Tanpa pungutan tersembunyi. Tiket wisata, akomodasi, dan rincian fasilitas tertulis jelas.') }}</p>
+                        <h3 class="text-sm font-bold text-slate-900 leading-tight mb-1">{{ __('Pemandu Mesra & Berpengalaman') }}</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">{{ __('Anak tempatan Danau Toba yang arif selok-belok laluan bukit, spot foto menarik, dan sejarah Batak.') }}</p>
                     </div>
                 </div>
 
-                <!-- Poin 4 -->
+                <!-- Poin 4: Harga Telus & Bayar DuitNow -->
                 <div class="flex items-start gap-4 p-4 md:p-5 rounded-2xl bg-slate-50/80 border border-slate-100 hover:border-toba-green/30 hover:bg-green-50/40 transition duration-300 group">
                     <div class="w-12 h-12 rounded-xl bg-toba-green/10 text-toba-green flex items-center justify-center shrink-0 group-hover:bg-toba-green group-hover:text-white transition duration-300 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">support_agent</span>
+                        <span class="material-symbols-outlined text-2xl">payments</span>
                     </div>
                     <div>
-                        <h3 class="text-sm font-bold text-slate-900 leading-tight mb-1">{{ __('Fleksibel &amp; Konsultasi Ramah') }}</h3>
-                        <p class="text-xs text-slate-500 leading-relaxed">{{ __('Bebas custom jadwal untuk keluarga, rombongan, atau gathering. Siap bantu 24/7 via WhatsApp.') }}</p>
+                        <h3 class="text-sm font-bold text-slate-900 leading-tight mb-1">{{ __('Harga Telus & Bayar DuitNow') }}</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">{{ __('Harga pakej jelas dalam Ringgit (RM). Terima bayaran mudah imbas QR Touch \'n Go & DuitNow.') }}</p>
                     </div>
                 </div>
             </div>

@@ -67,7 +67,7 @@
                     <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                         <div class="flex items-start gap-5">
                             <div class="w-12 h-12 bg-toba-green text-white rounded-xl flex items-center justify-center shrink-0 shadow-md shadow-toba-green/20">
-                                <span class="material-symbols-outlined text-[22px]">qr_code_2</span>
+                                <span class="material-symbols-outlined text-[22px]">payments</span>
                             </div>
                             <div>
                                 <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-wider mb-2">

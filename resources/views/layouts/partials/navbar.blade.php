@@ -19,11 +19,11 @@
 
     // Satu sumber kebenaran untuk menu — desktop & strip mobile membacanya sama.
     $navLinks = [
-        ['label' => __('Tentang Kami'),     'url' => '/about',         'active' => request()->is('about')],
-        ['label' => __('Blog'),             'url' => '/tour/blog',     'active' => request()->is('tour/blog*')],
-        // Tautannya memang menuju form pelacakan, bukan halaman kontak —
-        // labelnya disesuaikan supaya menjanjikan apa yang benar-benar dibuka.
-        ['label' => __('Lacak Booking'),    'url' => route('booking.track.form'), 'active' => request()->is('track-booking*')],
+        ['label' => '🇲🇾 Pakej Malaysia',  'url' => '/paket-wisata-danau-toba-dari-kuala-lumpur', 'active' => request()->is('paket-wisata-danau-toba-dari-*'), 'is_badge' => true],
+        ['label' => __('Cara Bayar'),      'url' => '/payment',       'active' => request()->is('payment')],
+        ['label' => __('Tentang Kami'),    'url' => '/about',         'active' => request()->is('about')],
+        ['label' => __('Blog'),            'url' => '/tour/blog',     'active' => request()->is('tour/blog*')],
+        ['label' => __('Lacak Booking'),   'url' => route('booking.track.form'), 'active' => request()->is('track-booking*')],
     ];
 
     // Strip mobile itu daftar datar — tanpa dropdown — jadi Home & Paket
@@ -138,7 +138,7 @@
                 </a>
 
                 <!-- Nav Links Desktop (Minimalist) -->
-                <div class="hidden lg:flex items-center gap-8 text-[14px] font-medium text-slate-500">
+                <div class="hidden lg:flex items-center gap-4 xl:gap-6 text-[13px] xl:text-[13.5px] font-medium text-slate-600">
                     @php $isHome = request()->is('/'); @endphp
                     <a href="/" @if($isHome) aria-current="page" @endif
                        class="group relative py-1 transition-colors duration-300 {{ $isHome ? 'text-slate-900 font-semibold' : 'hover:text-slate-900' }}">
@@ -166,14 +166,23 @@
                              x-transition:leave-end="opacity-0"
                              class="absolute left-0 top-full pt-4 w-72 z-[200]">
                             <div class="bg-white rounded-xl shadow-xl shadow-slate-900/10 ring-1 ring-slate-100 p-2 overflow-hidden">
-                                <a href="/tour/packages" class="block px-4 py-2.5 text-[13px] font-semibold text-slate-800 rounded-lg hover:bg-slate-50 transition-colors">{{ __('Semua Paket Tour') }}</a>
+                                {{-- Malaysia Package Quick Link inside dropdown --}}
+                                <a href="/paket-wisata-danau-toba-dari-kuala-lumpur"
+                                   class="flex items-center justify-between px-3.5 py-2.5 bg-green-50/90 hover:bg-green-100 rounded-lg text-toba-green font-bold text-[12.5px] border border-green-200/70 transition-colors mb-1.5">
+                                    <span class="flex items-center gap-1.5">
+                                        <span>🇲🇾</span>
+                                        <span>Pakej Khas Malaysia</span>
+                                    </span>
+                                    <span class="text-[9px] bg-toba-green text-white font-extrabold px-1.5 py-0.5 rounded-full uppercase tracking-wider">KL &amp; Penang</span>
+                                </a>
+                                <a href="/tour/packages" class="block px-4 py-2 text-[12.5px] font-semibold text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">{{ __('Semua Paket Tour') }}</a>
                                 @if(count($navPackages ?? []))
-                                    <div class="my-2 border-t border-slate-100"></div>
-                                    <div class="max-h-[60vh] overflow-y-auto space-y-0.5">
+                                    <div class="my-1.5 border-t border-slate-100"></div>
+                                    <div class="max-h-[55vh] overflow-y-auto space-y-0.5">
                                         @foreach($navPackages as $navPkg)
                                             <a href="/tour/package/{{ $navPkg->slug }}"
-                                               class="block px-4 py-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item">
-                                                <span class="block text-[13px] font-medium text-slate-700 group-hover/item:text-slate-900">{{ $navPkg->translated_name }}</span>
+                                               class="block px-4 py-2 rounded-lg hover:bg-slate-50 transition-colors group/item">
+                                                <span class="block text-[12.5px] font-medium text-slate-700 group-hover/item:text-slate-900">{{ $navPkg->translated_name }}</span>
                                                 @if($navPkg->duration)
                                                     <span class="block mt-0.5 text-[11px] text-slate-400">{{ $navPkg->duration }}</span>
                                                 @endif
@@ -186,11 +195,18 @@
                     </div>
 
                     @foreach($navLinks as $link)
-                        <a href="{{ $link['url'] }}" @if($link['active']) aria-current="page" @endif
-                           class="group relative py-1 transition-colors duration-300 {{ $link['active'] ? 'text-slate-900 font-semibold' : 'hover:text-slate-900' }}">
-                            {{ $link['label'] }}
-                            <span class="absolute left-1/2 -bottom-1 h-[2px] rounded-full bg-slate-900 transition-all duration-300 ease-out -translate-x-1/2 {{ $link['active'] ? 'w-4' : 'w-0 group-hover:w-4' }}"></span>
-                        </a>
+                        @if(!empty($link['is_badge']))
+                            <a href="{{ $link['url'] }}" @if($link['active']) aria-current="page" @endif
+                               class="group inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-semibold transition-all duration-200 {{ $link['active'] ? 'bg-toba-green text-white shadow-sm' : 'bg-green-50/90 text-toba-green border border-green-200/80 hover:bg-toba-green hover:text-white' }}">
+                                <span>{{ $link['label'] }}</span>
+                            </a>
+                        @else
+                            <a href="{{ $link['url'] }}" @if($link['active']) aria-current="page" @endif
+                               class="group relative py-1 transition-colors duration-300 {{ $link['active'] ? 'text-slate-900 font-semibold' : 'hover:text-slate-900' }}">
+                                {{ $link['label'] }}
+                                <span class="absolute left-1/2 -bottom-1 h-[2px] rounded-full bg-slate-900 transition-all duration-300 ease-out -translate-x-1/2 {{ $link['active'] ? 'w-4' : 'w-0 group-hover:w-4' }}"></span>
+                            </a>
+                        @endif
                     @endforeach
                 </div>
 
