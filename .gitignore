@@ -61,6 +61,8 @@ composer.phar
 # Credentials & signing keys — NEVER commit
 ssh.md
 informasi.md
+AKSES.md
+CREDENTIALS.md
 *.keystore
 ROTASI-RAHASIA.*
 
