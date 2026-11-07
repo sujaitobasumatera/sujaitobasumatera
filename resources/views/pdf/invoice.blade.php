@@ -97,8 +97,33 @@
             $logoPath = ltrim(str_replace('storage/', '', $logoUrl), '/');
             $fullPath = public_path('storage/' . $logoPath);
             if (file_exists($fullPath)) {
-                $mime = mime_content_type($fullPath) ?: 'image/png';
-                $logoData = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($fullPath));
+                try {
+                    [$w, $h] = getimagesize($fullPath);
+                    // Jika dimensi gambar terlalu besar (mis. 6000x6000), Dompdf akan timeout di loop pixel Cpdf.
+                    // Resample ke resolusi ramah dokumen (max tinggi 80px) agar render instan (<0.1s).
+                    if ($w > 300 || $h > 120) {
+                        $targetH = 80;
+                        $targetW = max((int) round(($w / max($h, 1)) * $targetH), 1);
+                        $src = @imagecreatefromstring(file_get_contents($fullPath));
+                        if ($src) {
+                            $dst = imagecreatetruecolor($targetW, $targetH);
+                            imagealphablending($dst, false);
+                            imagesavealpha($dst, true);
+                            imagecopyresampled($dst, $src, 0, 0, 0, 0, $targetW, $targetH, $w, $h);
+                            ob_start();
+                            imagepng($dst);
+                            $pngData = ob_get_clean();
+                            imagedestroy($src);
+                            imagedestroy($dst);
+                            $logoData = 'data:image/png;base64,' . base64_encode($pngData);
+                        }
+                    } else {
+                        $mime = mime_content_type($fullPath) ?: 'image/png';
+                        $logoData = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($fullPath));
+                    }
+                } catch (\Throwable $ie) {
+                    $logoData = null;
+                }
             }
         }
     @endphp

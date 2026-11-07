@@ -155,11 +155,16 @@ class BookingService
                 Log::warning('Failed to send admin booking notification: '.$ne->getMessage());
             }
 
-            // Notify Customer with Invoice
-            try {
-                $booking->notify(new CustomerBookingNotification($booking));
-            } catch (\Exception $ce) {
-                Log::warning('Failed to send customer booking notification: '.$ce->getMessage());
+            // Notify Customer with Invoice (Hanya bila email terisi dan valid)
+            $customerEmail = trim((string) ($booking->customerEmail ?? ''));
+            if ($customerEmail !== '' && filter_var($customerEmail, FILTER_VALIDATE_EMAIL)) {
+                try {
+                    $booking->notify(new CustomerBookingNotification($booking));
+                } catch (\Throwable $ce) {
+                    Log::warning('Failed to send customer booking notification: '.$ce->getMessage(), [
+                        'booking_code' => $booking->bookingCode,
+                    ]);
+                }
             }
 
             Log::info('New booking created: '.$booking->bookingCode, ['booking_id' => $booking->id]);
